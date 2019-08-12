@@ -6,7 +6,7 @@
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import WidgetContainer from 'WidgetContainer'
 import './Viewing.Extension.LevelFilter.scss'
-import ServiceContext from 'ServiceContext'
+import {ServiceContext} from 'ServiceContext'
 import { ReactLoader } from 'Loader'
 import Toolkit from 'Viewer.Toolkit'
 import sortBy from 'lodash/sortBy'

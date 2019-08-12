@@ -17,7 +17,7 @@ To run these samples, you need your own Forge API credentials:
  * [Create a new App](https://developer.autodesk.com/myapps/create)
  * For this new App, you can use <b>http://localhost:3000/api/forge/callback/oauth</b> as Callback URL.
  * Take note of the <b>Client ID</b> and <b>Client Secret</b>, those are your API keys that must remain hidden
- * Install the latest release of [NodeJS](https://nodejs.org)
+ * Install [Python ^2.7](https://www.python.org/downloads/release/python-2714/) and [NodeJS](https://nodejs.org) and make sure its version is between 8.x (LTS) to 10.x (LTS).
 
 ## Project Setup
 
@@ -41,7 +41,7 @@ To run these samples, you need your own Forge API credentials:
 
     * `npm install`    *(downloads project dependencies locally)*
 
-    * `npm run dev`      *(builds/runs server on the fly and monitors code changes)*
+    * `npm run dev` or `node -r @babel/register ./src/server/index.js`     *(builds/runs server on the fly with or w/o monitoring code changes)*
 
     * `npm run serve`    *(builds/runs client on the fly and monitors code changes)*
 
@@ -54,7 +54,7 @@ To run these samples, you need your own Forge API credentials:
 
     * `npm run build` *(builds client)*
 
-    * `npm start` *(run the server)* 
+    * `npm start` *(run the server)*
 
     * open [http://localhost:3000](http://localhost:3000) in your favorite browser
 
@@ -120,6 +120,14 @@ You should be ready to deploy to heroku, providing the same Forge credentials us
 > What should I do if I get the error `Module build failed: Error: Node Sass does not yet support your current environment: OS X 64-bit with Unsupported runtime (64)` when I tried to build the front end?
 
 Rebuild `node-ass` with the command `npm rebuild node-sass` and build to production again.
+
+> Error: ENOENT: no such file or directory, scandir 'F:\Projects\forge-rcdb\node_modules\node-sass\vendor'
+
+Run `node ./node_modules/node-sass/scripts/install.js`
+
+> Various errors when building modules with 'node-gyp' on Windows
+
+Install Python ^2.7 and the build tools with `npm install --global --production windows-build-tools`
 
 > Starting the application in production hangs at "Cleaning Dir"?
 

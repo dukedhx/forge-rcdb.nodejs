@@ -1,4 +1,4 @@
-import { TimeSeries as SmoothieTimeSeries, SmoothieChart } from './smoothie'
+import './smoothie'
 import React from 'react'
 
 export default class IoTGraph extends React.Component {
@@ -22,9 +22,9 @@ export default class IoTGraph extends React.Component {
   /////////////////////////////////////////////////////////
   componentDidMount () {
 
-    this.thresholdSeries = new SmoothieTimeSeries()
+    this.thresholdSeries = new TimeSeries()
 
-    this.dataSeries = new SmoothieTimeSeries()
+    this.dataSeries = new TimeSeries()
 
     this.chart = new SmoothieChart({
       yRangeFunction: () => {

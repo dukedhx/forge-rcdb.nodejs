@@ -114,7 +114,7 @@ module.exports = {
 
       template: path.resolve(
         __dirname,
-        `./src/client/layouts/${config.layouts.index}`),
+        `./src/client/components/Views/layouts/${config.layouts.index}`),
 
       title: 'Forge | RCDB | DEV',
       filename: 'index.html',
@@ -135,14 +135,13 @@ module.exports = {
       path.resolve('./src/client/components/Viewer/'),
       path.resolve('./src/client/components/Viewer/Extensions'),
       path.resolve('./src/client/components/Viewer/Viewer.Commands'),
-      path.resolve('./src/client/Contexts'),
+      path.resolve('./src/client/contexts'),
 
       path.resolve('./src/client/components/UIComponents'),
       path.resolve('./src/client/components'),
       path.resolve('./src/client/services'),
       path.resolve('./src/client/styles'),
       path.resolve('./node_modules'),
-      path.resolve('./src/client')
     ],
     extensions : ['.js', '.jsx', '.json']
   },

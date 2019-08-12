@@ -1,5 +1,4 @@
 import { LinkContainer } from 'react-router-bootstrap'
-import { browserHistory } from 'react-router'
 import DatabaseDlg from 'Dialogs/DatabaseDlg'
 import LayoutDlg from 'Dialogs/LayoutDlg'
 import ThemeDlg from 'Dialogs/ThemeDlg'
@@ -125,7 +124,6 @@ class AppNavbar extends React.Component {
       : ''
 
     return appState.navbar.visible && (
-      <ServiceContext.Provider>
       <Navbar className="forge-rcdb-navbar">
         <Navbar.Header>
           <Navbar.Brand>
@@ -144,7 +142,7 @@ class AppNavbar extends React.Component {
             appState.navbar.links.home &&
 
             <Nav>
-              <LinkContainer to={{ pathname: '/', query: { } }}>
+              <LinkContainer to='/'>
                 <NavItem eventKey={1}>
                   <label className="nav-label">
                     &nbsp; Home
@@ -158,7 +156,7 @@ class AppNavbar extends React.Component {
             appState.navbar.links.demos &&
 
             <Nav>
-              <LinkContainer to={{ pathname: '/configurator'}}>
+              <LinkContainer to='/configurator'>
                 <NavItem eventKey={2}>
                   <label className="nav-label">
                     &nbsp;Demo
@@ -172,7 +170,7 @@ class AppNavbar extends React.Component {
             appState.navbar.links.gallery &&
 
             <Nav>
-              <LinkContainer to={{ pathname: '/gallery', query: { } }}>
+              <LinkContainer to='/gallery'>
                 <NavItem eventKey={3}>
                   <label className="nav-label">
                     &nbsp;Gallery
@@ -282,7 +280,6 @@ class AppNavbar extends React.Component {
 
         </Navbar.Collapse>
       </Navbar>
-      </ServiceContext.Provider>
     )
   }
 }

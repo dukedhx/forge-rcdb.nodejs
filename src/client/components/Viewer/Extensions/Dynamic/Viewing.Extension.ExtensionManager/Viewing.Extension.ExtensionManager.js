@@ -6,7 +6,7 @@
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import './Viewing.Extension.ExtensionManager.scss'
 import ExtensionPane from './ExtensionPane'
-import ServiceContext from 'ServiceContext'
+import {ServiceContext} from 'ServiceContext'
 import PaneManager from 'PaneManager'
 import sortBy from 'lodash/sortBy'
 import ReactDOM from 'react-dom'

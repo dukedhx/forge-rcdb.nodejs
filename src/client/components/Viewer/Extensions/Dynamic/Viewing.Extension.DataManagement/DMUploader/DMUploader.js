@@ -1,6 +1,6 @@
 import ContentEditable from 'react-contenteditable'
 import BaseComponent from 'BaseComponent'
-import ServiceContext from 'ServiceContext'
+import {ServiceContext} from 'ServiceContext'
 import Dropzone from 'react-dropzone'
 import PropTypes from 'prop-types'
 import './DMUploader.scss'

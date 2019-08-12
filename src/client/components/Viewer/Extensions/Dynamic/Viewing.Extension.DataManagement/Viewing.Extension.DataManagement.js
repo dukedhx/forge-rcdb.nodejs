@@ -7,10 +7,10 @@ import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import FolderSearchPanel from './FolderSearchPanel'
 import DerivativesAPI from './Derivatives.API'
 import WidgetContainer from 'WidgetContainer'
-import { browserHistory } from 'react-router'
+import { history as browserHistory } from 'BrowserContext'
 import { Tabs, Tab } from 'react-bootstrap'
 import DataTreeView from './DataTreeView'
-import ServiceContext from 'ServiceContext'
+import {ServiceContext} from 'ServiceContext'
 import DMUploader from './DMUploader'
 import { ReactLoader } from 'Loader'
 import Measure from 'react-measure'
@@ -42,7 +42,7 @@ class DataManagementExtension extends MultiModelExtensionBase {
     this.onInitUpload = this.onInitUpload.bind(this)
     this.onDeleteItem = this.onDeleteItem.bind(this)
 
-    
+
 
     this.derivativesAPI = new DerivativesAPI({
       apiUrl: '/api/derivatives/3legged'

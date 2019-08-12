@@ -1,6 +1,6 @@
 import { DropdownButton, MenuItem } from 'react-bootstrap'
 import BaseComponent from 'BaseComponent'
-import ServiceContext from 'ServiceContext'
+import {ServiceContext} from 'ServiceContext'
 import { ReactLoader } from 'Loader'
 import Systems from '../Systems'
 import JSONView from 'JSONView'

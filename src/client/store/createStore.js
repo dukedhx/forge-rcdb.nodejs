@@ -3,14 +3,14 @@ import { updateLocation } from './location'
 import makeRootReducer from './reducers'
 import {client as config} from 'c0nfig'
 import thunk from 'redux-thunk'
-import {browserHistory} from 'react-router'
-
+import { routerMiddleware } from 'connected-react-router'
+import createRootReducer from './reducers'
+import {history} from 'BrowserContext'
 export default (initialState = {}) => {
-
   // ======================================================
   // Middleware Configuration
   // ======================================================
-  const middleware = [thunk]
+  const middleware = [thunk,routerMiddleware(history)]
 
   // ======================================================
   // Store Enhancers
@@ -31,7 +31,7 @@ export default (initialState = {}) => {
   // Store Instantiation and HMR Setup
   // ======================================================
   const store = createStore(
-    makeRootReducer(),
+    makeRootReducer(history),
     initialState,
     compose(
       applyMiddleware(...middleware),

@@ -3,8 +3,8 @@ import { AppContainer as HMR } from 'react-hot-loader'
 import {client as config} from 'c0nfig'
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
-import { browserHistory, Router } from 'react-router'
-
+import {  Router } from 'react-router'
+import routes from './routes'
 import store from './store'
 import React from 'react'
 
@@ -21,17 +21,14 @@ let render = () => {
 
 
 
-  const routes = require('./routes').default(store)
 
   ReactDOM.render(
     <HMR>
       <Provider store={store}>
-        <div style={{ height: '100%' }}>
-          <Router
-            history={browserHistory}
-            children={routes}
-          />
-        </div>
+
+
+            {routes()}
+
       </Provider>
     </HMR>,
     MOUNT_NODE

@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator'
 import BaseComponent from 'BaseComponent'
-import ServiceContext from 'ServiceContext'
+import {ServiceContext} from 'ServiceContext'
 import ImageGrid from 'ImageGrid'
 import './RecentModels.scss'
 import React from 'react'
