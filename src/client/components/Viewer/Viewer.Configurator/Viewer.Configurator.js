@@ -722,70 +722,41 @@ class ViewerConfigurator extends BaseComponent {
           `${window.location.origin}/${lmvProxy}`,
           'derivativeV2')
 
-        switch (this.state.dbModel.env) {
+          const urn = modelInfo.urn
 
-          case 'Local':
+          this.viewerDocument =
+            await this.loadDocument(urn)
 
-            const localOptions = {
-              placementTransform: this.buildTransform(
-                modelInfo.transform)
-            }
-            viewer.loadModel(modelInfo.path, localOptions, (model) => {
+          const query = modelInfo.query || [
+            { type: 'geometry', role: '3d' },
+            { type: 'geometry', role: '2d' }
+          ]
 
-              model.name = modelInfo.displayName || modelInfo.name
-              model.dbModelId = this.state.dbModel._id
-              model.urn = modelInfo.urn
-              model.guid = this.guid()
+          const path = this.getViewablePath(
+            this.viewerDocument,
+            modelInfo.pathIndex || 0,
+            query)
 
-              viewer.activeModel = model
+          const loadOptions = {
+            sharedPropertyDbPath:
+              this.viewerDocument.getPropertyDbPath(),
+            placementTransform: this.buildTransform(
+              modelInfo.transform)
+          }
 
-              this.context.eventSvc.emit('model.loaded', {
-                model
-              })
+          viewer.loadModel(path, loadOptions, (model) => {
+
+            model.name = modelInfo.displayName || modelInfo.name
+            model.dbModelId = this.state.dbModel._id
+            model.urn = modelInfo.urn
+            model.guid = this.guid()
+
+            viewer.activeModel = model
+
+            this.context.eventSvc.emit('model.loaded', {
+              model
             })
-
-            break
-
-          case 'AutodeskProduction':
-
-            const urn = modelInfo.urn
-
-            this.viewerDocument =
-              await this.loadDocument(urn)
-
-            const query = modelInfo.query || [
-              { type: 'geometry', role: '3d' },
-              { type: 'geometry', role: '2d' }
-            ]
-
-            const path = this.getViewablePath(
-              this.viewerDocument,
-              modelInfo.pathIndex || 0,
-              query)
-
-            const loadOptions = {
-              sharedPropertyDbPath:
-                this.viewerDocument.getPropertyDbPath(),
-              placementTransform: this.buildTransform(
-                modelInfo.transform)
-            }
-
-            viewer.loadModel(path, loadOptions, (model) => {
-
-              model.name = modelInfo.displayName || modelInfo.name
-              model.dbModelId = this.state.dbModel._id
-              model.urn = modelInfo.urn
-              model.guid = this.guid()
-
-              viewer.activeModel = model
-
-              this.context.eventSvc.emit('model.loaded', {
-                model
-              })
-            })
-
-            break
-        }
+          })
       }
 
     } catch(ex) {

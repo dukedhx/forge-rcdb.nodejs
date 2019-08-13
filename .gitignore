@@ -8,7 +8,7 @@ coverage
 logs
 resources/img/optimized
 resources/libs/lmv
-resources/db/*
+#resources/db/*
 resources/models/*
 push-to-prod.sh
 nginx

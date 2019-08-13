@@ -58,13 +58,13 @@ class ConfiguratorView extends React.Component {
       ? <ViewerConfigurator
           setNavbarState={this.props.setNavbarState}
           setViewerEnv={this.props.setViewerEnv}
-          modelId='59729386f8b8e45a94ba94c0'
+          modelId={params.id}
           appState={this.props.appState}
           location={this.props.location}
-          database='configurator'
           onError={this.onError}
           notify={this.notify}
           showLoader={true}
+          database='configurator'
         />
       : <ConfiguratorHomeView/>
 
