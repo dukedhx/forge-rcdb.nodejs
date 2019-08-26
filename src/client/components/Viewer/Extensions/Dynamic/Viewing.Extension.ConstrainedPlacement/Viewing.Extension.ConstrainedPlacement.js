@@ -57,7 +57,7 @@
     return true
   }
 
-  proto.createUI = function () {
+  proto.onToolbarCreated = function () {
 
     var controlId = 'toolbar-constrained-placement'
 
@@ -113,4 +113,3 @@
     'Viewing.Extension.ConstrainedPlacement',
     ConstrainedPlacementExtension)
 })()
-

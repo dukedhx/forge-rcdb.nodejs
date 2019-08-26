@@ -125,7 +125,6 @@ class Viewer extends React.Component {
 
       if(this.viewer.impl.selector) {
 
-        this.viewer.tearDown()
         this.viewer.finish()
         this.viewer = null
       }

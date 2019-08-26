@@ -114,6 +114,14 @@ class TransformExtension extends ExtensionBase {
   /////////////////////////////////////////////////////////////////
   load () {
 
+
+
+    console.log('Viewing.Extension.Transform loaded')
+
+    return true
+  }
+
+  onToolbarCreated(){
     this._txControl = ViewerToolkit.createButton(
       'toolbar-translate',
       'fa fa-arrows-alt',
@@ -200,10 +208,6 @@ class TransformExtension extends ExtensionBase {
 
       this.parentControl.addControl(this._comboCtrl)
     }
-
-    console.log('Viewing.Extension.Transform loaded')
-
-    return true
   }
 
   /////////////////////////////////////////////////////////////////
@@ -665,4 +669,3 @@ class TransformExtension extends ExtensionBase {
 Autodesk.Viewing.theExtensionManager.registerExtension(
   TransformExtension.ExtensionId,
   TransformExtension)
-

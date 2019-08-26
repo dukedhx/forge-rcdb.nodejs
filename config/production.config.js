@@ -79,8 +79,8 @@ const config = {
     },
 
     viewer: {
-      viewer3D: 'https://developer.api.autodesk.com/modelderivative/v2/viewers/viewer3D.min.js?v=v6.6',
-      style:    'https://developer.api.autodesk.com/modelderivative/v2/viewers/style.min.css?v=v6.6'
+      viewer3D: 'https://developer.api.autodesk.com/modelderivative/v2/viewers/viewer3D.min.js?v=v7.2',
+      style:    'https://developer.api.autodesk.com/modelderivative/v2/viewers/style.min.css?v=v7.2'
     }
   },
   // Set the "connectionString" and "dbName" and leave other fields empty if you'd like to specify the entire connection string yourself.

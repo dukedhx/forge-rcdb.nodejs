@@ -76,8 +76,8 @@ const config = {
     },
 
     viewer: {
-      viewer3D: 'https://developer.api.autodesk.com/modelderivative/v2/viewers/viewer3D.min.js?v=v6.6',
-      style:    'https://developer.api.autodesk.com/modelderivative/v2/viewers/style.min.css?v=v6.6'
+      viewer3D: 'https://developer.api.autodesk.com/modelderivative/v2/viewers/viewer3D.min.js?v=v7.2',
+      style:    'https://developer.api.autodesk.com/modelderivative/v2/viewers/style.min.css?v=v7.2'
 
       // viewer3D: '/resources/libs/lmv/4.0.1/viewer3D.js',
       // threeJS:  '/resources/libs/lmv/4.0.1/three.js',
@@ -88,11 +88,11 @@ const config = {
   database: {
     type: 'mongo',
     connectionString: '',
-    dbName: '',
+    dbName: 'admin',
     user: '',
     pass: '',
-    dbhost: '',
-    port: null,
+    dbhost: 'localhost',
+    port: 27017,
     models: {
       configurator: {
         collection:'configurator.models'

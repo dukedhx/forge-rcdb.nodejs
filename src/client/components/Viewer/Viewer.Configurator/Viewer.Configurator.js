@@ -15,6 +15,7 @@ import Viewer from 'Viewer'
 import Panel from 'Panel'
 import React from 'react'
 import {client as config} from 'c0nfig'
+import {forge as forgeConfig} from 'c0nfig'
 
 import ClientAPI from 'ClientAPI'
 class ViewerConfigurator extends BaseComponent {
@@ -56,39 +57,60 @@ class ViewerConfigurator extends BaseComponent {
 
     try {
 
-      this.loader = new Loader(this.loaderContainer)
+        this.loader = new Loader(this.loaderContainer)
+        this.loader.show(true)
+        Promise.all([new Promise(res=>{
+             if(typeof Autodesk == 'object'&&Autodesk.Viewing)res()
+              else{
+              const link  = document.createElement('link')
+               link.rel  = 'stylesheet'
+               link.type = 'text/css'
+               link.href = forgeConfig.viewer.style
+               link.onload = ()=>res()
+               document.head.append(link)
+             }
+             }), new Promise(res=>{
+               if(typeof Autodesk == 'object'&&Autodesk.Viewing)res()
+               else{
+                 const script = document.createElement('script')
+                 script.onload = ()=>res()
+                 script.src = forgeConfig.viewer.viewer3D
+                 document.head.append(script)
+               }
+             })]).then(async ()=>{
 
-      const dbModel = await this.context.modelSvc.getModel(
-        this.props.database,
-        this.props.modelId)
+        const dbModel = await this.context.modelSvc.getModel(
+          this.props.database,
+          this.props.modelId)
 
-      if (!this.props.appState.viewerEnv) {
+        if (!this.props.appState.viewerEnv) {
 
-        const viewerEnv = await this.initialize({
-          useConsolidation: true,
-          env: dbModel.env,
-          accessToken: 'No need to specify accessToken explicitly - see 2legged-proxy-service'
+          const viewerEnv = await this.initialize({
+            useConsolidation: true,
+            env: dbModel.env,
+            accessToken: 'No need to specify accessToken explicitly - see 2legged-proxy-service'
+          })
+
+          this.props.setViewerEnv (viewerEnv)
+
+          Autodesk.Viewing.Private.memoryOptimizedSvfLoading = true
+        }
+
+        this.assignState({
+          dbModel
         })
 
-        this.props.setViewerEnv (viewerEnv)
+        window.addEventListener(
+          'resize', this.onStopResize)
 
-        Autodesk.Viewing.Private.memoryOptimizedSvfLoading = true
+        window.addEventListener(
+          'resize', this.onResize)
+        })
+
+      } catch (ex) {
+
+        return this.props.onError(ex)
       }
-
-      this.assignState({
-        dbModel
-      })
-
-      window.addEventListener(
-        'resize', this.onStopResize)
-
-      window.addEventListener(
-        'resize', this.onResize)
-
-    } catch (ex) {
-
-      return this.props.onError(ex)
-    }
   }
 
   /////////////////////////////////////////////////////////
@@ -722,41 +744,70 @@ class ViewerConfigurator extends BaseComponent {
           `${window.location.origin}/${lmvProxy}`,
           'derivativeV2')
 
-          const urn = modelInfo.urn
+          switch (this.state.dbModel.env) {
 
-          this.viewerDocument =
-            await this.loadDocument(urn)
+          case 'Local':
 
-          const query = modelInfo.query || [
-            { type: 'geometry', role: '3d' },
-            { type: 'geometry', role: '2d' }
-          ]
+            const localOptions = {
+              placementTransform: this.buildTransform(
+                modelInfo.transform)
+            }
+            viewer.loadModel(modelInfo.path, localOptions, (model) => {
 
-          const path = this.getViewablePath(
-            this.viewerDocument,
-            modelInfo.pathIndex || 0,
-            query)
+              model.name = modelInfo.displayName || modelInfo.name
+              model.dbModelId = this.state.dbModel._id
+              model.urn = modelInfo.urn
+              model.guid = this.guid()
 
-          const loadOptions = {
-            sharedPropertyDbPath:
-              this.viewerDocument.getPropertyDbPath(),
-            placementTransform: this.buildTransform(
-              modelInfo.transform)
-          }
+              viewer.activeModel = model
 
-          viewer.loadModel(path, loadOptions, (model) => {
-
-            model.name = modelInfo.displayName || modelInfo.name
-            model.dbModelId = this.state.dbModel._id
-            model.urn = modelInfo.urn
-            model.guid = this.guid()
-
-            viewer.activeModel = model
-
-            this.context.eventSvc.emit('model.loaded', {
-              model
+              this.context.eventSvc.emit('model.loaded', {
+                model
+              })
             })
-          })
+
+            break
+
+          default:
+
+            const urn = modelInfo.urn
+
+            this.viewerDocument =
+              await this.loadDocument(urn)
+
+            const query = modelInfo.query || [
+              { type: 'geometry', role: '3d' },
+              { type: 'geometry', role: '2d' }
+            ]
+
+            const path = this.getViewablePath(
+              this.viewerDocument,
+              modelInfo.pathIndex || 0,
+              query)
+
+            const loadOptions = {
+              sharedPropertyDbPath:
+                this.viewerDocument.getPropertyDbPath(),
+              placementTransform: this.buildTransform(
+                modelInfo.transform)
+            }
+
+            viewer.loadModel(path, loadOptions, (model) => {
+
+              model.name = modelInfo.displayName || modelInfo.name
+              model.dbModelId = this.state.dbModel._id
+              model.urn = modelInfo.urn
+              model.guid = this.guid()
+
+              viewer.activeModel = model
+
+              this.context.eventSvc.emit('model.loaded', {
+                model
+              })
+            })
+
+            
+        }
       }
 
     } catch(ex) {

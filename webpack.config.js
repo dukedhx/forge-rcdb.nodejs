@@ -109,9 +109,6 @@ module.exports = {
 
     new HtmlWebpackPlugin({
 
-      viewer3D: config.forge.viewer.viewer3D,
-      style: config.forge.viewer.style,
-
       template: path.resolve(
         __dirname,
         `./src/client/components/Views/layouts/${config.layouts.index}`),
@@ -175,7 +172,11 @@ module.exports = {
         use: [{
           loader: 'style-loader'
         }, {
-          loader: 'css-loader'
+          loader: 'css-loader',
+          options: {
+              modules: 'global',
+              importLoaders: 1,
+            }
         }, {
           loader: 'postcss-loader',
           options: {

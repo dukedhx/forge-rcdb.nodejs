@@ -63,6 +63,14 @@ class Markup3DExtension extends ExtensionBase {
   /////////////////////////////////////////////////////////////////
   load () {
 
+
+    console.log('Viewing.Extension.Markup3D loaded')
+
+    return true
+  }
+
+  onToolbarCreated(){
+
     this._control = ViewerToolkit.createButton(
       'toolbar-markup3D',
       'glyphicon glyphicon-check',
@@ -175,9 +183,6 @@ class Markup3DExtension extends ExtensionBase {
         entry.handler)
     })
 
-    console.log('Viewing.Extension.Markup3D loaded')
-
-    return true
   }
 
   /////////////////////////////////////////////////////////////////

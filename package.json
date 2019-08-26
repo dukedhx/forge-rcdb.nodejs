@@ -159,7 +159,7 @@
     "react-spinkit": "^3.0.0",
     "react-stars": "2.2.4",
     "react-table": "^6.10.0",
-    "reapop": "^2.0.1",
+    "reapop":"git+https://git@github.com/LouisBarranqueiro/reapop#master",
     "redbox-react": "^1.6.0",
     "redux": "^4.0.4",
     "redux-thunk": "^2.2.0",
