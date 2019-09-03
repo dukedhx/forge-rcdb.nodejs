@@ -221,9 +221,13 @@ class ViewerConfigurator extends BaseComponent {
         return resolve (ext)
       }
 
+      (forgeConfig.loadExtFromResources&&!options.forceImport?new Promise(res=>{const script = document.createElement('script')
+      script.onload = ()=>res()
+      script.src = '/Extensions/'+extension.id+'.js'
+      document.head.append(script)}):
       import(
         '../Extensions/Dynamic/' +
-        extension.id + '/index').then(() => {
+        extension.id + '/index')).then(() => {
 
         const extState = {
           [extension.id]: {}
@@ -516,7 +520,7 @@ class ViewerConfigurator extends BaseComponent {
 
         return viewer.loadDynamicExtension (
           extension.id,
-          Object.assign(extension.options, {serviceContext: this.context}))
+          Object.assign(extension.options||{}, {serviceContext: this.context}))
       })
 
     return Promise.all (extensionTasks)
@@ -806,7 +810,7 @@ class ViewerConfigurator extends BaseComponent {
               })
             })
 
-            
+
         }
       }
 

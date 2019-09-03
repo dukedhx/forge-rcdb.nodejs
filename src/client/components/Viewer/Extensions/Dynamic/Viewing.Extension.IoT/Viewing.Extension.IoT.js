@@ -572,5 +572,3 @@ class IoTGraphContainer extends React.Component {
 Autodesk.Viewing.theExtensionManager.registerExtension(
   IoTExtension.ExtensionId,
   IoTExtension)
-
-module.exports = 'Viewing.Extension.IoT'

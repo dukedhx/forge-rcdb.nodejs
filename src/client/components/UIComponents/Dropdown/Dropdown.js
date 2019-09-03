@@ -48,7 +48,7 @@ export default class Dropdown extends UIComponent {
       <div id="${this.dropdownId}" class="dropdown lmv-dropdown">
       <button id="${this.buttonId}" class="btn dropdown-toggle"
         type="button"
-        data-toggle="dropdown" disabled>
+        data-toggle="dropdown">
         <div class="label-container">
           <label id="${this.labelId}" class="label">${this.title}</label>
         </div>

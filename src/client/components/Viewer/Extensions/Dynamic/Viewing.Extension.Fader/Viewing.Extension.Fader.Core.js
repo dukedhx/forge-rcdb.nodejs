@@ -672,7 +672,8 @@ class FaderCoreExtension extends MultiModelExtensionBase {
   }
 }
 
-Autodesk.Viewing.theExtensionManager.registerExtension (
-  FaderExtension.ExtensionId, FaderExtension)
+Autodesk.Viewing.theExtensionManager.registerExtension(
+  FaderCoreExtension.ExtensionId,
+  FaderCoreExtension)
 
 export default {FaderCoreExtension}

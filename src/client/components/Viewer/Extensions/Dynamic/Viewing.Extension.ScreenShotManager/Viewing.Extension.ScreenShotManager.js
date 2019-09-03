@@ -295,7 +295,7 @@ class ScreenShotManagerExtension extends ExtensionBase {
             onChange={(e) => this.onInputChanged(e, 'width')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
             className="size-input"
-            html={state.width}/>
+            html={state.width+''}/>
 
           <Label text={'x Height (px):'}/>
 
@@ -303,7 +303,7 @@ class ScreenShotManagerExtension extends ExtensionBase {
             onChange={(e) => this.onInputChanged(e, 'height')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
             className="size-input"
-            html={state.height}/>
+            html={state.height+''}/>
 
         </div>
       </div>

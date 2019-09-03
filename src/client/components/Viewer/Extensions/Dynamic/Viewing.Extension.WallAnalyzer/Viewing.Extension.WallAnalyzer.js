@@ -242,7 +242,7 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
       `Processing Meshes `+
       `- Progress: ${progress.toFixed(2)}%`
 
-    this.options.notify.update(this.notification)
+    //this.options.notify.update(this.notification)
 
     this.react.setState({
       levels: state.levels
@@ -1054,5 +1054,3 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
 Autodesk.Viewing.theExtensionManager.registerExtension(
   WallAnalyzerExtension.ExtensionId,
   WallAnalyzerExtension)
-
-

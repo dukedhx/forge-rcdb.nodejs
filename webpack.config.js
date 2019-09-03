@@ -12,7 +12,6 @@ const path  = require( 'path')
 ///////////////////////////////////////////////////////////
 //process.traceDeprecation = true
 process.noDeprecation = true
-
 ///////////////////////////////////////////////////////////
 // Webpack config development
 //
@@ -91,11 +90,11 @@ module.exports = {
 
   plugins: [
 
-    new webpack.HotModuleReplacementPlugin(),
+    //new webpack.HotModuleReplacementPlugin(),
 
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('development'),
+        NODE_ENV: JSON.stringify(config.env),
         WEBPACK: true
       }
     }),

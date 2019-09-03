@@ -1,4 +1,4 @@
-import './smoothie'
+import  {SmoothieChart,TimeSeries} from './smoothie'
 import React from 'react'
 
 export default class IoTGraph extends React.Component {

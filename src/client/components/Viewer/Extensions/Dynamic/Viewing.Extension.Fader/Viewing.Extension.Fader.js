@@ -44,7 +44,7 @@ class FaderExtension extends MultiModelExtensionBase {
 
       this.react.pushRenderExtension(this)
 
-      this.viewer.loadExtension(FaderCoreExtension)
+      this.viewer.loadExtension('Viewing.Extension.Fader.Core')
 
       this.onEnableFader(true)
     })
@@ -195,7 +195,7 @@ class FaderExtension extends MultiModelExtensionBase {
 
       this.faderCore =
         await this.viewer.loadExtension(
-          FaderCoreExtension)
+          'Viewing.Extension.Fader.Core')
 
       if (this.reloadFader) {
 
@@ -233,7 +233,7 @@ class FaderExtension extends MultiModelExtensionBase {
       this.eventTool.deactivate()
 
       this.viewer.unloadExtension(
-        FaderCoreExtension)
+        'Viewing.Extension.Fader.Core')
 
       this.react.setState({
         fader: false
@@ -598,5 +598,3 @@ class FaderExtension extends MultiModelExtensionBase {
 Autodesk.Viewing.theExtensionManager.registerExtension(
   FaderExtension.ExtensionId,
   FaderExtension)
-
-export default {FaderExtension}

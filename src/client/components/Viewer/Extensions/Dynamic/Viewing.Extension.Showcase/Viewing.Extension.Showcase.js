@@ -129,7 +129,6 @@ class ShowcaseExtension extends MultiModelExtensionBase {
 
     nav.fitBounds(true, this.bounds)
 
-    this.viewer.setViewCube('front')
 
     nav.toPerspective()
 
@@ -150,7 +149,7 @@ class ShowcaseExtension extends MultiModelExtensionBase {
 
       const urn = this.options.containerURN
 
-      this.loadContainer(urn).then(() => {
+      this.loadContainer(this.options.containerURN, this.options.env).then(() => {
 
         this.configureNavigation()
       })
@@ -167,15 +166,11 @@ class ShowcaseExtension extends MultiModelExtensionBase {
   // Load container model
   //
   /////////////////////////////////////////////////////////
-  loadContainer (urn) {
+  loadContainer (urn,env) {
 
     return new Promise(async(resolve) => {
 
-      const doc = await this.options.loadDocument(urn)
-
-      const path = this.options.getViewablePath(doc)
-
-      this.viewer.loadModel(path, {}, (model) => {
+      this.viewer.loadModel(env == 'Local' ? urn : this.options.getViewablePath(await this.options.loadDocument(urn)), {}, (model) => {
 
         resolve (model)
       })

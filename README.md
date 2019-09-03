@@ -3,11 +3,13 @@
 
 This is Forge Responsive Connected Database: A responsive React-based web application that showcases the use of Autodesk Forge Viewer and Forge web services, working in a connected environment with integrated data from multiple databases.
 
-** If you are only interested in the extensions/plugins alone, see [library-javascript-viewer-extensions](https://github.com/Autodesk-Forge/library-javascript-viewer-extensions) **
+This sample uses Viewer v7, Babel v7, React v16, Redux v4, Bootstrap v3, jQuery v3, and Webpack v4, and serves as a reference sample for building Viewer apps with popular front end stacks like React/Bootstrap/Webpack etc. as well.
+
+** If you are only interested in the extensions/plugins alone or would like to run this sample w/o MongoDB, see [library-javascript-viewer-extensions](https://github.com/Autodesk-Forge/library-javascript-viewer-extensions) **
 
 ## Live Demo
 
-[https://maximo-poc.azurewebsites.net](https://maximo-poc.azurewebsites.net)
+[https://forge-rcdb.autodesk.io](https://forge-rcdb.autodesk.io)
 
 ## Prerequisites
 
@@ -23,7 +25,7 @@ To run these samples, you need your own Forge API credentials:
 
 ### Download/Clone the Project
 
-   * `git clone <ProjectURL> --single-branch --branch remastered`
+   * `git clone <ProjectURL> --single-branch`
 
 ### Environment Setup
 

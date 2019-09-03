@@ -151,10 +151,11 @@ class ConfigManagerExtension extends MultiModelExtensionBase {
   /////////////////////////////////////////////////////////
   async loadSequences () {
 
-    const sequences =
-      await this.api.getSequences({
-        sortByName: true
-      })
+    const results = await this.api.getSequences({
+      sortByName: true
+    })
+
+    const sequences = results.sequences || results
 
     const sequence = sequences.length ?
       sequences[0] : null
@@ -931,7 +932,7 @@ class ConfigManagerExtension extends MultiModelExtensionBase {
               data-placeholder={state.emptyStateNameCaption}
               onKeyDown={(e) => this.onKeyDown(e)}
               className="state-name-input"
-              html={state.newStateName}
+              html={state.newStateName+''}
               disabled={true}
             />
           }
@@ -943,7 +944,7 @@ class ConfigManagerExtension extends MultiModelExtensionBase {
               data-placeholder={state.emptyStateNameCaption}
               onKeyDown={(e) => this.onKeyDown(e)}
               className="state-name-input"
-              html={state.newStateName}
+              html={state.newStateName+''}
             />
           }
 

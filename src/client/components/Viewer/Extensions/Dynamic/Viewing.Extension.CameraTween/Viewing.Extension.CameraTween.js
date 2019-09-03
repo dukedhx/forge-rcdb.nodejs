@@ -143,7 +143,7 @@ class CameraTweenExtension extends MultiModelExtensionBase {
       targetTweenDuration: 2500,
         posTweenDuration: 2500,
         upTweenDuration: 2500,
-  
+
         targetTweenEasing: {
           id: Tween.Easing.Linear.None,
           name: 'Linear'
@@ -156,13 +156,13 @@ class CameraTweenExtension extends MultiModelExtensionBase {
           id: Tween.Easing.Linear.None,
           name: 'Linear'
         },
-  
+
         configManager: null,
         showLoader: true
-        
+
     }).then (async() => {
 
-      
+
 
       const configManagerReactOptions = {
         pushRenderExtension: () => {
@@ -182,7 +182,7 @@ class CameraTweenExtension extends MultiModelExtensionBase {
         // }
       }
 
-      const configManager = 
+      const configManager =
         await this.viewer.loadDynamicExtension(
           'Viewing.Extension.ConfigManager', {
           react: configManagerReactOptions,
@@ -198,11 +198,11 @@ class CameraTweenExtension extends MultiModelExtensionBase {
       await this.react.setState({
         showLoader: false,
         configManager
-      })  
+      })
 
       await this.react.pushRenderExtension(this)
     })
-  } 
+  }
 
   /////////////////////////////////////////////////////////
   //
@@ -522,7 +522,7 @@ class CameraTweenExtension extends MultiModelExtensionBase {
               onChange={(e) => this.onInputChanged(e, 'upTweenDuration')}
               onKeyDown={(e) => this.onKeyDownNumeric(e)}
               className="input-duration"
-              html={upTweenDuration}
+              html={upTweenDuration+''}
               data-placeholder="2500 ms"
             />
             { this.renderEasing('up')}
@@ -536,7 +536,7 @@ class CameraTweenExtension extends MultiModelExtensionBase {
               onChange={(e) => this.onInputChanged(e, 'posTweenDuration')}
               onKeyDown={(e) => this.onKeyDownNumeric(e)}
               className="input-duration"
-              html={posTweenDuration}
+              html={posTweenDuration+''}
               data-placeholder="2500 ms"
             />
             { this.renderEasing('pos')}
@@ -550,7 +550,7 @@ class CameraTweenExtension extends MultiModelExtensionBase {
               onChange={(e) => this.onInputChanged(e, 'targetTweenDuration')}
               onKeyDown={(e) => this.onKeyDownNumeric(e)}
               className="input-duration"
-              html={targetTweenDuration}
+              html={targetTweenDuration+''}
               data-placeholder="2500 ms"
             />
             { this.renderEasing('target')}
@@ -588,11 +588,3 @@ Autodesk.Viewing.theExtensionManager.registerExtension (
   CameraTweenExtension)
 
 export default 'Viewing.Extension.CameraTween'
-
-
-
-
-
-
-
-

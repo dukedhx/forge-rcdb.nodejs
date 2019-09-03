@@ -15,7 +15,7 @@ import Navbar from 'react-bootstrap/lib/Navbar'
 import Button from 'react-bootstrap/lib/Button'
 import Modal from 'react-bootstrap/lib/Modal'
 import Nav from 'react-bootstrap/lib/Nav'
-
+import {client as config} from 'c0nfig'
 
 class AppNavbar extends React.Component {
 
@@ -167,7 +167,7 @@ class AppNavbar extends React.Component {
           }
 
           {
-            appState.navbar.links.gallery &&
+          !config.flatfileMode && appState.navbar.links.gallery &&
 
             <Nav>
               <LinkContainer to='/gallery'>
@@ -182,9 +182,9 @@ class AppNavbar extends React.Component {
 
           <Nav pullRight>
 
-            {
+          {
 
-              appState.navbar.links.login &&
+           !config.flatfileMode && appState.navbar.links.login &&
 
               <NavItem eventKey={4} onClick={() => {this.login()}}>
                   {
@@ -202,7 +202,7 @@ class AppNavbar extends React.Component {
             }
 
             {
-              appState.navbar.links.settings &&
+              !config.flatfileMode && appState.navbar.links.settings &&
 
               <NavDropdown id="settings-dropdown" eventKey={5}
                 title={

@@ -8,11 +8,11 @@ coverage
 logs
 resources/img/optimized
 resources/libs/lmv
-#resources/db/*
-resources/models/*
+resources/models
 push-to-prod.sh
 nginx
 TMP
 env.sh
 config/sb
 resources/models/engine
+public

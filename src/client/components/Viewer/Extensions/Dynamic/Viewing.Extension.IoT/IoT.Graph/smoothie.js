@@ -74,7 +74,6 @@
  * v1.27: Fix bug introduced in v1.26 for non whole number devicePixelRatio values, by @zmbush
  */
 
-;(function(exports) {
 
   var Util = {
     extend: function() {
@@ -776,8 +775,4 @@
     return pad2(date.getHours()) + ':' + pad2(date.getMinutes()) + ':' + pad2(date.getSeconds());
   };
 
-  exports.TimeSeries = TimeSeries;
-  exports.SmoothieChart = SmoothieChart;
-
-})(typeof exports === 'undefined' ? this : exports);
-
+export {SmoothieChart, TimeSeries}
