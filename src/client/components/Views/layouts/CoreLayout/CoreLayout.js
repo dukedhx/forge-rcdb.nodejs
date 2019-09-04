@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator'
-import NotificationsSystem from 'reapop'
-import theme from 'reapop-theme-custom'
+//import NotificationsSystem from 'reapop'
+//import theme from 'reapop-theme-custom'
 import PropTypes from 'prop-types'
 import 'react-reflex/styles.css'
 import 'Dialogs/dialogs.scss'
@@ -37,11 +37,11 @@ class CoreLayout extends React.Component {
 
 
 
-    this.context.notifySvc.initialize ({
-      remove: this.props.removeNotifications,
-      update: this.props.updateNotification,
-      add: this.props.addNotification
-    })
+    // this.context.notifySvc.initialize ({
+    //   remove: this.props.removeNotifications,
+    //   update: this.props.updateNotification,
+    //   add: this.props.addNotification
+    // })
 
 
     this.context.socketSvc.on('extract.ready',
@@ -352,9 +352,6 @@ class CoreLayout extends React.Component {
 
     return (
       <div className='container'>
-        <div className='notifications'>
-          <NotificationsSystem theme={theme}/>
-        </div>
         <Header {...this.props} />
         <div className='core-layout__viewport'>
           {this.props.children}

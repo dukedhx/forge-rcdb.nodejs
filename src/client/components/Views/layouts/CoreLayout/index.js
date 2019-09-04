@@ -10,16 +10,16 @@ import {
   setUser,
 } from '../../../../store/app'
 
-import {
-  removeNotifications,
-  updateNotification,
-  addNotification
-  } from 'reapop'
+// import {
+//   removeNotifications,
+//   updateNotification,
+//   addNotification
+//   } from 'reapop'
 
 const mapDispatchToProps = {
-  removeNotifications,
-  updateNotification,
-  addNotification,
+  // removeNotifications,
+  // updateNotification,
+  // addNotification,
   layoutChange,
   saveAppState,
   themeChange,

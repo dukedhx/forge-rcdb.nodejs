@@ -38,12 +38,6 @@
         "name" : "V8",
         "path" : "https://sbhehe.github.io/sb233/v8/0.svf"
     },
-    "extraModels" : [
-        {
-            "name" : "Office",
-            "_id" : "59780eec17d671029c53420e"
-        }
-    ],
     "dynamicExtensions" : [
         {
             "id" : "Viewing.Extension.MetaProperties",
@@ -1168,12 +1162,6 @@
         "name" : "Urban Office",
         "role" : "3d"
     },
-    "extraModels" : [
-        {
-            "name" : "210 King Office",
-            "_id" : "596b2212fcc3fe4f843bb25a"
-        }
-    ],
     "dynamicExtensions" : [
         {
             "id" : "Viewing.Extension.ExtensionManager",
@@ -4457,12 +4445,6 @@
         "type" : "flexLayoutLeft",
         "rightFlex" : 0.5
     },
-    "extraModels" : [
-        {
-            "name" : "2 Legged",
-            "_id" : "5a2b31ee58144b89730d6d5a"
-        }
-    ],
     "dynamicExtensions" : [
         {
             "id" : "Viewing.Extension.ARToolkitController",
@@ -4486,12 +4468,6 @@
         "type" : "flexLayoutRight",
         "rightFlex" : 0.35
     },
-    "extraModels" : [
-        {
-            "name" : "Urban Office",
-            "_id" : "5a7865b17c56bc7657f40f7b"
-        }
-    ],
     "model" : {
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS8yMTAlMjBLaW5nJTIwLSUyMDIwMTUucnZ0",
         "name" : "210 King Office",
@@ -4648,20 +4624,6 @@
         "name" : "Car Seat",
         "role" : "3d"
     },
-    "extraModels" : [
-        {
-            "name" : "V8 Engine",
-            "_id" : "596b1f32fcc3fe4f843bb259"
-        },
-        {
-            "name" : "Front Loader",
-            "_id" : "596b1f32fcc3fe4f843bb259"
-        },
-        {
-            "name" : "Responsive Pie",
-            "_id" : "5a406e9a2471522a519497c7"
-        }
-    ],
     "dynamicExtensions" : [
         {
             "id" : "Viewing.Extension.ExtensionManager",
@@ -4732,12 +4694,6 @@
         "name" : "Basic",
         "role" : "3d"
     },
-    "extraModels" : [
-        {
-            "name" : "LHC",
-            "_id" : "595619736c4671473718be92"
-        }
-    ],
     "dynamicExtensions" : [
         {
             "id" : "Viewing.Extension.Particle",
@@ -4827,12 +4783,6 @@
         "name" : "Urban Office",
         "role" : "3d"
     },
-    "extraModels" : [
-        {
-            "name" : "210 King Office",
-            "_id" : "592b4cec6c16372485ed6da8"
-        }
-    ],
     "dynamicExtensions" : [
         {
             "id" : "Viewing.Extension.WallAnalyzer"
@@ -10694,12 +10644,6 @@
         "name" : "Cubes Wall",
         "role" : "3d"
     },
-    "extraModels" : [
-        {
-            "name" : "Table",
-            "_id" : "596cf0155d811084e4beed7e"
-        }
-    ],
     "dynamicExtensions" : [
         {
             "id" : "Viewing.Extension.Physics.RigidBody",
@@ -20433,12 +20377,6 @@
         "displayName" : "Office",
         "role" : "3d"
     },
-    "extraModels" : [
-        {
-            "_id" : "59c409ba7590c742c785b292",
-            "name" : "Native Extensions"
-        }
-    ],
     "dynamicExtensions" : [
         {
             "id" : "Viewing.Extension.ExtensionManager",
