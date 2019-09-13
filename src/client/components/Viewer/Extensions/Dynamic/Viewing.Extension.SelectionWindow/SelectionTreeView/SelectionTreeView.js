@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
 // Written by Philippe Leefsma 2016 - ADN/Developer Technical Services
 //
@@ -14,7 +14,7 @@
 // MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
 // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 // UNINTERRUPTED OR ERROR FREE.
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 import SelectionTreeDelegate from './SelectionTreeDelegate'
 import { TreeView } from 'TreeView'
 import ReactDOM from 'react-dom'
@@ -22,50 +22,42 @@ import './SelectionTreeView.scss'
 import React from 'react'
 
 export default class SelectionTreeView extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.delegate = new SelectionTreeDelegate()
 
     this.delegate.on('node.dblClick', (node) => {
-
       if (props.onNodeDblClicked) {
-
         props.onNodeDblClicked(node)
       }
     })
 
     this.delegate.on('node.click', (node) => {
-
       if (props.onNodeClicked) {
-
         props.onNodeClicked(node)
       }
     })
 
     this.delegate.on('node.destroy', (node) => {
-
       this.tree.destroyNode(node.id)
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   loadTree (selection) {
-
     const rootNode =
       this.delegate.createRootNode(
         selection)
 
-    this.tree = new TreeView (
+    this.tree = new TreeView(
       this.delegate, rootNode, this.treeContainer, {
         excludeRoot: false
       })
@@ -73,12 +65,11 @@ export default class SelectionTreeView extends React.Component {
     rootNode.expand()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentDidMount () {
-
     this.loadTree(this.props.selection)
 
     this.guid = this.props.selection
@@ -86,18 +77,16 @@ export default class SelectionTreeView extends React.Component {
       : null
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillReceiveProps (props) {
-
     const newGuid = props.selection
       ? props.selection.guid
       : null
 
     if (newGuid !== this.guid) {
-
       this.delegate.destroy()
 
       this.tree.destroy()
@@ -109,12 +98,11 @@ export default class SelectionTreeView extends React.Component {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillUnmount () {
-
     this.delegate.destroy()
 
     this.delegate.off()
@@ -122,15 +110,15 @@ export default class SelectionTreeView extends React.Component {
     this.tree.destroy()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
+  /// //////////////////////////////////////////////////////
+  render () {
     return (
-      <div ref={(div) => this.treeContainer = div}
-        className="selection-tree"
+      <div
+        ref={(div) => this.treeContainer = div}
+        className='selection-tree'
       />
     )
   }

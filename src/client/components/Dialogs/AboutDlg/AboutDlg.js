@@ -4,66 +4,63 @@ import React from 'react'
 import './AboutDlg.scss'
 
 export default class AboutDlg extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  constructor() {
-
+  /// //////////////////////////////////////////////////////
+  constructor () {
     super()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  componentDidMount() {
-
+  /// //////////////////////////////////////////////////////
+  componentDidMount () {
     this.forgeSvc = this.context.forgeSvc
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   close () {
-
     this.props.close()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
+  /// //////////////////////////////////////////////////////
+  render () {
     const clientId = this.forgeSvc
       ? this.forgeSvc.clientId
       : ''
 
     return (
       <div>
-        <Modal className="dialog about"
-          contentLabel=""
+        <Modal
+          className='dialog about'
+          contentLabel=''
           isOpen={this.props.open}
-          onRequestClose={() => {this.close()}}>
+          onRequestClose={() => { this.close() }}
+        >
 
-          <div className="title">
-            <img/>
+          <div className='title'>
+            <img />
             <b>About Forge RCDB ...</b>
           </div>
 
-          <div className="content ">
-             <div>
+          <div className='content '>
+            <div>
                Forge / Responsive / Connected / Database
-               <br/>
+              <br />
                Source on github:
-               <br/>
-               <a href="https://github.com/Autodesk-Forge/forge-rcdb.nodejs" target="_blank">
+              <br />
+              <a href='https://github.com/Autodesk-Forge/forge-rcdb.nodejs' target='_blank'>
                Forge RCDB
-               </a>
-             </div>
+              </a>
+            </div>
           </div>
 
         </Modal>

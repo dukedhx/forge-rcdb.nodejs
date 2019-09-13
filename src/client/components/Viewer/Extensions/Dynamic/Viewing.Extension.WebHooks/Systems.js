@@ -57,19 +57,9 @@ const Systems = [
         desc: 'When a folder is copied to another project or folder.',
         name: 'Folder Copied',
         id: 'dm.folder.copied'
-      },
+      }
     ]
   }
 ]
 
-
 export default Systems
-
-
-
-
-
-
-
-
-

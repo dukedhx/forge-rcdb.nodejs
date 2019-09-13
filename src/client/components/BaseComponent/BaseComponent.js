@@ -1,9 +1,8 @@
 import React from 'react'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 
 class BaseComponent extends React.Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 

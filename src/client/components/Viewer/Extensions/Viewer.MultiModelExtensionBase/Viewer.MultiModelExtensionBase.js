@@ -1,33 +1,31 @@
 import EventsEmitter from 'EventsEmitter'
 
 export default class MultiModelExtensionBase extends
-  EventsEmitter.Composer (Autodesk.Viewing.Extension) {
-
-  /////////////////////////////////////////////////////////
+  EventsEmitter.Composer(Autodesk.Viewing.Extension) {
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options = {}, defaultOptions = {}) {
-
-    super (viewer)
+    super(viewer)
     // bindings
     Object.assign(this, options.serviceContext)
 
     this.onModelCompletedLoad = this.onModelCompletedLoad.bind(this)
-    this.onObjectTreeCreated  = this.onObjectTreeCreated.bind(this)
-    this.onModelRootLoaded    = this.onModelRootLoaded.bind(this)
-    this.onExtensionLoaded    = this.onExtensionLoaded.bind(this)
-    this.onModelActivated     = this.onModelActivated.bind(this)
-    this.onGeometryLoaded     = this.onGeometryLoaded.bind(this)
-    this.onToolbarCreated     = this.onToolbarCreated.bind(this)
-    this.onModelBeginLoad     = this.onModelBeginLoad.bind(this)
-    this.onModelUnloaded      = this.onModelUnloaded.bind(this)
-    this.onSelection          = this.onSelection.bind(this)
+    this.onObjectTreeCreated = this.onObjectTreeCreated.bind(this)
+    this.onModelRootLoaded = this.onModelRootLoaded.bind(this)
+    this.onExtensionLoaded = this.onExtensionLoaded.bind(this)
+    this.onModelActivated = this.onModelActivated.bind(this)
+    this.onGeometryLoaded = this.onGeometryLoaded.bind(this)
+    this.onToolbarCreated = this.onToolbarCreated.bind(this)
+    this.onModelBeginLoad = this.onModelBeginLoad.bind(this)
+    this.onModelUnloaded = this.onModelUnloaded.bind(this)
+    this.onSelection = this.onSelection.bind(this)
 
-    this.__onModelRootLoaded  = this.__onModelRootLoaded.bind(this)
-    this.__onModelActivated   = this.__onModelActivated.bind(this)
-    this.__onModelUnloaded    = this.__onModelUnloaded.bind(this)
-    this.__onModelLoaded      = this.__onModelLoaded.bind(this)
+    this.__onModelRootLoaded = this.__onModelRootLoaded.bind(this)
+    this.__onModelActivated = this.__onModelActivated.bind(this)
+    this.__onModelUnloaded = this.__onModelUnloaded.bind(this)
+    this.__onModelLoaded = this.__onModelLoaded.bind(this)
 
     this.defaultOptions = defaultOptions
 
@@ -42,47 +40,41 @@ export default class MultiModelExtensionBase extends
     const models = viewer.impl.modelQueue().getModels()
 
     this.models = models.map((model) => {
-
       model.guid = model.guid || this.guid()
 
       return model
     })
 
-    this.initializeEvents ()
+    this.initializeEvents()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.MultiModelExtensionBase'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     this.viewerEvents.forEach((event) => {
-
       this.viewer.removeEventListener(
         event.id, this[event.handler])
     })
 
     if (this.eventSink) {
-
       this.eventSink.off('model.activated',
         this.__onModelActivated)
 
@@ -98,13 +90,12 @@ export default class MultiModelExtensionBase extends
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Reload callback, in case the extension is re-loaded
   // more than once
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   reload (options = {}) {
-
     this.options = Object.assign({},
       this.defaultOptions,
       this.options,
@@ -113,156 +104,148 @@ export default class MultiModelExtensionBase extends
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Invoked when extension gets loaded
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onExtensionLoaded (event) {
 
-    //console.log('MultiModelExtensionBase.onExtensionLoaded')
+    // console.log('MultiModelExtensionBase.onExtensionLoaded')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Invoked when the model starts to load
   // The geometry and instanceTree may not be available
   // at this time
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelBeginLoad (event) {
 
-    //console.log('MultiModelExtensionBase.onModelBeginLoad')
+    // console.log('MultiModelExtensionBase.onModelBeginLoad')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Triggered by ModelLoader extension when a model is
   // selected in a multi-model environment
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelActivated (event) {
 
-    //console.log('MultiModelExtensionBase.onModelActivated')
+    // console.log('MultiModelExtensionBase.onModelActivated')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Invoked when model root node has been loaded
   // Extensions that do require access to full
   // model geometry or component tree may use that
   // event to know a new model has been loaded
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   __onModelRootLoaded (event) {
-
     this.viewerEvent([
 
       Autodesk.Viewing.OBJECT_TREE_CREATED_EVENT,
       Autodesk.Viewing.GEOMETRY_LOADED_EVENT
 
     ]).then((args) => {
-
-      this.onModelCompletedLoad (args[0])
+      this.onModelCompletedLoad(args[0])
     })
   }
 
   onModelRootLoaded (event) {
 
-    //console.log('MultiModelExtensionBase.onModelRootLoaded')
+    // console.log('MultiModelExtensionBase.onModelRootLoaded')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Invoked when object tree is fully loaded.
   // Extensions that are interested in using the
   // instanceTree need to use that event to make sure
   // it is available
   //
-  ////////////////////////////////////////////////////////
+  /// /////////////////////////////////////////////////////
   onObjectTreeCreated (event) {
 
-    //console.log('MultiModelExtensionBase.onObjectTreeCreated')
+    // console.log('MultiModelExtensionBase.onObjectTreeCreated')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Invoked when geometry is fully loaded
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onGeometryLoaded (event) {
 
-    //console.log('MultiModelExtensionBase.onGeometryLoaded')
+    // console.log('MultiModelExtensionBase.onGeometryLoaded')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Invoked after onObjectTreeCreated and onGeometryLoaded
   // have both been fired
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelCompletedLoad (event) {
 
-    //console.log('MultiModelExtensionBase.onModelCompletedLoad')
+    // console.log('MultiModelExtensionBase.onModelCompletedLoad')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Invoked once the viewer toolbar has been created
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onToolbarCreated (event) {
 
-    //console.log('MultiModelExtensionBase.onToolbarCreated')
+    // console.log('MultiModelExtensionBase.onToolbarCreated')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Triggered by ModelLoader extension when a model has
   // been unloaded as per user request
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelUnloaded (event) {
 
-    //console.log('MultiModelExtensionBase.onModelUnloaded')
+    // console.log('MultiModelExtensionBase.onModelUnloaded')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Invoked when a model is being selected
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSelection (event) {
 
-    //console.log('MultiModelExtensionBase.onSelection')
+    // console.log('MultiModelExtensionBase.onSelection')
   }
 
-  /////////////////////////////////////////////////////////
-  //Sink Events
+  /// //////////////////////////////////////////////////////
+  // Sink Events
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   __onModelLoaded (event) {
-
     this.models = [...this.models, event.model]
 
-    this.onModelBeginLoad (event)
+    this.onModelBeginLoad(event)
   }
 
   __onModelActivated (event) {
-
-    this.onModelActivated (event)
+    this.onModelActivated(event)
   }
 
   __onModelUnloaded (event) {
-
     this.models = this.models.filter((model) => {
-
       return model.guid !== event.model.guid
     })
 
     this.onModelUnloaded(event)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Initialize all events for the extension
   // Each event will invoke a predefined handler
   // implemented or not by the derived extension
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   initializeEvents () {
-
     if (this.options.eventSink) {
-
       // event object passed in options
       this.eventSink = this.options.eventSink
 
@@ -308,20 +291,17 @@ export default class MultiModelExtensionBase extends
     ]
 
     this.viewerEvents.forEach((event) => {
-
       this.viewerEvent(event.id, this[event.handler])
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Async viewer event
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   viewerEvent (eventId, handler) {
-
     if (handler) {
-
-      this.viewer.addEventListener (eventId, handler)
+      this.viewer.addEventListener(eventId, handler)
       return
     }
 
@@ -329,15 +309,15 @@ export default class MultiModelExtensionBase extends
       ? eventId : [eventId]
 
     const eventTasks = eventIdArray.map((id) => {
-      return new Promise ((resolve) => {
+      return new Promise((resolve) => {
         const __handler = (args) => {
-          this.viewer.removeEventListener (id, __handler)
-          resolve (args)
+          this.viewer.removeEventListener(id, __handler)
+          resolve(args)
         }
-        this.viewer.addEventListener (id, __handler)
+        this.viewer.addEventListener(id, __handler)
       })
     })
 
-    return Promise.all (eventTasks)
+    return Promise.all(eventTasks)
   }
 }

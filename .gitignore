@@ -16,3 +16,5 @@ env.sh
 config/sb
 resources/models/engine
 public
+data
+routes

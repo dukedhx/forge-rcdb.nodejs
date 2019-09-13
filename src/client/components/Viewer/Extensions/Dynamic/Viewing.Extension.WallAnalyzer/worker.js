@@ -2,28 +2,24 @@
 import EdgesGeometry from './EdgesGeometry'
 import sortBy from 'lodash/sortBy'
 import ThreeBSP from './threeCSG'
-import THREELib from "three-js"
+import THREELib from 'three-js'
 
 const THREE = THREELib()
 
 THREE.EdgesGeometry = EdgesGeometry
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 function getModelInfo () {
-
   return new Promise((resolve) => {
-
     const msgHandler = (event) => {
-
       if (event.data.msgId === 'MSG_ID_MODEL_INFO') {
-
         self.removeEventListener(
           'message', msgHandler)
 
-        resolve (event.data)
+        resolve(event.data)
       }
     }
 
@@ -31,34 +27,28 @@ function getModelInfo () {
   })
 }
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 function getComponents (category) {
-
   return new Promise((resolve) => {
-
     const meshes = []
 
     const msgHandler = (event) => {
-
       if (event.data.msgId === 'MSG_ID_COMPONENT') {
-
         const data = event.data
 
         if (data.category === category) {
-
-          const mesh = buildComponentMesh (data)
+          const mesh = buildComponentMesh(data)
 
           meshes.push(mesh)
 
           if (meshes.length === data.count) {
-
             self.removeEventListener(
               'message', msgHandler)
 
-            resolve (meshes)
+            resolve(meshes)
           }
         }
       }
@@ -68,29 +58,26 @@ function getComponents (category) {
   })
 }
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 function buildComponentMesh (data) {
-
   const vertexArray = []
 
-  for (let idx=0; idx < data.nbMeshes; ++idx) {
-
+  for (let idx = 0; idx < data.nbMeshes; ++idx) {
     const meshData = {
       positions: data['positions' + idx],
       indices: data['indices' + idx],
       stride: data['stride' + idx]
     }
 
-    getMeshGeometry (meshData, vertexArray)
+    getMeshGeometry(meshData, vertexArray)
   }
 
   const geometry = new THREE.Geometry()
 
   for (var i = 0; i < vertexArray.length; i += 3) {
-
     geometry.vertices.push(vertexArray[i])
     geometry.vertices.push(vertexArray[i + 1])
     geometry.vertices.push(vertexArray[i + 2])
@@ -102,8 +89,7 @@ function buildComponentMesh (data) {
 
   const matrixWorld = new THREE.Matrix4()
 
-  if(data.matrixWorld) {
-
+  if (data.matrixWorld) {
     matrixWorld.fromArray(data.matrixWorld)
   }
 
@@ -120,26 +106,24 @@ function buildComponentMesh (data) {
   return mesh
 }
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 function getMeshGeometry (data, vertexArray) {
-
   const offsets = [{
     count: data.indices.length,
     index: 0,
-    start: 0}
+    start: 0
+  }
   ]
 
   for (var oi = 0, ol = offsets.length; oi < ol; ++oi) {
-
     var start = offsets[oi].start
     var count = offsets[oi].count
     var index = offsets[oi].index
 
     for (var i = start, il = start + count; i < il; i += 3) {
-
       const a = index + data.indices[i]
       const b = index + data.indices[i + 1]
       const c = index + data.indices[i + 2]
@@ -159,12 +143,11 @@ function getMeshGeometry (data, vertexArray) {
   }
 }
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 function postWallMesh (mesh, opts) {
-
   const geometry = mesh.geometry
 
   const msg = Object.assign({}, {
@@ -180,12 +163,11 @@ function postWallMesh (mesh, opts) {
   self.postMessage(msg)
 }
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 function createBoundingMesh (bbox) {
-
   const geometry = new THREE.BoxGeometry(
     bbox.max.x - bbox.min.x,
     bbox.max.y - bbox.min.y,
@@ -203,12 +185,11 @@ function createBoundingMesh (bbox) {
   return mesh
 }
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 function getHardEdges (mesh, matrix = null) {
-
   const edgesGeom = new THREE.EdgesGeometry(mesh.geometry)
 
   const positions = edgesGeom.attributes.position
@@ -218,9 +199,8 @@ function getHardEdges (mesh, matrix = null) {
   const edges = []
 
   for (let idx = 0;
-       idx < positions.length;
-       idx += (2 * positions.itemSize)) {
-
+    idx < positions.length;
+    idx += (2 * positions.itemSize)) {
     const start = new THREE.Vector3(
       positions.array[idx],
       positions.array[idx + 1],
@@ -244,31 +224,26 @@ function getHardEdges (mesh, matrix = null) {
   return edges
 }
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 function mergeBoxes (boxes) {
-
   const mergedBoxes = []
 
   let height = -Number.MAX_VALUE
 
   for (let idx = 0; idx < boxes.length; ++idx) {
-
     const box = boxes[idx]
 
     const diff = box.max.z - height
 
     if (diff > 0.5) {
-
       height = box.max.z
 
       mergedBoxes.push(box)
-
     } else {
-
-      const lastBox = mergedBoxes[mergedBoxes.length-1]
+      const lastBox = mergedBoxes[mergedBoxes.length - 1]
 
       lastBox.max.x = Math.max(lastBox.max.x, box.max.x)
       lastBox.max.y = Math.max(lastBox.max.y, box.max.y)
@@ -283,12 +258,11 @@ function mergeBoxes (boxes) {
   return mergedBoxes
 }
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 async function workerMain () {
-
   const res = await Promise.all([
     getComponents('Floors'),
     getComponents('Walls'),
@@ -302,7 +276,6 @@ async function workerMain () {
   const modelBox = modelInfo.boundingBox
 
   const extBoxes = floorMeshes.map((mesh) => {
-
     const min = {
       x: modelBox.min.x,
       y: modelBox.min.y,
@@ -323,7 +296,6 @@ async function workerMain () {
   })
 
   const orderedExtBoxes = sortBy(extBoxes, (box) => {
-
     return box.min.z
   })
 
@@ -336,7 +308,7 @@ async function workerMain () {
       z: modelBox.max.z
     },
 
-    max:{
+    max: {
       x: modelBox.max.x,
       y: modelBox.max.y,
       z: modelBox.max.z
@@ -347,8 +319,7 @@ async function workerMain () {
 
   const mergedBoxes = mergeBoxes(orderedExtBoxes)
 
-  for (let idx = mergedBoxes.length-2; idx >= 0 ; --idx) {
-
+  for (let idx = mergedBoxes.length - 2; idx >= 0; --idx) {
     const levelBox = {
       max: mergedBoxes[idx + 1].min,
       min: mergedBoxes[idx].max
@@ -359,7 +330,6 @@ async function workerMain () {
     const levelBSP = new ThreeBSP(levelBoundingMesh)
 
     wallMeshes.forEach((wallMesh) => {
-
       const resultBSP = levelBSP.intersect(wallMesh.bsp)
 
       const mesh = resultBSP.toMesh()
@@ -367,10 +337,9 @@ async function workerMain () {
       const edges = getHardEdges(mesh)
 
       const filteredEdges = edges.filter((edge) => {
-
         return (
           (edge.start.z < levelBox.min.z + 0.1) &&
-          (edge.end.z   < levelBox.min.z + 0.1)
+          (edge.end.z < levelBox.min.z + 0.1)
         )
       })
 
@@ -380,8 +349,8 @@ async function workerMain () {
 
       mesh.dbId = wallMesh.dbId
 
-      postWallMesh (mesh, {
-        levelCount: mergedBoxes.length-1,
+      postWallMesh(mesh, {
+        levelCount: mergedBoxes.length - 1,
         wallCount: wallMeshes.length,
         level: idx,
         levelBox
@@ -392,8 +361,8 @@ async function workerMain () {
   self.close()
 }
 
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Run the worker
 //
-/////////////////////////////////////////////////////////
-workerMain ()
+/// //////////////////////////////////////////////////////
+workerMain()

@@ -1,21 +1,19 @@
-/////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////
 // TabManager
 // By Philippe Leefsma, April 2016
 //
-/////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////
 import UIComponent from 'UIComponent'
 import 'dragula/dist/dragula.min.css'
 import dragula from 'dragula'
 import './TabManager.scss'
 
 export default class TabManager extends UIComponent {
-
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   constructor (container, opts = {}) {
-
     super()
 
     this.tabsHeaderId = this.guid()
@@ -33,32 +31,28 @@ export default class TabManager extends UIComponent {
     $(container).append(html)
 
     if (opts.allowDrag) {
-
       this.drake = dragula(
         [$(`#${this.tabsHeaderId}`)[0]],
-        {removeOnSpill: false})
+        { removeOnSpill: false })
 
       var drakeEvents = [
         'drag', 'dragend', 'drop', 'cancel', 'remove'
       ]
 
       drakeEvents.forEach((event) => {
-
         this.drake.on(event, () => {
-
           this.emit('drake.' + event, arguments)
         })
       })
     }
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
-  addTab(tabInfo) {
-
-    this.nbTabs ++
+  /// ////////////////////////////////////////////////////////////////
+  addTab (tabInfo) {
+    this.nbTabs++
 
     var tabHeaderLinkId = this.guid()
     var tabHeaderId = this.guid()
@@ -79,11 +73,10 @@ export default class TabManager extends UIComponent {
 
     var nbTabs = this.nbTabs
 
-    $(`#${this.tabsHeaderId} > li`).each(function(idx){
-
+    $(`#${this.tabsHeaderId} > li`).each(function (idx) {
       $(this).css({
-        width: `calc(${99/nbTabs}% - 2px)`,
-        left: `calc(${idx * (99/nbTabs)}% + 2px)`
+        width: `calc(${99 / nbTabs}% - 2px)`,
+        left: `calc(${idx * (99 / nbTabs)}% + 2px)`
       })
     })
 
@@ -96,11 +89,9 @@ export default class TabManager extends UIComponent {
 
     $('#' + this.containerId).append(containerHtml)
 
-    if(tabInfo.active)
-      this.setActiveTab(tabId)
+    if (tabInfo.active) { this.setActiveTab(tabId) }
 
-    $('#' + tabHeaderLinkId).click((e)=>{
-
+    $('#' + tabHeaderLinkId).click((e) => {
       var id = $(e.target).attr('tabId')
 
       this.setActiveTab(id)
@@ -109,20 +100,17 @@ export default class TabManager extends UIComponent {
     return tabId
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
-  setActiveTab(tabId) {
-
+  /// ////////////////////////////////////////////////////////////////
+  setActiveTab (tabId) {
     var _this = this
 
-    $(`.c${this.class} .sbtab-link`).each((idx, element)=>{
-
+    $(`.c${this.class} .sbtab-link`).each((idx, element) => {
       var id = $(element).attr('tabId')
 
-      if(id != tabId) {
-
+      if (id != tabId) {
         $(element).removeClass('active')
         $('#' + id).css('display', 'none')
 
@@ -130,21 +118,18 @@ export default class TabManager extends UIComponent {
           id: id,
           name: $(element).text()
         })
-      }
-      else{
-
+      } else {
         $(element).addClass('active')
         $('#' + id).css('display', 'block')
       }
     })
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
-  clear() {
-
+  /// ////////////////////////////////////////////////////////////////
+  clear () {
     $(`#${this.tabsHeaderId} > li`).remove()
     $(`#${this.containerId} > div`).remove()
 

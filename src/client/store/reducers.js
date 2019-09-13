@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import { connectRouter } from 'connected-react-router'
-import {history} from 'BrowserContext'
-//default reducers
+import { history } from 'BrowserContext'
+// default reducers
 import locationReducer from './location'
 import appReducer from './app'
 

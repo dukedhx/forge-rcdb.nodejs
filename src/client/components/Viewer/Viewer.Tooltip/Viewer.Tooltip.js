@@ -4,13 +4,11 @@ import velocity from 'velocity-animate'
 import './Viewer.Tooltip.scss'
 
 export default class ViewerTooltip extends EventsEmitter {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, opts = {}) {
-
     super()
 
     this.onMouseEnter = this.onMouseEnter.bind(this)
@@ -45,12 +43,11 @@ export default class ViewerTooltip extends EventsEmitter {
     this.timeout = null
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createPointer (element) {
-
     const snap = Snap(element)
 
     const circle = snap.paper.circle(25, 25, 0)
@@ -66,14 +63,12 @@ export default class ViewerTooltip extends EventsEmitter {
     return circle
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   animatePointer (id) {
-
-    if(this.animateId === id) {
-
+    if (this.animateId === id) {
       this.pointer.attr({
         fillOpacity: 0.8,
         opacity: 1,
@@ -81,58 +76,51 @@ export default class ViewerTooltip extends EventsEmitter {
       })
 
       this.pointer.animate({
-          fillOpacity: 0.2,
-          opacity: 0.4,
-          r: 16
-        },
-        2000,
-        mina.easein, () => {
-
-          if (this.pointerVisible) {
-
-            this.animatePointer(id)
-          }
-        })
+        fillOpacity: 0.2,
+        opacity: 0.4,
+        r: 16
+      },
+      2000,
+      mina.easein, () => {
+        if (this.pointerVisible) {
+          this.animatePointer(id)
+        }
+      })
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setContent (html, selector) {
-
     this.tooltipSelector = selector
 
     $(this.viewer.container).append(html)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Tool names
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getNames () {
-
     return [this.name]
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Tool name
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getName () {
-
     return this.name
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Activate Tool
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   activate () {
-
-    if(!this.active || this.timeout) {
-
+    if (!this.active || this.timeout) {
       this.viewer.container.addEventListener(
         'mouseenter', this.onMouseEnter)
 
@@ -160,14 +148,12 @@ export default class ViewerTooltip extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Deactivate tool
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   deactivate (delay = 0) {
-
     if (this.active && !this.timeout) {
-
       this.viewer.container.removeEventListener(
         'mouseenter', this.onMouseEnter)
 
@@ -175,7 +161,6 @@ export default class ViewerTooltip extends EventsEmitter {
         'mouseleave', this.onMouseLeave)
 
       this.timeout = setTimeout(() => {
-
         if (this.viewer.toolController) {
           this.viewer.toolController.deactivateTool(
             this.getName())
@@ -187,7 +172,6 @@ export default class ViewerTooltip extends EventsEmitter {
         })
 
         this.active = false
-
       }, delay)
 
       this.pointerVisible = false
@@ -200,48 +184,44 @@ export default class ViewerTooltip extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onMouseEnter () {
-
     $(this.tooltipSelector).css({
       display: 'block'
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onMouseLeave () {
-
     $(this.tooltipSelector).css({
       display: 'none'
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   handleSingleClick (event, button) {
-
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   handleMouseMove (event) {
-
     const $offset = $(this.viewer.container).offset()
 
     $(this.tooltipSelector).css({
-      top  : event.clientY - $offset.top - 35 + 'px',
-      left : event.clientX - $offset.left + 'px'
+      top: event.clientY - $offset.top - 35 + 'px',
+      left: event.clientX - $offset.left + 'px'
     })
 
     const screenPoint = {
@@ -252,17 +232,15 @@ export default class ViewerTooltip extends EventsEmitter {
     const worldPoint = this.screenToWorld(screenPoint)
 
     if (worldPoint && this.active) {
-
       const offset = $(this.viewer.container).offset()
 
       this.$marker.css({
-        left: screenPoint.x - offset.left - this.$marker.width()/2,
-        top: screenPoint.y - offset.top - this.$marker.height()/2,
+        left: screenPoint.x - offset.left - this.$marker.width() / 2,
+        top: screenPoint.y - offset.top - this.$marker.height() / 2,
         display: 'block'
       })
 
       if (!this.pointerVisible) {
-
         this.pointerVisible = true
 
         this.animateId = this.guid()
@@ -270,9 +248,7 @@ export default class ViewerTooltip extends EventsEmitter {
         this.animatePointer(
           this.animateId)
       }
-
     } else {
-
       this.pointerVisible = false
 
       this.$marker.css({
@@ -287,28 +263,26 @@ export default class ViewerTooltip extends EventsEmitter {
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   screenToWorld (screenPoint) {
-
     var viewport = this.viewer.navigation.getScreenViewport()
 
     var n = {
       x: (screenPoint.x - viewport.left) / viewport.width,
-      y: (screenPoint.y - viewport.top ) / viewport.height
+      y: (screenPoint.y - viewport.top) / viewport.height
     }
 
     return this.viewer.utilities.getHitPoint(n.x, n.y)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   handleKeyDown (event, keyCode) {
-
     return false
   }
 }

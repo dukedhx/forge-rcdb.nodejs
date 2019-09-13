@@ -5,13 +5,11 @@ import './Viewing.Extension.Particle.css'
 import dat from 'dat-gui'
 
 export default class ParticlePanel extends ToolPanelBase {
-
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   constructor (extension, viewer, btnElement) {
-
     super(viewer.container, 'Particle Controls', {
       buttonElement: btnElement,
       closable: false
@@ -36,10 +34,9 @@ export default class ParticlePanel extends ToolPanelBase {
     this.maxParticleCtrl = folder.add(
       extension,
       'maxParticles', 0, 1000000).name(
-        'Max Particles').step(1)
+      'Max Particles').step(1)
 
     this.maxParticleCtrl.onFinishChange((value) => {
-
       this.emit('maxParticles.changed', value)
     })
 
@@ -49,7 +46,6 @@ export default class ParticlePanel extends ToolPanelBase {
       'Tool')
 
     this.toolCtrl.onFinishChange((value) => {
-
       this.emit('tool.changed', value)
     })
 
@@ -60,12 +56,11 @@ export default class ParticlePanel extends ToolPanelBase {
     }, 0)
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   htmlContent (id) {
-
     return `
        <div class="container">
             <div id="${id}-gui">
@@ -74,12 +69,11 @@ export default class ParticlePanel extends ToolPanelBase {
       `
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   loadObjectGUI (obj) {
-
     $('#' + this.container.id + '-obj-gui').remove()
 
     if (!obj || !obj.getSelectable()) {
@@ -101,7 +95,6 @@ export default class ParticlePanel extends ToolPanelBase {
       gui.domElement)
 
     switch (obj.getType()) {
-
       case 0:
 
         this.selectedObjectGUI = new GUIObjectAdapter(
@@ -129,22 +122,22 @@ export default class ParticlePanel extends ToolPanelBase {
 
         emitterFolder.add(
           this.selectedObjectGUI,
-          'emissionRate', 10, 10000).name('Emission Rate').
-          onChange(() => {
+          'emissionRate', 10, 10000).name('Emission Rate')
+          .onChange(() => {
             this.selectedObjectGUI.update()
           })
 
         emitterFolder.add(
           this.selectedObjectGUI,
-          'spread', 0.0, 6 * Math.PI / 180).name('Spread').
-          onChange(() => {
+          'spread', 0.0, 6 * Math.PI / 180).name('Spread')
+          .onChange(() => {
             this.selectedObjectGUI.update()
           })
 
         emitterFolder.add(
           this.selectedObjectGUI,
-          'velocity', 0.1, 10).name('Particles Velocity').
-          onChange(() => {
+          'velocity', 0.1, 10).name('Particles Velocity')
+          .onChange(() => {
             this.selectedObjectGUI.update()
           })
 
@@ -153,7 +146,6 @@ export default class ParticlePanel extends ToolPanelBase {
           'charge', -10, 10).name('Particles Charge')
 
         chargeCtrl.onChange((value) => {
-
           this.selectedObjectGUI.update()
 
           this.emit('objectModified', {
@@ -183,7 +175,6 @@ export default class ParticlePanel extends ToolPanelBase {
           'force', -100, 100).name('Force')
 
         forceCtrl.onChange((value) => {
-
           this.selectedObjectGUI.update()
 
           this.emit('objectModified', {
@@ -207,12 +198,11 @@ export default class ParticlePanel extends ToolPanelBase {
     this.setVisible(true)
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   loadToolGUI (tool) {
-
     $('#' + this.container.id + '-tool-gui').remove()
 
     var gui = new dat.GUI({
@@ -230,7 +220,6 @@ export default class ParticlePanel extends ToolPanelBase {
       gui.domElement)
 
     switch (tool.getName()) {
-
       case 'Viewing.Particle.Tool.Mesh':
 
         var meshFolder = gui.addFolder(
@@ -242,7 +231,6 @@ export default class ParticlePanel extends ToolPanelBase {
           'Shaders')
 
         this.shadersCtrl.onFinishChange((value) => {
-
           this.emit('shaders.changed', value)
         })
 
@@ -259,12 +247,11 @@ export default class ParticlePanel extends ToolPanelBase {
     this.setVisible(true)
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   setSelected (obj) {
-
     this.loadObjectGUI(obj)
   }
 }

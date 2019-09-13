@@ -2,9 +2,9 @@ import ConfiguratorView from './ConfiguratorView'
 import { connect } from 'react-redux'
 
 import {
-    setNavbarState,
-    setViewerEnv
-  } from '../../../store/app'
+  setNavbarState,
+  setViewerEnv
+} from '../../../store/app'
 
 const mapDispatchToProps = {
   setNavbarState,

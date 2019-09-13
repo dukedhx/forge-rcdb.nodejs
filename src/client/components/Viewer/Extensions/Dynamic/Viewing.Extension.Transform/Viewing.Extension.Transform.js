@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // Viewing.Extension.CSSTVExtension
 // by Philippe Leefsma, April 2016
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 import TranslateTool from './Viewing.Tool.Translate'
 import ExtensionBase from 'Viewer.ExtensionBase'
 import RotateTool from './Viewing.Tool.Rotate'
@@ -11,14 +11,12 @@ import Stopwatch from 'Stopwatch'
 import easing from 'easing-js'
 
 class TransformExtension extends ExtensionBase {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer, options = {}) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.translateTool = new TranslateTool(viewer)
 
@@ -27,20 +25,17 @@ class TransformExtension extends ExtensionBase {
     this.transformedFragIdMap = {}
 
     this.translateTool.on('selection', (selection) => {
-
       const translateSelection = selection
         ? Object.assign({}, selection, {
-            type: 'translate'
-          })
+          type: 'translate'
+        })
         : null
 
       this.emit('selection', translateSelection)
     })
 
     this.translateTool.on('translate', (data) => {
-
       data.fragIds.forEach((fragId) => {
-
         this.transformedFragIdMap[fragId] = true
       })
 
@@ -55,7 +50,6 @@ class TransformExtension extends ExtensionBase {
     })
 
     this.translateTool.on('deactivate', () => {
-
       this._txControl.container.classList.remove('active')
       this._comboCtrl.container.classList.remove('active')
 
@@ -63,20 +57,17 @@ class TransformExtension extends ExtensionBase {
     })
 
     this.rotateTool.on('selection', (selection) => {
-
       const rotateSelection = selection
         ? Object.assign({}, selection, {
-            type: 'rotate'
-          })
+          type: 'rotate'
+        })
         : null
 
       this.emit('selection', rotateSelection)
     })
 
     this.rotateTool.on('rotate', (data) => {
-
       data.fragIds.forEach((fragId) => {
-
         this.transformedFragIdMap[fragId] = true
       })
 
@@ -91,7 +82,6 @@ class TransformExtension extends ExtensionBase {
     })
 
     this.rotateTool.on('deactivate', () => {
-
       this._rxControl.container.classList.remove('active')
       this._comboCtrl.container.classList.remove('active')
 
@@ -99,42 +89,34 @@ class TransformExtension extends ExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   static get ExtensionId () {
-
     return 'Viewing.Extension.Transform'
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   load () {
-
-
-
     console.log('Viewing.Extension.Transform loaded')
 
     return true
   }
 
-  onToolbarCreated(){
+  onToolbarCreated () {
     this._txControl = ViewerToolkit.createButton(
       'toolbar-translate',
       'fa fa-arrows-alt',
       'Translate Tool', () => {
-
         if (this.translateTool.active) {
-
           this.translateTool.deactivate()
           this._txControl.container.classList.remove('active')
           this._comboCtrl.container.classList.remove('active')
-
         } else {
-
           this.translate()
         }
       })
@@ -143,15 +125,11 @@ class TransformExtension extends ExtensionBase {
       'toolbar-rotate',
       'fa fa-refresh',
       'Rotate Tool', () => {
-
         if (this.rotateTool.active) {
-
           this.rotateTool.deactivate()
           this._rxControl.container.classList.remove('active')
           this._comboCtrl.container.classList.remove('active')
-
         } else {
-
           this.rotate()
         }
       })
@@ -159,7 +137,6 @@ class TransformExtension extends ExtensionBase {
     this.parentControl = this._options.parentControl
 
     if (typeof this.parentControl === 'string') {
-
       var viewerToolbar = this._viewer.getToolbar(true)
 
       this.parentControl = viewerToolbar.getControl(
@@ -167,7 +144,6 @@ class TransformExtension extends ExtensionBase {
     }
 
     if (!this.parentControl && !this._options.hideControls) {
-
       var viewerToolbar = this._viewer.getToolbar(true)
 
       this.parentControl = new Autodesk.Viewing.UI.ControlGroup(
@@ -193,29 +169,23 @@ class TransformExtension extends ExtensionBase {
     var openCombo = this._comboCtrl.onClick
 
     this._comboCtrl.onClick = (e) => {
-
-      if(this._comboCtrl.container.classList.contains('active')) {
-
-        this.deactivate ()
-
+      if (this._comboCtrl.container.classList.contains('active')) {
+        this.deactivate()
       } else {
-
         openCombo()
       }
     }
 
-    if(!this._options.hideControls) {
-
+    if (!this._options.hideControls) {
       this.parentControl.addControl(this._comboCtrl)
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   unload () {
-
     this.parentControl.removeControl(
       this._comboCtrl)
 
@@ -226,12 +196,11 @@ class TransformExtension extends ExtensionBase {
     console.log('Viewing.Extension.Transform unloaded')
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   translate () {
-
     this.translateTool.activate()
     this._txControl.container.classList.add('active')
 
@@ -241,12 +210,11 @@ class TransformExtension extends ExtensionBase {
     this._comboCtrl.container.classList.add('active')
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   rotate () {
-
     this.rotateTool.activate()
     this._rxControl.container.classList.add('active')
 
@@ -256,12 +224,11 @@ class TransformExtension extends ExtensionBase {
     this._comboCtrl.container.classList.add('active')
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   deactivate () {
-
     this._txControl.container.classList.remove('active')
     this._rxControl.container.classList.remove('active')
 
@@ -271,38 +238,35 @@ class TransformExtension extends ExtensionBase {
     this.rotateTool.deactivate()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setFullTransform (fullTransform) {
-
     this.translateTool.setFullTransform(fullTransform)
 
     this.rotateTool.setFullTransform(fullTransform)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   pickPosition () {
-
     this.translateTool.onPick()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   clearSelection () {
-
     this.translateTool.clearSelection()
 
     this.rotateTool.clearSelection()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //  From viewer.getState:
   //  Allow extensions to inject their state data
@@ -311,9 +275,8 @@ class TransformExtension extends ExtensionBase {
   //    viewer.loadedExtensions[extensionName].getState(
   //      viewerState);
   //  }
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getState (viewerState) {
-
     this.currentExplodeScale =
       this.currentExplodeScale ||
       this._viewer.getExplodeScale()
@@ -322,8 +285,7 @@ class TransformExtension extends ExtensionBase {
 
     viewerState.transforms = {}
 
-    for (let fragId in this.transformedFragIdMap) {
-
+    for (const fragId in this.transformedFragIdMap) {
       const fragProxy = this._viewer.impl.getFragmentProxy(
         this._viewer.model,
         fragId)
@@ -337,7 +299,7 @@ class TransformExtension extends ExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //    From viewer.restoreState:
   //    Allow extensions to restore their data
@@ -346,30 +308,27 @@ class TransformExtension extends ExtensionBase {
   //      viewer.loadedExtensions[extensionName].restoreState(
   //        viewerState, immediate);
   //    }
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   restoreState (viewerState, immediate) {
-
     this.translateTool.clearSelection()
 
     this.rotateTool.clearSelection()
 
     if (viewerState.transforms) {
-
-      //this.restoreTransform(viewerState)
+      // this.restoreTransform(viewerState)
 
       const period = 1.8
 
       const easingFunc = (t) => {
-        //b: begging value, c: change in value, d: duration
+        // b: begging value, c: change in value, d: duration
         return easing.easeInOutExpo(t, 0, 1, period * 0.7)
       }
 
       this.animateTransform(
         viewerState, easingFunc, period).then(() => {
-
-          this.currentExplodeScale =
+        this.currentExplodeScale =
             viewerState.explodeScale
-        })
+      })
 
       this.transformedFragIdMap = Object.assign({},
         viewerState.transforms)
@@ -378,12 +337,11 @@ class TransformExtension extends ExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   restoreTransform (targetState) {
-
     const currentFragIds = Object.keys(
       this.transformedFragIdMap)
 
@@ -396,11 +354,10 @@ class TransformExtension extends ExtensionBase {
     ]
 
     fullFragIds.forEach((fragId) => {
-
-      const transform = targetState.transforms[ fragId ] || {
-          quaternion: { _x: 0, _y: 0, _z: 0, _w: 1 },
-          position: { x: 0, y: 0, z: 0 }
-        }
+      const transform = targetState.transforms[fragId] || {
+        quaternion: { _x: 0, _y: 0, _z: 0, _w: 1 },
+        position: { x: 0, y: 0, z: 0 }
+      }
 
       const fragProxy = viewer.impl.getFragmentProxy(
         this._viewer.model,
@@ -421,14 +378,12 @@ class TransformExtension extends ExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   animateTransform (targetState, easing, period = 2.0) {
-
-    return new Promise (async(resolve, reject) => {
-
+    return new Promise(async (resolve, reject) => {
       const viewer = this._viewer
 
       const currentFragIds = Object.keys(
@@ -443,7 +398,6 @@ class TransformExtension extends ExtensionBase {
       ]
 
       const fragProxyTasks = fullFragIds.map((fragId) => {
-
         const fragProxy = viewer.impl.getFragmentProxy(
           viewer.model,
           fragId)
@@ -451,9 +405,9 @@ class TransformExtension extends ExtensionBase {
         fragProxy.getAnimTransform()
 
         const targetTransform = targetState.transforms[fragId] || {
-            quaternion: { _x: 0, _y:0, _z:0, _w:1 },
-            position: { x: 0, y: 0, z: 0 }
-          }
+          quaternion: { _x: 0, _y: 0, _z: 0, _w: 1 },
+          position: { x: 0, y: 0, z: 0 }
+        }
 
         fragProxy.step = {
 
@@ -484,18 +438,16 @@ class TransformExtension extends ExtensionBase {
         fragProxy.targetTransform = targetTransform
 
         return fragProxy
-      });
+      })
 
       const fragProxies = await Promise.all(fragProxyTasks)
 
       // Create all fragment animation tasks
       const animationTasks = fragProxies.map((fragProxy) => {
-
         return {
 
           step: (dt) => {
-
-            //fragProxy.quaternion.slerp(
+            // fragProxy.quaternion.slerp(
             //  fragProxy.transform.quaternion,
             //  dt/tStep)
 
@@ -512,12 +464,11 @@ class TransformExtension extends ExtensionBase {
           },
 
           ease: (t) => {
-
-            //fragProxy.quaternion.slerp(
+            // fragProxy.quaternion.slerp(
             //  fragProxy.transform.quaternion,
             //  dt/tStep)
 
-            const eased = easing(t/period)
+            const eased = easing(t / period)
 
             const _targetQuat = fragProxy.targetTransform.quaternion
             const _initQuat = fragProxy.initialTransform.quaternion
@@ -541,10 +492,10 @@ class TransformExtension extends ExtensionBase {
             fragProxy.quaternion._z = initQuat.z
             fragProxy.quaternion._w = initQuat.w
 
-            //fragProxy.quaternion._x = eased * targetQuat._x + (1 - eased) * initQuat._x
-            //fragProxy.quaternion._y = eased * targetQuat._y + (1 - eased) * initQuat._y
-            //fragProxy.quaternion._z = eased * targetQuat._z + (1 - eased) * initQuat._z
-            //fragProxy.quaternion._w = eased * targetQuat._z + (1 - eased) * initQuat._z
+            // fragProxy.quaternion._x = eased * targetQuat._x + (1 - eased) * initQuat._x
+            // fragProxy.quaternion._y = eased * targetQuat._y + (1 - eased) * initQuat._y
+            // fragProxy.quaternion._z = eased * targetQuat._z + (1 - eased) * initQuat._z
+            // fragProxy.quaternion._w = eased * targetQuat._z + (1 - eased) * initQuat._z
 
             const targetPos = fragProxy.targetTransform.position
             const initPos = fragProxy.initialTransform.position
@@ -557,7 +508,6 @@ class TransformExtension extends ExtensionBase {
           },
 
           finalStep: () => {
-
             fragProxy.quaternion._x = fragProxy.targetTransform.quaternion._x
             fragProxy.quaternion._y = fragProxy.targetTransform.quaternion._y
             fragProxy.quaternion._z = fragProxy.targetTransform.quaternion._z
@@ -578,13 +528,11 @@ class TransformExtension extends ExtensionBase {
         targetState.explodeScale)
 
       if (targetScale != scale) {
-
         var scaleStep = (targetScale - scale) / period
 
         animationTasks.push({
 
           step: (dt) => {
-
             scale += scaleStep * dt
 
             ViewerToolkit.selectiveExplode(
@@ -594,8 +542,7 @@ class TransformExtension extends ExtensionBase {
           },
 
           ease: (t) => {
-
-            const eased = easing(t/period)
+            const eased = easing(t / period)
 
             const easedScale = scale +
               eased * (targetScale - scale)
@@ -607,7 +554,6 @@ class TransformExtension extends ExtensionBase {
           },
 
           finalStep: () => {
-
             ViewerToolkit.selectiveExplode(
               viewer,
               targetScale,
@@ -618,33 +564,26 @@ class TransformExtension extends ExtensionBase {
         })
       }
 
-
       let animationId = 0
       let elapsed = 0
 
       const stopwatch = new Stopwatch()
 
       const animateTransformStep = () => {
-
         const dt = stopwatch.getElapsedMs() * 0.001
 
         elapsed += dt
 
         if (elapsed < period) {
-
           animationTasks.forEach((task) => {
-
             task.ease(elapsed)
           })
 
           animationId = requestAnimationFrame(
             animateTransformStep)
-
         } else {
-
-          //end of animation
+          // end of animation
           animationTasks.forEach((task) => {
-
             task.finalStep()
           })
 

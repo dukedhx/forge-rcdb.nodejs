@@ -1,8 +1,8 @@
-///////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////
 // DataManagement Viewer Extension
 // By Philippe Leefsma, Autodesk Inc, July 2017
 //
-///////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import FolderSearchPanel from './FolderSearchPanel'
 import DerivativesAPI from './Derivatives.API'
@@ -10,7 +10,7 @@ import WidgetContainer from 'WidgetContainer'
 import { history as browserHistory } from 'BrowserContext'
 import { Tabs, Tab } from 'react-bootstrap'
 import DataTreeView from './DataTreeView'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import DMUploader from './DMUploader'
 import { ReactLoader } from 'Loader'
 import Measure from 'react-measure'
@@ -21,14 +21,12 @@ import Label from 'Label'
 import React from 'react'
 
 class DataManagementExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
-	// Class constructor
+  /// //////////////////////////////////////////////////////
+  // Class constructor
   //
-  /////////////////////////////////////////////////////////
-	constructor (viewer, options) {
-
-		super (viewer, options)
+  /// //////////////////////////////////////////////////////
+  constructor (viewer, options) {
+    super(viewer, options)
 
     this.onVersionSelected = this.onVersionSelected.bind(this)
     this.onItemNodeCreated = this.onItemNodeCreated.bind(this)
@@ -42,8 +40,6 @@ class DataManagementExtension extends MultiModelExtensionBase {
     this.onInitUpload = this.onInitUpload.bind(this)
     this.onDeleteItem = this.onDeleteItem.bind(this)
 
-
-
     this.derivativesAPI = new DerivativesAPI({
       apiUrl: '/api/derivatives/3legged'
     })
@@ -53,16 +49,14 @@ class DataManagementExtension extends MultiModelExtensionBase {
     })
 
     this.react = options.react
-	}
+  }
 
-	/////////////////////////////////////////////////////////
-	// Load callback
+  /// //////////////////////////////////////////////////////
+  // Load callback
   //
-  /////////////////////////////////////////////////////////
-	load () {
-
+  /// //////////////////////////////////////////////////////
+  load () {
     if (!this.viewer.model) {
-
       this.viewer.container.classList.add('empty')
     }
 
@@ -74,22 +68,17 @@ class DataManagementExtension extends MultiModelExtensionBase {
       tabsWidth: 0,
       hubs: null
 
-    }).then (async() => {
-
+    }).then(async () => {
       await this.react.pushRenderExtension(this)
 
       if (!this.options.appState.user) {
-
         try {
-
           const user = await this.forgeSvc.getUser()
 
           this.react.setState({
             user
           })
-
         } catch (ex) {
-
           return this.showLogin()
         }
       }
@@ -109,105 +98,91 @@ class DataManagementExtension extends MultiModelExtensionBase {
 
     console.log('Viewing.Extension.DataManagement loaded')
 
-		return true
-	}
+    return true
+  }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'data-management'
   }
 
-  /////////////////////////////////////////////////////////
-	// Extension Id
+  /// //////////////////////////////////////////////////////
+  // Extension Id
   //
-  /////////////////////////////////////////////////////////
-	static get ExtensionId () {
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
+    return 'Viewing.Extension.DataManagement'
+  }
 
-		return 'Viewing.Extension.DataManagement'
-	}
-
-  /////////////////////////////////////////////////////////
-	// Unload callback
+  /// //////////////////////////////////////////////////////
+  // Unload callback
   //
-  /////////////////////////////////////////////////////////
-	unload () {
-
+  /// //////////////////////////////////////////////////////
+  unload () {
     console.log('Viewing.Extension.DataManagement loaded')
 
     this.socketSvc.off(
       'dm.upload.complete',
       this.onUploadComplete)
 
-    super.unload ()
+    super.unload()
 
-		return true
-	}
+    return true
+  }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setNodeViewerUrn (node, urn) {
-
     try {
-
-      if (urn&&urn!='null') {
-
+      if (urn && urn != 'null') {
         const manifest =
           await this.derivativesAPI.getManifest(urn)
 
-        if (this.derivativesAPI.hasDerivative (
-            manifest, { type: 'geometry'})) {
-
+        if (this.derivativesAPI.hasDerivative(
+          manifest, { type: 'geometry' })) {
           node.setViewerUrn(urn)
         }
       }
-
     } catch (ex) {
-
       console.log(ex)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setNodeThumbnail (node, urn) {
-
     try {
-      if(urn&&urn!='null'){
-      const thumbnail =
+      if (urn && urn != 'null') {
+        const thumbnail =
         await this.derivativesAPI.getThumbnail(urn, {
-        size: 200, base64: true
-      })
+          size: 200, base64: true
+        })
 
-      const base64 = `data:image/png;base64,${thumbnail}`
+        const base64 = `data:image/png;base64,${thumbnail}`
 
-      node.setThumbnail(base64)
+        node.setThumbnail(base64)
 		  }
     } catch (ex) {
-
       console.log(ex)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onDeleteItem (node) {
-
     const onClose = (result) => {
-
       this.dialogSvc.off('dialog.close', onClose)
 
       if (result == 'OK') {
-
         this.dmAPI.deleteItem(
           node.projectId,
           node.itemId)
@@ -220,21 +195,20 @@ class DataManagementExtension extends MultiModelExtensionBase {
       className: 'item-delete-dlg',
       title: 'Delete Item ...',
       content:
-        <div>
+  <div>
           Are you sure you want to delete
-          <br/>
-          {node.name} ?
-        </div>,
+    <br />
+    {node.name} ?
+  </div>,
       open: true
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onItemNodeCreated (node) {
-
     node.showLoader(true)
 
     const versionsRes =
@@ -245,7 +219,6 @@ class DataManagementExtension extends MultiModelExtensionBase {
     const versions = versionsRes.data
 
     if (versions.length) {
-
       const version = versions[0]
 
       node.setActiveVersion(version)
@@ -257,8 +230,7 @@ class DataManagementExtension extends MultiModelExtensionBase {
       // displayName doesn't appear in item
 
       if (!node.name.length) {
-
-        const {displayName} = version.attributes
+        const { displayName } = version.attributes
 
         node.setName(displayName)
       }
@@ -277,12 +249,11 @@ class DataManagementExtension extends MultiModelExtensionBase {
     node.setLoaded(true)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onVersionNodeCreated (event) {
-
     event.node.showLoader(true)
 
     const versionRes =
@@ -299,8 +270,7 @@ class DataManagementExtension extends MultiModelExtensionBase {
     // displayName doesn't appear in item
 
     if (!event.name.length) {
-
-      const {displayName} = version.attributes
+      const { displayName } = version.attributes
 
       event.node.setName(displayName)
     }
@@ -314,82 +284,77 @@ class DataManagementExtension extends MultiModelExtensionBase {
     event.setLoaded(true)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onVersionSelected (node) {
 
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getVersionFileType (version) {
-
     if (version.attributes.fileType) {
-
       return version.attributes.fileType
-
     } else if (version.relationships.storage) {
-
       const fileId = version.relationships.storage.data.id
 
       return fileId.split('.').pop(-1)
-
     } else if (version.attributes.name) {
-
       return version.attributes.name.split('.').pop(-1)
     }
 
     return 'unknown'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-
-
-
+  /// //////////////////////////////////////////////////////
 
   async onLoadViewable (event) {
-
     try {
-
       event.node.showLoader(true)
 
-
-
-
-      const loader =  this.viewer.getExtension('Viewing.Extension.ModelLoader')
+      const loader = this.viewer.getExtension('Viewing.Extension.ModelLoader')
 
       const version = event.node.activeVersion
-			const options = {parentControl:'modelTools',forceMaterialProp:true, "materialCategories" : [
-					"Material"
-			],"properties" : [
-					"Date Created",
-					"Density",
-					"Description",
-					"Material",
-					"Part Number"
-			],modelUrn:event.viewerUrn,react:this.react,database:'rcdb'}
-			await Promise.all([this.viewer.loadDynamicExtension('Viewing.Extension.Database.Table', Object.assign(options, {
-														"apiUrl" : "/api/materials",
-														"flex" : 0.4})),
+      const options = {
+        parentControl: 'modelTools',
+        forceMaterialProp: true,
+        materialCategories: [
+          'Material'
+        ],
+        properties: [
+          'Date Created',
+          'Density',
+          'Description',
+          'Material',
+          'Part Number'
+        ],
+        modelUrn: event.viewerUrn,
+        react: this.react,
+        database: 'rcdb'
+      }
+      await Promise.all([this.viewer.loadDynamicExtension('Viewing.Extension.Database.Table', Object.assign(options, {
+        apiUrl: '/api/materials',
+        flex: 0.4
+      })),
 
-			this.viewer.loadDynamicExtension('Viewing.Extension.Database.CostBreakdown', options),
+      this.viewer.loadDynamicExtension('Viewing.Extension.Database.CostBreakdown', options),
 
-			this.viewer.loadDynamicExtension('Viewing.Extension.ViewerProperties', options),
-			this.viewer.loadDynamicExtension('Viewing.Extension.VisualReport', options),
-			this.viewer.loadDynamicExtension('Viewing.Extension.Markup3D', options),
-			this.viewer.loadDynamicExtension('Viewing.Extension.Transform', options)])
-			await loader.unloadModel(true)
+      this.viewer.loadDynamicExtension('Viewing.Extension.ViewerProperties', options),
+      this.viewer.loadDynamicExtension('Viewing.Extension.VisualReport', options),
+      this.viewer.loadDynamicExtension('Viewing.Extension.Markup3D', options),
+      this.viewer.loadDynamicExtension('Viewing.Extension.Transform', options)])
+      await loader.unloadModel(true)
       await loader.loadModel({
         fileType: this.getVersionFileType(version),
         name: event.name.split('.')[0],
-        _id : this.options.dbModel._id,
+        _id: this.options.dbModel._id,
         env: 'AutodeskProduction',
         database: 'configurator',
         model: {
@@ -397,29 +362,18 @@ class DataManagementExtension extends MultiModelExtensionBase {
           urn: event.viewerUrn
         }
       })
-
-
-
-
-
-
-
     } catch (ex) {
-
       console.log(ex)
-
     } finally {
-
       event.node.showLoader(false)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onInitUpload (data) {
-
     this.dialogSvc.setState({
       open: false
     })
@@ -445,17 +399,15 @@ class DataManagementExtension extends MultiModelExtensionBase {
     this.notifySvc.update(notification)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onUploadProgress (data) {
-
     const notification =
       this.notifySvc.getNotification(data.uploadId)
 
     if (!notification.forgeUpload) {
-
       const progress = data.percent * 0.5
 
       notification.message =
@@ -465,21 +417,19 @@ class DataManagementExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onUploadComplete (data) {
-
     this.emit('upload.complete', data)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onFolderSearch (data) {
-
     const panel = new FolderSearchPanel(data, {
       menuContainer: this.options.appContainer,
       derivativesAPI: this.derivativesAPI,
@@ -487,22 +437,18 @@ class DataManagementExtension extends MultiModelExtensionBase {
     })
 
     panel.on('panel.close', (panelId) => {
-
       this.react.popViewerPanel(panelId)
     })
 
     panel.on('version.created', (node) => {
-
       this.onVersionNodeCreated(node)
     })
 
     panel.on('item.created', (node) => {
-
       this.onItemNodeCreated(node)
     })
 
     panel.on('load.viewable', (node) => {
-
       this.onLoadViewable(node)
     })
 
@@ -514,14 +460,12 @@ class DataManagementExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onFolderUpload (data) {
-
     const onClose = (result) => {
-
       this.dialogSvc.off('dialog.close', onClose)
 
       if (result === 'OK') {
@@ -535,28 +479,26 @@ class DataManagementExtension extends MultiModelExtensionBase {
       className: 'folder-upload-dlg',
       title: 'Upload to Folder ...',
       content:
-        <DMUploader
-          onProgress={this.onUploadProgress}
-          onInitUpload={this.onInitUpload}
-          projectId={data.projectId}
-          folderId={data.folderId}
-          hubId={data.hubId}
-          nodeId={data.id}
-          api={this.dmAPI}
-        />,
+  <DMUploader
+    onProgress={this.onUploadProgress}
+    onInitUpload={this.onInitUpload}
+    projectId={data.projectId}
+    folderId={data.folderId}
+    hubId={data.hubId}
+    nodeId={data.id}
+    api={this.dmAPI}
+  />,
       showOK: false,
       open: true
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onCreateFolder (data) {
-
     const onClose = (result) => {
-
       this.dialogSvc.off('dialog.close', onClose)
 
       if (result === 'OK') {
@@ -570,49 +512,41 @@ class DataManagementExtension extends MultiModelExtensionBase {
       className: 'folder-create-dlg',
       title: 'Create Folder ...',
       content:
-        <div
-        />,
+  <div />,
       open: true
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setDocking (docked) {
-
     const id = DataManagementExtension.ExtensionId
 
     if (docked) {
-
       await this.react.popRenderExtension(id)
 
       this.react.pushViewerPanel(this, {
         height: 250,
         width: 350
       })
-
     } else {
-
       await this.react.popViewerPanel(id)
 
       this.react.pushRenderExtension(this)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   showLogin () {
-
     const onClose = (result) => {
-
       this.dialogSvc.off('dialog.close', onClose)
 
       if (result === 'OK') {
-
         this.forgeSvc.login()
         return
       }
@@ -627,64 +561,60 @@ class DataManagementExtension extends MultiModelExtensionBase {
       className: 'login-dlg',
       title: 'Forge Login required ...',
       content:
-        <div>
+  <div>
           Press OK to login ...
-        </div>,
+  </div>,
       open: true
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle (docked) {
-
     const spanClass = docked
       ? 'fa fa-chain-broken'
       : 'fa fa-chain'
 
     return (
-      <div className="title">
+      <div className='title'>
         <label>
           Data Management
         </label>
-        <div className="data-management-controls">
-          {/*<button onClick={() => this.setDocking(docked)}
+        <div className='data-management-controls'>
+          {/* <button onClick={() => this.setDocking(docked)}
             title="Toggle docking mode">
             <span className={spanClass}/>
-          </button>*/}
+          </button> */}
         </div>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTabSelected (tabKey) {
-
     this.react.setState({
       activeTabKey: tabKey
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderHubs (hubs) {
-
-    const {activeTabKey, tabsWidth} = this.react.getState()
+    const { activeTabKey, tabsWidth } = this.react.getState()
 
     const tabs = hubs.map((hub) => {
-
       const hubHeader = this.dmAPI.getHubHeader(hub)
 
       const style = {
         width:
-          `${Math.floor((tabsWidth-8)/hubs.length-15)}px`
+          `${Math.floor((tabsWidth - 8) / hubs.length - 15)}px`
       }
 
       const title =
@@ -693,10 +623,12 @@ class DataManagementExtension extends MultiModelExtensionBase {
         </label>
 
       return (
-        <Tab className="tab-container"
+        <Tab
+          className='tab-container'
           eventKey={hub.id}
           title={title}
-          key={hub.id}>
+          key={hub.id}
+        >
           {
             <DataTreeView
               onItemNodeCreated={this.onItemNodeCreated}
@@ -717,66 +649,69 @@ class DataManagementExtension extends MultiModelExtensionBase {
     })
 
     return (
-      <Measure bounds onResize={(rect) => {
-        this.react.setState({
-          tabsWidth: rect.bounds.width
-        })
-      }}>
+      <Measure
+        bounds onResize={(rect) => {
+          this.react.setState({
+            tabsWidth: rect.bounds.width
+          })
+        }}
+      >
         {
           ({ measureRef }) =>
-          <div ref={measureRef} className="tabs-container">
-            <Tabs activeKey={activeTabKey || hubs[0].id}
-              onSelect={this.onTabSelected}
-              className="tabs"
-              id="hubs-tab">
-              { tabs }
-            </Tabs>
-          </div>
+            <div ref={measureRef} className='tabs-container'>
+              <Tabs
+                activeKey={activeTabKey || hubs[0].id}
+                onSelect={this.onTabSelected}
+                className='tabs'
+                id='hubs-tab'
+              >
+                {tabs}
+              </Tabs>
+            </div>
         }
       </Measure>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderContent () {
-
-    const {hubs} = this.react.getState()
+    const { hubs } = this.react.getState()
 
     const showLoader = !hubs
 
     return (
-      <div className="content">
-        <ReactLoader show={showLoader}/>
-        { hubs && hubs.length && this.renderHubs(hubs) }
+      <div className='content'>
+        <ReactLoader show={showLoader} />
+        {hubs && hubs.length && this.renderHubs(hubs)}
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
-    const {showTitle} = this.react.getState()
+    const { showTitle } = this.react.getState()
 
     return (
       <WidgetContainer
         renderTitle={() => this.renderTitle(opts.docked)}
         className={this.className}
-        showTitle={showTitle}>
+        showTitle={showTitle}
+      >
 
-        { this.renderContent () }
+        {this.renderContent()}
 
       </WidgetContainer>
     )
   }
 }
 
-Autodesk.Viewing.theExtensionManager.registerExtension (
+Autodesk.Viewing.theExtensionManager.registerExtension(
   DataManagementExtension.ExtensionId,
   DataManagementExtension)
 

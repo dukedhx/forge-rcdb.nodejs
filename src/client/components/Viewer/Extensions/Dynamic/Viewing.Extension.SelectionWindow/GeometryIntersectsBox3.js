@@ -1,15 +1,14 @@
 
-let norm = new THREE.Vector3()
-let t1 = new THREE.Vector3()
-let t2 = new THREE.Vector3()
+const norm = new THREE.Vector3()
+const t1 = new THREE.Vector3()
+const t2 = new THREE.Vector3()
 let depth = 0
 
-function checkBoxSeparation(
+function checkBoxSeparation (
   phase,
   minX, minY, minZ,
   maxX, maxY, maxZ,
   norm, v1, v2, v3) {
-
   const minQ =
     norm.x * (norm.x > 0 ? minX : maxX) +
     norm.y * (norm.y > 0 ? minY : maxY) +
@@ -28,17 +27,13 @@ function checkBoxSeparation(
   const vMaxQ = Math.max(q1, q2, q3)
 
   if (phase === 0) {
-
     // just check the collision
     return (minQ > vMaxQ) || (maxQ < vMinQ)
-
   } else {
-
     // compute penetration depth
     const sq = 1 / norm.length()
 
     if (!isFinite(sq)) {
-
       return
     }
 
@@ -49,16 +44,14 @@ function checkBoxSeparation(
   }
 }
 
-function geometryIntersectsBox3_PassThree(
+function geometryIntersectsBox3_PassThree (
   phase,
   minX, minY, minZ,
   maxX, maxY, maxZ,
   axis, v1, v2, v3, t1) {
-
   t1.subVectors(v1, v2)
 
   switch (axis) {
-
     case 0:
       t1.set(0, -t1.z, t1.y)
       break
@@ -69,7 +62,7 @@ function geometryIntersectsBox3_PassThree(
 
     case 2:
       t1.set(-t1.y, t1.x, 0)
-      break;
+      break
   }
 
   return checkBoxSeparation(
@@ -80,12 +73,11 @@ function geometryIntersectsBox3_PassThree(
 }
 
 function geometryIntersectsBox3 (geometry, box) {
-
   // Tomas Akenine-Möller. 2005.
   // Fast 3D triangle-box overlap testing.
   // http://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/code/tribox_tam.pdf
 
-  const {faces, vertices} = geometry
+  const { faces, vertices } = geometry
 
   const minX = box.min.x
   const minY = box.min.y
@@ -98,7 +90,6 @@ function geometryIntersectsBox3 (geometry, box) {
   const results = []
 
   for (var fI = 0; fI < faces.length; ++fI) {
-
     const face = faces[fI]
 
     const v1 = vertices[face.a]
@@ -143,7 +134,6 @@ function geometryIntersectsBox3 (geometry, box) {
       geometryIntersectsBox3_PassThree(0, minX, minY, minZ, maxX, maxY, maxZ, 2, v1, v3, v2, t1) ||
       geometryIntersectsBox3_PassThree(0, minX, minY, minZ, maxX, maxY, maxZ, 2, v2, v3, v1, t1)
     ) {
-
       // never be intersecting
       continue
     }

@@ -4,14 +4,12 @@ import Toolkit from 'Viewer.Toolkit'
 import Dropdown from 'Dropdown'
 
 export default class LabelMarker extends GraphicMarker {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  constructor(parent, viewer, dbId, screenPoint, properties = null) {
-
-    super(viewer.container, {x: 100, y: 22})
+  /// //////////////////////////////////////////////////////////////
+  constructor (parent, viewer, dbId, screenPoint, properties = null) {
+    super(viewer.container, { x: 100, y: 22 })
 
     this.controlsId = this.guid()
 
@@ -59,16 +57,16 @@ export default class LabelMarker extends GraphicMarker {
 
     this.setScreenPoint(screenPoint)
 
-    this.onMouseMoveHandler = (event)=>
+    this.onMouseMoveHandler = (event) =>
       this.onMouseMove(event)
 
-    this.onMouseUpHandler = (event)=>
+    this.onMouseUpHandler = (event) =>
       this.onMouseUp(event)
 
-    this.onMouseDownHandler = (event)=>
+    this.onMouseDownHandler = (event) =>
       this.onMouseDown(event)
 
-    this.onDoubleClickHandler = (event)=>
+    this.onDoubleClickHandler = (event) =>
       this.onDoubleClick(event)
 
     $(`#${this.labelId}`)
@@ -98,20 +96,16 @@ export default class LabelMarker extends GraphicMarker {
     this.timeoutId = 0
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setVisible (show) {
-
     if (show) {
-
       clearTimeout(this.timeoutId)
       this.timeoutId = 0
       super.setVisible(true)
-
-    } else{
-
+    } else {
       clearTimeout(this.timeoutId)
       this.timeoutId = setTimeout(() => {
         super.setVisible(false)
@@ -119,12 +113,11 @@ export default class LabelMarker extends GraphicMarker {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   startDrag () {
-
     $(`#${this.svgId}`).css({
       cursor: 'move'
     })
@@ -146,12 +139,11 @@ export default class LabelMarker extends GraphicMarker {
     this.parent.emit('drag.start', this.parent)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   async endDrag () {
-
     this.parent.dragging = false
 
     $(`#${this.svgId}`).off(
@@ -174,12 +166,11 @@ export default class LabelMarker extends GraphicMarker {
       cursor: 'pointer'
     })
 
-    if(this.item) {
+    if (this.item) {
       return
     }
 
     if (LabelMarker.prototype.labelName) {
-
       var prop = await Toolkit.getProperty(
         this.viewer.model,
         this.dbId,
@@ -194,36 +185,31 @@ export default class LabelMarker extends GraphicMarker {
         value: prop.displayValue,
         name: prop.displayName
       }
-
     } else {
-
       this.showControls(true)
     }
 
     this.emit('created')
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  async createControls() {
-
+  /// //////////////////////////////////////////////////////////////
+  async createControls () {
     const properties = await Toolkit.getProperties(
       this.viewer.model,
       this.dbId,
       this.properties)
 
-    const sortedProperties = properties.sort((a, b)=>{
-
+    const sortedProperties = properties.sort((a, b) => {
       var nameA = a.displayName.toLowerCase()
       var nameB = b.displayName.toLowerCase()
 
       return nameA > nameB ? 1 : -1
     })
 
-    var menuItems = sortedProperties.map((prop)=>{
-
+    var menuItems = sortedProperties.map((prop) => {
       return {
         name: prop.displayName,
         value: prop.displayValue
@@ -242,7 +228,6 @@ export default class LabelMarker extends GraphicMarker {
     })
 
     this.dropdown.on('item.selected', (item) => {
-
       LabelMarker.prototype.labelName = item.name
 
       this.item = item
@@ -296,7 +281,6 @@ export default class LabelMarker extends GraphicMarker {
     const $target = $container.find('label[data-toggle="tooltip"]')
 
     if ($target.tooltip) {
-
       $target.tooltip({
         container: 'body',
         animated: 'fade',
@@ -304,13 +288,11 @@ export default class LabelMarker extends GraphicMarker {
       })
     }
 
-
     this.bindSwitch =
       new SwitchButton('#' + bindSwitchId,
         this.parent.bindToState)
 
-    this.bindSwitch.on('checked', (checked)=>{
-
+    this.bindSwitch.on('checked', (checked) => {
       this.parent.bindToState = checked
     })
 
@@ -318,21 +300,17 @@ export default class LabelMarker extends GraphicMarker {
       new SwitchButton('#' + occlusionSwitchId,
         this.parent.occlusion)
 
-    this.occlusionSwitch.on('checked', (checked)=>{
-
+    this.occlusionSwitch.on('checked', (checked) => {
       this.parent.occlusion = checked
     })
 
-    $('#' + btnRemoveId).click(()=>{
-
+    $('#' + btnRemoveId).click(() => {
       this.parent.remove()
     })
 
-    $('#' + btnExitId).click(()=>{
-
+    $('#' + btnExitId).click(() => {
       // ensure some default is set for next markup
       if (!this.item) {
-
         this.item = menuItems[0]
 
         LabelMarker.prototype.labelName =
@@ -347,12 +325,11 @@ export default class LabelMarker extends GraphicMarker {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   updateLabel (name, value) {
-
     var snap = Snap($(`#${this.svgId}`)[0])
 
     this.label.remove()
@@ -388,14 +365,12 @@ export default class LabelMarker extends GraphicMarker {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onMouseMove (event) {
-
     if (this.parent.dragging) {
-
       this.parent.setLeaderEndPoint({
         x: event.clientX,
         y: event.clientY
@@ -403,47 +378,41 @@ export default class LabelMarker extends GraphicMarker {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onMouseUp (event) {
-
     if (this.parent.dragging) {
-
       this.endDrag()
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onMouseDown (event) {
-
     if (!this.parent.dragging) {
-
       this.startDrag()
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onDoubleClick (event) {
-
     this.showControls(true)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   showControls (show) {
-
     $(`#${this.svgId}`).css({
-      display: show ? 'none':'block'
+      display: show ? 'none' : 'block'
     })
 
     $(`#${this.controlsId}`).css({

@@ -1,7 +1,7 @@
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 // ForgeFader signal attenuation calculator Forge viewer extension
 // By Jeremy Tammik, Autodesk Inc, 2017-03-28
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import Toolkit from 'Viewer.Toolkit'
 
@@ -43,16 +43,14 @@ const attenuationFragmentShader = `
 `
 
 class FaderCoreExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer, options) {
+    super(viewer, options)
 
-    super( viewer, options )
-
-    this._lineMaterial = this.createLineMaterial ()
-    this._vertexMaterial = this.createVertexMaterial ()
+    this._lineMaterial = this.createLineMaterial()
+    this._vertexMaterial = this.createVertexMaterial()
 
     this._eps = 0.000001
     this._pointSize = 0.3
@@ -72,29 +70,27 @@ class FaderCoreExtension extends MultiModelExtensionBase {
     this._texFilter = THREE.LinearFilter // THREE.LinearFilter / THREE.NearestFilter
 
     this._materials = {}
-    this._floorMeshes ={}
+    this._floorMeshes = {}
     this._wallMeshes = []
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Accessors - es6 getters and setters
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   get texFilter () {
     return this._texFilter === THREE.NearestFilter
   }
 
   set texFilter (a) {
-
     this._texFilter = a ? THREE.LinearFilter : THREE.NearestFilter
 
-    if (this.selectedDbId !== null ) {
-
-      let mesh = this._floorMeshes[this.selectedDbId]
-      let tex = mesh.material.uniforms.checkerboard.value.clone ()
+    if (this.selectedDbId !== null) {
+      const mesh = this._floorMeshes[this.selectedDbId]
+      const tex = mesh.material.uniforms.checkerboard.value.clone()
       tex.magFilter = this._texFilter
       tex.needsUpdate = true
       mesh.material.uniforms.checkerboard.value = tex
-      this.viewer.impl.invalidate (true)
+      this.viewer.impl.invalidate(true)
     }
   }
 
@@ -122,21 +118,19 @@ class FaderCoreExtension extends MultiModelExtensionBase {
     this._rayTraceGrid = a
   }
 
-  set debugFloorTopEdges( a ) {
-    let f = a
+  set debugFloorTopEdges (a) {
+    const f = a
       ? this.viewer.impl.scene.add
       : this.viewer.impl.scene.remove
-    this._floorTopEdges.forEach( (obj) => {
+    this._floorTopEdges.forEach((obj) => {
       f.apply(this.viewer.impl.scene, [obj])
     })
     this._debug_floor_top_edges = a
-    this.viewer.impl.invalidate (true)
+    this.viewer.impl.invalidate(true)
   }
 
-  set debugRaycastRays(show) {
-
+  set debugRaycastRays (show) {
     this._raycastRays.forEach((obj) => {
-
       show
         ? this.viewer.impl.scene.add(obj)
         : this.viewer.impl.scene.remove(obj)
@@ -144,34 +138,31 @@ class FaderCoreExtension extends MultiModelExtensionBase {
 
     this._debug_raycast_rays = show
 
-    this.viewer.impl.invalidate (true)
+    this.viewer.impl.invalidate(true)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Extension Id
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   static get ExtensionId () {
-
     return 'Viewing.Extension.Fader.Core'
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Load callback
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   load () {
-
     console.log('Viewing.Extension.Fader.Core loaded')
 
     return true
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Unload callback
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   unload () {
-
     Object.keys(this._floorMeshes).forEach((obj) => {
-      this.viewer.impl.scene.remove(this._floorMeshes [obj])
+      this.viewer.impl.scene.remove(this._floorMeshes[obj])
     })
 
     this._raycastRays.forEach((obj) => {
@@ -182,18 +173,17 @@ class FaderCoreExtension extends MultiModelExtensionBase {
       this.viewer.impl.scene.remove(obj)
     })
 
-    this.viewer.impl.invalidate (true)
+    this.viewer.impl.invalidate(true)
 
     this.off()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // onModelLoaded - retrieve all wall meshes
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   async onModelCompletedLoad (event) {
-
     const model = this.viewer.model
 
     const wallIds =
@@ -201,7 +191,6 @@ class FaderCoreExtension extends MultiModelExtensionBase {
         'Walls', model)
 
     this._wallMeshes = wallIds.map((dbId) => {
-
       return Toolkit.buildComponentMesh(
         this.viewer, model, dbId)
     })
@@ -211,12 +200,11 @@ class FaderCoreExtension extends MultiModelExtensionBase {
         'Floors', model)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   update (dynamic) {
-
     if (!this.hitTest) {
       return null
     }
@@ -224,18 +212,15 @@ class FaderCoreExtension extends MultiModelExtensionBase {
     const dbId = this.hitTest.dbId
 
     if (!this.floorIds.includes(dbId)) {
-
       return null
     }
 
     if (!dynamic || dbId === this.selectedDbId) {
-
       const normal = this.hitTest.face.normal
 
-      const zAxis = {x: 0, y: 0, z: 1}
+      const zAxis = { x: 0, y: 0, z: 1 }
 
       if (this.isEqualVectorsWithPrecision(normal, zAxis)) {
-
         this.emit('attenuation.source', this.hitTest)
 
         return this.computeAttenuation(this.hitTest)
@@ -245,17 +230,16 @@ class FaderCoreExtension extends MultiModelExtensionBase {
     return null
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // calculateUVsGeo
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   calculateUVsGeo (geometry) {
-
     geometry.computeBoundingBox()
 
     const bbox = geometry.boundingBox
     const max = bbox.max
     const min = bbox.min
-    const offset = new THREE.Vector2( 0 - min.x, 0 - min.y)
+    const offset = new THREE.Vector2(0 - min.x, 0 - min.y)
     const range = new THREE.Vector2(max.x - min.x, max.y - min.y)
     const faces = geometry.faces
     const uvs = geometry.faceVertexUvs[0]
@@ -267,13 +251,12 @@ class FaderCoreExtension extends MultiModelExtensionBase {
 
     uvs.splice(0, uvs.length)
 
-    for (let i = 0; i < faces.length ; ++i) {
-
+    for (let i = 0; i < faces.length; ++i) {
       const v1 = vertices[faces[i].a]
       const v2 = vertices[faces[i].b]
       const v3 = vertices[faces[i].c]
 
-      uvs.push ([
+      uvs.push([
         new THREE.Vector2(
           Math.abs((offx + v1.x + offset.x - incx) / range.x),
           Math.abs((offy + v1.y + offset.y - incy) / range.y)),
@@ -289,16 +272,14 @@ class FaderCoreExtension extends MultiModelExtensionBase {
     geometry.uvsNeedUpdate = true
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Generate a new mesh from render proxy
   //
   // floor_normal: skip all triangles whose normal differs from that
   // top_face_z: use for the face Z coordinates unless null
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   buildFloorMesh (dbId, floorNormal) {
-
     const faceFilter = (vA, vB, vC) => {
-
       const faceNormal = THREE.Triangle.normal(vA, vB, vC)
 
       return this.isEqualVectorsWithPrecision(
@@ -315,29 +296,28 @@ class FaderCoreExtension extends MultiModelExtensionBase {
 
     const matrix = new THREE.Matrix4()
 
-    matrix.makeTranslation(0,0,0.01)
+    matrix.makeTranslation(0, 0, 0.01)
 
     mesh.applyMatrix(matrix)
 
     return mesh
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // computeAttenuation - given a picked source point on a face
   //
   // determine face shape
   // draw a heat map on it
   // initially, just use distance from source to target point
   // later, add number of walls intersected by ray between them
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   computeAttenuation (hitTest) {
-
-    this._floorTopEdges.forEach( (obj) => {
-      this.viewer.impl.scene.remove( obj )
+    this._floorTopEdges.forEach((obj) => {
+      this.viewer.impl.scene.remove(obj)
     })
 
-    this._raycastRays.forEach( (obj) => {
-      this.viewer.impl.scene.remove( obj )
+    this._raycastRays.forEach((obj) => {
+      this.viewer.impl.scene.remove(obj)
     })
 
     this._floorTopEdges = []
@@ -350,10 +330,9 @@ class FaderCoreExtension extends MultiModelExtensionBase {
 
     // Do not remake the mesh each time, reuse it and just
     // update its texture - the shader will handle it for you
-    let mesh;
+    let mesh
 
     if (!this._floorMeshes[this.selectedDbId]) {
-
       mesh = this.buildFloorMesh(
         hitTest.dbId,
         hitTest.face.normal)
@@ -361,15 +340,13 @@ class FaderCoreExtension extends MultiModelExtensionBase {
       this._floorMeshes[hitTest.dbId] = mesh
 
       this.viewer.impl.scene.add(mesh)
-
     } else {
-
       mesh = this._floorMeshes[this.selectedDbId]
     }
 
     // ray trace to determine wall locations on mesh
 
-    const psource = new THREE.Vector3 (
+    const psource = new THREE.Vector3(
       hitTest.point.x,
       hitTest.point.y,
       hitTest.point.z + this._rayTraceOffset)
@@ -385,7 +362,7 @@ class FaderCoreExtension extends MultiModelExtensionBase {
 
     mesh.material.uniforms.checkerboard.value = tex
 
-    this.viewer.impl.invalidate (true)
+    this.viewer.impl.invalidate(true)
 
     return {
       min: attenuationMin,
@@ -393,70 +370,67 @@ class FaderCoreExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // ray trace to count walls between source and target points
-  /////////////////////////////////////////////////////////////////
-  getWallCountBetween(psource, ptarget, max_dist) {
+  /// //////////////////////////////////////////////////////////////
+  getWallCountBetween (psource, ptarget, max_dist) {
+    this.drawLine(psource, ptarget, this._raycastRays,
+      this._debug_raycast_rays)
 
-    this.drawLine( psource, ptarget, this._raycastRays,
-      this._debug_raycast_rays )
+    this.drawVertex(ptarget, this._raycastRays,
+      this._debug_raycast_rays)
 
-    this.drawVertex( ptarget, this._raycastRays,
-      this._debug_raycast_rays )
+    const vray = new THREE.Vector3(ptarget.x - psource.x,
+      ptarget.y - psource.y, ptarget.z - psource.z)
 
-    let vray = new THREE.Vector3( ptarget.x - psource.x,
-      ptarget.y - psource.y, ptarget.z - psource.z )
+    vray.normalize()
 
-    vray.normalize ()
+    const ray = new THREE.Raycaster(psource, vray, 0, max_dist)
 
-    let ray = new THREE.Raycaster(psource, vray, 0, max_dist)
+    const intersectResults = ray.intersectObjects(
+      this._wallMeshes, true)
 
-    let intersectResults = ray.intersectObjects (
-      this._wallMeshes, true )
-
-    let nWalls = intersectResults.length
+    const nWalls = intersectResults.length
 
     return nWalls
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // ray trace to find walls from picked point to mesh extents
   //
   // return 2D array mapping (u,v) to signal attenuation in dB.
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   rayTraceToFindWalls (mesh, psource) {
-
     // set up the result map
-    let n = this._rayTraceGrid
-    let map_uv_to_color = new Array (n)
-    for ( let i = 0 ; i < n ; ++i )
-      map_uv_to_color [i] = new Array (n)
+    const n = this._rayTraceGrid
+    const map_uv_to_color = new Array(n)
+    for (let i = 0; i < n; ++i) { map_uv_to_color[i] = new Array(n) }
 
-    let ptarget, d, nWalls
-      , bb =mesh.geometry.boundingBox
-      , vsize = new THREE.Vector3(
-        bb.max.x - bb.min.x,
-        bb.max.y - bb.min.y,
-        bb.max.z - bb.min.z
-      )
+    let ptarget; let d; let nWalls
+    const bb = mesh.geometry.boundingBox
+    const vsize = new THREE.Vector3(
+      bb.max.x - bb.min.x,
+      bb.max.y - bb.min.y,
+      bb.max.z - bb.min.z
+    )
 
-    let step = 1.0 / (n - 1)
-    for ( let u = 0.0, i = 0 ; u < 1.0 + this._eps ; u += step, ++i ) {
-      for ( let v = 0.0, j = 0 ; v < 1.0 + this._eps ; v += step, ++j ) {
+    const step = 1.0 / (n - 1)
+    for (let u = 0.0, i = 0; u < 1.0 + this._eps; u += step, ++i) {
+      for (let v = 0.0, j = 0; v < 1.0 + this._eps; v += step, ++j) {
         ptarget = new THREE.Vector3(
           bb.min.x + u * vsize.x,
           bb.min.y + v * vsize.y,
           psource.z
         )
-        d = psource.distanceTo( ptarget )
+        d = psource.distanceTo(ptarget)
 
         // determine number of walls between psource and ptarget
         // to generate a colour for each u,v coordinate pair
-        nWalls = this.getWallCountBetween( psource, ptarget, d ) // vsize.length )
+        nWalls = this.getWallCountBetween(psource, ptarget, d) // vsize.length )
 
-        let signal_attenuation =
-          d * this._attenuation_per_m_in_air
-          + nWalls * this._attenuation_per_wall
+        const signal_attenuation =
+          d * this._attenuation_per_m_in_air +
+          nWalls * this._attenuation_per_wall
 
         map_uv_to_color[i][j] = new THREE.Vector4(
           ptarget.x, ptarget.y, ptarget.z, signal_attenuation)
@@ -465,22 +439,21 @@ class FaderCoreExtension extends MultiModelExtensionBase {
     return map_uv_to_color
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // create attenuation shader material
-  /////////////////////////////////////////////////////////////////
-  createTexture( data, attenuation_max ) {
-
-    let pixelData = []
-    for ( let i = 0 ; i < data.length ; ++i ) {
-      for ( let j = 0 ; j < data [i].length ; ++j ) {
+  /// //////////////////////////////////////////////////////////////
+  createTexture (data, attenuation_max) {
+    const pixelData = []
+    for (let i = 0; i < data.length; ++i) {
+      for (let j = 0; j < data[i].length; ++j) {
         let c = data[j][i].w / attenuation_max
-        c = parseInt( c * 0xff )
-        pixelData.push( c, 0xff - c, 0, 0xff )
+        c = parseInt(c * 0xff)
+        pixelData.push(c, 0xff - c, 0, 0xff)
       }
     }
 
-    let dataTexture = new THREE.DataTexture (
-      Uint8Array.from (pixelData),
+    const dataTexture = new THREE.DataTexture(
+      Uint8Array.from(pixelData),
       this._rayTraceGrid, this._rayTraceGrid,
       THREE.RGBAFormat,
       THREE.UnsignedByteType,
@@ -494,14 +467,12 @@ class FaderCoreExtension extends MultiModelExtensionBase {
     return dataTexture
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // create shader material
   //
-  /////////////////////////////////////////////////////////
-  createShaderMaterial( dbId ) {
-
-    if (this._materials [dbId]) {
-
+  /// //////////////////////////////////////////////////////
+  createShaderMaterial (dbId) {
+    if (this._materials[dbId]) {
       return this._materials[dbId]
     }
 
@@ -513,16 +484,14 @@ class FaderCoreExtension extends MultiModelExtensionBase {
 
     const pixelData = []
 
-    for (let i = 0; i < this._rayTraceGrid ; ++i) {
-
-      for (let j = 0; j < this._rayTraceGrid ; ++j) {
-
+    for (let i = 0; i < this._rayTraceGrid; ++i) {
+      for (let j = 0; j < this._rayTraceGrid; ++j) {
         pixelData.push(0x88, 0x88, 0, 0xff)
       }
     }
 
     const dataTexture = new THREE.DataTexture(
-      Uint8Array.from (pixelData),
+      Uint8Array.from(pixelData),
       this._rayTraceGrid, this._rayTraceGrid,
       THREE.RGBAFormat,
       THREE.UnsignedByteType,
@@ -537,7 +506,7 @@ class FaderCoreExtension extends MultiModelExtensionBase {
       value: dataTexture
     }
 
-    const material = new THREE.ShaderMaterial ({
+    const material = new THREE.ShaderMaterial({
       fragmentShader: attenuationFragmentShader,
       vertexShader: attenuationVertexShader,
       side: THREE.DoubleSide,
@@ -555,118 +524,114 @@ class FaderCoreExtension extends MultiModelExtensionBase {
     return material
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // create vertex material
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   createVertexMaterial () {
-    let material = new THREE.MeshPhongMaterial({
+    const material = new THREE.MeshPhongMaterial({
       color: 0xffffff
     })
-    this.viewer.impl.matman ().addMaterial (
-      'fader-material-vertex', material, true )
+    this.viewer.impl.matman().addMaterial(
+      'fader-material-vertex', material, true)
     return material
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // create line material
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   createLineMaterial () {
-    let material =new THREE.LineBasicMaterial ({
+    const material = new THREE.LineBasicMaterial({
       color: 0xffffff, linewidth: 50
     })
-    this.viewer.impl.matman ().addMaterial(
-      'fader-material-line', material, true )
+    this.viewer.impl.matman().addMaterial(
+      'fader-material-line', material, true)
     return material
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // add line or vertex debug marker to scene and specified cache
-  ///////////////////////////////////////////////////////////////////////////
-  addToScene( obj, cache, addToScene ) {
-    if( addToScene ) {
-      this.viewer.impl.scene.add( obj )
+  /// ////////////////////////////////////////////////////////////////////////
+  addToScene (obj, cache, addToScene) {
+    if (addToScene) {
+      this.viewer.impl.scene.add(obj)
     }
-    cache.push( obj )
+    cache.push(obj)
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // draw a line
-  ///////////////////////////////////////////////////////////////////////////
-  drawLine( start, end, cache, addToScene ) {
-    let geometry = new THREE.Geometry ()
-    geometry.vertices.push (
-      new THREE.Vector3( start.x, start.y, start.z )
+  /// ////////////////////////////////////////////////////////////////////////
+  drawLine (start, end, cache, addToScene) {
+    const geometry = new THREE.Geometry()
+    geometry.vertices.push(
+      new THREE.Vector3(start.x, start.y, start.z)
     )
-    geometry.vertices.push (
-      new THREE.Vector3( end.x, end.y, end.z )
+    geometry.vertices.push(
+      new THREE.Vector3(end.x, end.y, end.z)
     )
-    let line = new THREE.Line( geometry, this._lineMaterial )
-    this.addToScene( line, cache, addToScene )
+    const line = new THREE.Line(geometry, this._lineMaterial)
+    this.addToScene(line, cache, addToScene)
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // draw a vertex
-  ///////////////////////////////////////////////////////////////////////////
-  drawVertex( v, cache, addToScene ) {
-    let vertex = new THREE.Mesh (
-      new THREE.SphereGeometry( this._pointSize, 8, 6 ),
+  /// ////////////////////////////////////////////////////////////////////////
+  drawVertex (v, cache, addToScene) {
+    const vertex = new THREE.Mesh(
+      new THREE.SphereGeometry(this._pointSize, 8, 6),
       this._vertexMaterial
     )
-    vertex.position.set( v.x, v.y, v.z )
-    this.addToScene( vertex, cache, addToScene )
+    vertex.position.set(v.x, v.y, v.z)
+    this.addToScene(vertex, cache, addToScene)
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // real number comparison
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   isEqualWithPrecision (a, b) {
-
-    return Math.abs(a-b) < this._eps
+    return Math.abs(a - b) < this._eps
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // vector comparison
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   isEqualVectorsWithPrecision (v1, v2) {
-
     return (
-      this.isEqualWithPrecision (v1.x, v2.x) &&
-      this.isEqualWithPrecision (v1.y, v2.y) &&
-      this.isEqualWithPrecision (v1.z, v2.z)
+      this.isEqualWithPrecision(v1.x, v2.x) &&
+      this.isEqualWithPrecision(v1.y, v2.y) &&
+      this.isEqualWithPrecision(v1.z, v2.z)
     )
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // return min and max W value in 2D array
-  ///////////////////////////////////////////////////////////////////////////
-  arrayMaxW( arr ) {
-    let len = arr.length, max = -Infinity
-    while( len-- )
-      max = Math.max( max, arr[len].w )
+  /// ////////////////////////////////////////////////////////////////////////
+  arrayMaxW (arr) {
+    let len = arr.length; let max = -Infinity
+    while (len--) { max = Math.max(max, arr[len].w) }
     return max
   }
 
-  array2dMaxW( arr ) {
-    let len = arr.length, max = -Infinity
-    while( len-- ) {
-      max = Math.max( max,
-        this.arrayMaxW( arr[len] ) )
+  array2dMaxW (arr) {
+    let len = arr.length; let max = -Infinity
+    while (len--) {
+      max = Math.max(max,
+        this.arrayMaxW(arr[len]))
     }
     return max
   }
 
-  arrayMinW( arr ) {
-    let len = arr.length, min = +Infinity
-    while ( len-- )
-      min = Math.min( arr[len].w, min )
+  arrayMinW (arr) {
+    let len = arr.length; let min = +Infinity
+    while (len--) { min = Math.min(arr[len].w, min) }
     return min
   }
 
-  array2dMinW( arr ) {
-    let len = arr.length, min = +Infinity
-    while ( len-- ) {
-      min = Math.min( min,
-        this.arrayMinW( arr[len] ) )
+  array2dMinW (arr) {
+    let len = arr.length; let min = +Infinity
+    while (len--) {
+      min = Math.min(min,
+        this.arrayMinW(arr[len]))
     }
     return min
   }
@@ -676,4 +641,4 @@ Autodesk.Viewing.theExtensionManager.registerExtension(
   FaderCoreExtension.ExtensionId,
   FaderCoreExtension)
 
-export default {FaderCoreExtension}
+export default { FaderCoreExtension }

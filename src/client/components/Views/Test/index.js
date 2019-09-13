@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import {
   setViewerEnv
-  } from '../../../store/app'
+} from '../../../store/app'
 
 import TestView from './components/TestView'
 

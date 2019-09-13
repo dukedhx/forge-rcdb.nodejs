@@ -2,7 +2,7 @@ import ReactLoader from './ReactLoader'
 import Loader from './Loader'
 import './Loader.scss'
 
-export  {
+export {
   ReactLoader,
   Loader
 }

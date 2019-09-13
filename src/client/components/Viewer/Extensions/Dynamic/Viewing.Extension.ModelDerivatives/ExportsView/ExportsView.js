@@ -4,31 +4,28 @@ import { ReactLoader } from 'Loader'
 import React from 'react'
 
 export default class ExportsView extends BaseComponent {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render () {
-
-    return(
-      <div className="manifest">
-        <ReactLoader show={!this.props.manifest}/>
+    return (
+      <div className='manifest'>
+        <ReactLoader show={!this.props.manifest} />
         {
           this.props.manifest &&
-          <ReactJson
-            src={this.props.manifest}
-            name={false}
-          />
+            <ReactJson
+              src={this.props.manifest}
+              name={false}
+            />
         }
       </div>
     )

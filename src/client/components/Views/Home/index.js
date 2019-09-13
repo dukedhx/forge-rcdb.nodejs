@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import {
   setNavbarState
-  } from '../../../store/app'
+} from '../../../store/app'
 
 const mapDispatchToProps = {
   setNavbarState

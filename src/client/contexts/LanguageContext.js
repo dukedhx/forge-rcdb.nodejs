@@ -1,8 +1,6 @@
 import React from 'react'
 
-
-
-export class LanguageContext  {
+export class LanguageContext {
 
 }
 

@@ -6,14 +6,12 @@ import Systems from '../Systems'
 import React from 'react'
 
 export default class CreateView extends BaseComponent {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.onSelect = this.onSelect.bind(this)
     this.onEdit = this.onEdit.bind(this)
@@ -27,87 +25,88 @@ export default class CreateView extends BaseComponent {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSelect () {
-    
+
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  onEdit ({updated_src}) {
-    
+  /// //////////////////////////////////////////////////////
+  onEdit ({ updated_src }) {
     this.assignState({
       scope: updated_src
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render () {
-
     const { system, event, scope } = this.state
 
     const systemItems = Systems.map((system) => {
-
       return (
-        <MenuItem eventKey={system.id} key={system.id}
+        <MenuItem
+          eventKey={system.id} key={system.id}
           onClick={() => {
-
             this.assignState({
               system
             })
-          }}>
-          { system.name }
+          }}
+        >
+          {system.name}
         </MenuItem>
       )
     })
 
     const eventItems = system.events.map((event) => {
-
       return (
-        <MenuItem eventKey={event.id} key={event.id}
+        <MenuItem
+          eventKey={event.id} key={event.id}
           onClick={() => {
-
             this.assignState({
               event
             })
-          }}>
-          { event.name }
+          }}
+        >
+          {event.name}
         </MenuItem>
       )
     })
 
-    return(
-      <div className="create">
-        <div className="controls">
+    return (
+      <div className='create'>
+        <div className='controls'>
           <DropdownButton
             title={`Select system: ${system ? system.name : ''}`}
-            key={'dropdown-systems'}
-            id={'dropdown-systems'}>
-              { systemItems }
+            key='dropdown-systems'
+            id='dropdown-systems'
+          >
+            {systemItems}
           </DropdownButton>
-          <hr/>
+          <hr />
           <DropdownButton
             title={`Select event: ${event ? event.name : ''}`}
-            key={'dropdown-events'}
-            id={'dropdown-events'}>
-              { eventItems }
+            key='dropdown-events'
+            id='dropdown-events'
+          >
+            {eventItems}
           </DropdownButton>
-          <hr/>
+          <hr />
           <button
             onClick={() => this.props.onCreateHook(system, event, scope)}
-            className="create-btn">
+            className='create-btn'
+          >
             Create Hook
           </button>
         </div>
-        <div className="scope">
+        <div className='scope'>
           <ReactJson
             onSelect={this.onSelect}
             enableClipboard={false}

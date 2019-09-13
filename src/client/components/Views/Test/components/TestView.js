@@ -6,14 +6,12 @@ import Viewer from 'Viewer'
 import React from 'react'
 
 class TestView extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.onViewingApplicationCreated =
       this.onViewingApplicationCreated.bind(this)
@@ -26,14 +24,12 @@ class TestView extends React.Component {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   assignState (state) {
-
     return new Promise((resolve) => {
-
       const newState = Object.assign(
         {}, this.state, state)
 
@@ -43,56 +39,44 @@ class TestView extends React.Component {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Initialize viewer environment
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   initialize (options) {
-
     return new Promise((resolve, reject) => {
-
-      Autodesk.Viewing.Initializer (options, () => {
-
-        resolve ()
-
+      Autodesk.Viewing.Initializer(options, () => {
+        resolve()
       }, (error) => {
-
-        reject (error)
+        reject(error)
       })
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load a document from URN
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   loadDocument (urn) {
-
     return new Promise((resolve, reject) => {
-
       const paramUrn = !urn.startsWith('urn:')
         ? 'urn:' + urn
         : urn
 
       Autodesk.Viewing.Document.load(paramUrn, (doc) => {
-
-        resolve (doc)
-
+        resolve(doc)
       }, (error) => {
-
-        reject (error)
+        reject(error)
       })
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getViewablePath (doc, pathIdx = 0, roles = ['3d', '2d']) {
-
     const toArray = (obj) => {
-
       return obj ? (Array.isArray(obj) ? obj : [obj]) : []
     }
 
@@ -101,39 +85,36 @@ class TestView extends React.Component {
     let items = []
 
     toArray(roles).forEach((role) => {
-
-      items = [ ...items,
+      items = [...items,
         ...Autodesk.Viewing.Document.getSubItemsWithProperties(
-          rootItem, { type: 'geometry', role }, true) ]
+          rootItem, { type: 'geometry', role }, true)]
     })
 
-    if (!items.length || pathIdx > items.length-1) {
-
+    if (!items.length || pathIdx > items.length - 1) {
       return null
     }
 
     return doc.getViewablePath(items[pathIdx])
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async componentDidMount () {
 
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onViewerCreated (viewer) {
-
     const viewerEnv = await this.initialize({
       env: 'AutodeskProduction'
     })
 
-    this.props.setViewerEnv (viewerEnv)
+    this.props.setViewerEnv(viewerEnv)
 
     this.viewer = viewer
 
@@ -151,11 +132,11 @@ class TestView extends React.Component {
 
     viewer.start()
 
-    //const path = 'resources/models/dev/office/Resource/3D_View/3D/office.svf'
+    // const path = 'resources/models/dev/office/Resource/3D_View/3D/office.svf'
 
-    //viewer.loadExtension('Autodesk.Viewing.ZoomWindow')
+    // viewer.loadExtension('Autodesk.Viewing.ZoomWindow')
 
-    //viewer.addEventListener(Autodesk.Viewing.OBJECT_TREE_CREATED_EVENT, () => {
+    // viewer.addEventListener(Autodesk.Viewing.OBJECT_TREE_CREATED_EVENT, () => {
     //
     //  viewer.loadExtension('Viewing.Extension.Text').then((extension) => {
     //
@@ -176,39 +157,37 @@ class TestView extends React.Component {
     //      this.viewer.impl.sceneUpdated(true)
     //    })
     //  })
-    //})
+    // })
 
     viewer.loadModel(path)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSelectionChanged (event) {
 
   }
 
-  ////////////////////////////////////////////////////////
+  /// /////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onViewablesLoaded (viewables) {
-
     console.log(viewables)
   }
 
-  ////////////////////////////////////////////////////////
+  /// /////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onViewingApplicationCreated (viewingApp) {
-
     const viewerEnv = await this.initialize({
       env: 'AutodeskProduction'
     })
 
-    this.props.setViewerEnv (viewerEnv)
+    this.props.setViewerEnv(viewerEnv)
 
     const lmvProxy = 'lmv-proxy-2legged'
 
@@ -221,32 +200,30 @@ class TestView extends React.Component {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  renderViewer() {
-
+  /// //////////////////////////////////////////////////////////////
+  renderViewer () {
     return (
       <Viewer
         onViewerCreated={(data) => this.onViewerCreated(data)}
-        style={{height:"calc(100vh - 65px)"}}
+        style={{ height: 'calc(100vh - 65px)' }}
       />
     )
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  renderViewingApp() {
-
+  /// //////////////////////////////////////////////////////////////
+  renderViewingApp () {
     const viewStyle = {
       height: 'calc(100vh - 65px)'
     }
 
     return (
-      <div className="test" style={viewStyle}>
+      <div className='test' style={viewStyle}>
         <ViewingApp
           onViewingApplicationCreated={this.onViewingApplicationCreated}
           onViewablesLoaded={this.onViewablesLoaded}
@@ -257,13 +234,12 @@ class TestView extends React.Component {
     )
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  render() {
-
-    //return this.renderViewingApp()
+  /// //////////////////////////////////////////////////////////////
+  render () {
+    // return this.renderViewingApp()
     return this.renderViewer()
   }
 }

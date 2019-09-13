@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
 // Written by Philippe Leefsma 2016 - ADN/Developer Technical Services
 //
@@ -14,7 +14,7 @@
 // MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
 // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 // UNINTERRUPTED OR ERROR FREE.
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 import MetaTreeDelegate from './MetaTreeDelegate'
 import { TreeView } from 'TreeView'
 import ReactDOM from 'react-dom'
@@ -22,56 +22,46 @@ import './MetaTreeView.scss'
 import React from 'react'
 
 export default class MetaTreeView extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.delegate = new MetaTreeDelegate(
       props.menuContainer)
 
     this.delegate.on('property.edit',
       (metaProperty, isModelOverride) => {
-
         if (this.props.onEditProperty) {
-
-          return this.props.onEditProperty (
+          return this.props.onEditProperty(
             metaProperty, isModelOverride)
         }
       })
 
     this.delegate.on('property.delete',
       (metaProperty, isModelOverride) => {
-
         if (this.props.onDeleteProperty) {
-
-          return this.props.onDeleteProperty (
+          return this.props.onDeleteProperty(
             metaProperty, isModelOverride)
         }
       })
 
     this.delegate.on('node.update', (metaProperty) => {
-
       const nodeId = metaProperty.id
 
       const node = this.tree.nodeIdToNode[nodeId]
 
       if (node) {
-
         node.update(metaProperty)
       }
     })
 
     this.delegate.on('node.destroy', (nodeId) => {
-
       const node = this.tree.nodeIdToNode[nodeId]
 
       if (node && node.parent) {
-
         node.parent.children =
           node.parent.children.filter((child) => {
             return child.id !== nodeId
@@ -84,12 +74,11 @@ export default class MetaTreeView extends React.Component {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   loadTree (data) {
-
     const propsMap = this.delegate.mapPropsByCategory(
       data.properties)
 
@@ -101,7 +90,7 @@ export default class MetaTreeView extends React.Component {
       propsMap
     })
 
-    this.tree = new TreeView (
+    this.tree = new TreeView(
       this.delegate, rootNode, this.treeContainer, {
         excludeRoot: false
       })
@@ -109,13 +98,12 @@ export default class MetaTreeView extends React.Component {
     rootNode.expand()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentDidMount () {
-
-    this.loadTree ({
+    this.loadTree({
       displayName: this.props.displayName,
       properties: this.props.properties,
       externalId: this.props.externalId,
@@ -124,28 +112,25 @@ export default class MetaTreeView extends React.Component {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   shouldComponentUpdate (nextProps) {
-
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillReceiveProps (props) {
-
     if (props.guid !== this.props.guid) {
-
       this.delegate.destroy()
 
       this.tree.destroy()
 
-      this.loadTree ({
+      this.loadTree({
         displayName: props.displayName,
         properties: props.properties,
         externalId: props.externalId,
@@ -155,23 +140,21 @@ export default class MetaTreeView extends React.Component {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentDidUpdate () {
-
     this.delegate.destroy()
 
     this.tree.destroy()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillUnmount () {
-
     this.delegate.destroy()
 
     this.delegate.off()
@@ -179,15 +162,15 @@ export default class MetaTreeView extends React.Component {
     this.tree.destroy()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
+  /// //////////////////////////////////////////////////////
+  render () {
     return (
-      <div className="metatree-container" ref={
-        (div) => this.treeContainer = div
+      <div
+        className='metatree-container' ref={
+          (div) => this.treeContainer = div
         }
       />
     )

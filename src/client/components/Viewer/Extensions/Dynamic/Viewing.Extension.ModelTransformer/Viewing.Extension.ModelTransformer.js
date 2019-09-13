@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.ModelTransformer
 // by Philippe Leefsma, April 2017
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import ContentEditable from 'react-contenteditable'
 import './Viewing.Extension.ModelTransformer.scss'
@@ -16,14 +16,12 @@ import Label from 'Label'
 import React from 'react'
 
 class ModelTransformerExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.onDeactivate = this.onDeactivate.bind(this)
 
@@ -43,42 +41,45 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
       <div id="pickTooltipId" class="pick-tooltip">
         <b>Pick position ...</b>
       </div>`,
-      '#pickTooltipId')
+    '#pickTooltipId')
 
     this.react = options.react
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'model-transformer'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.ModelTransformer'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     const fullTransform = !!this.options.fullTransform
 
     this.react.setState({
 
-      Tx:'', Ty:'', Tz:'',
-      Rx:'', Ry:'', Rz:'',
-      Sx:'', Sy:'', Sz:'',
+      Tx: '',
+      Ty: '',
+      Tz: '',
+      Rx: '',
+      Ry: '',
+      Rz: '',
+      Sx: '',
+      Sy: '',
+      Sz: '',
 
       translate: false,
       selection: null,
@@ -87,8 +88,7 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
       pick: false,
       model: null
 
-    }).then (() => {
-
+    }).then(() => {
       this.react.pushRenderExtension(this)
     })
 
@@ -99,26 +99,25 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     this.viewer.loadDynamicExtension(
       'Viewing.Extension.Transform',
       options).then((transformExtension) => {
+      transformExtension.setFullTransform(
+        fullTransform)
 
-        transformExtension.setFullTransform (
-          fullTransform)
+      transformExtension.on(
+        'selection',
+        this.onTransformSelection)
 
-        transformExtension.on(
-          'selection',
-          this.onTransformSelection)
+      transformExtension.on(
+        'transform',
+        this.onTransform)
 
-        transformExtension.on(
-          'transform',
-          this.onTransform)
+      transformExtension.on(
+        'deactivate',
+        this.onDeactivate)
 
-        transformExtension.on(
-          'deactivate',
-          this.onDeactivate)
-
-        this.react.setState({
-          transformExtension
-        })
+      this.react.setState({
+        transformExtension
       })
+    })
 
     console.log(
       'Viewing.Extension.ModelTransformer loaded')
@@ -126,16 +125,15 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log(
       'Viewing.Extension.ModelTransformer unloaded')
 
-    const {transformExtension} = this.react.getState()
+    const { transformExtension } = this.react.getState()
 
     transformExtension.off()
 
@@ -144,48 +142,43 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
 
     this.react.popViewerPanel(this)
 
-    super.unload ()
+    super.unload()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelRootLoaded (event) {
-
     this.setModel(event.model)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelActivated (event) {
-
     this.setModel(event.model)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelUnloaded (event) {
-
     if (!this.models.length) {
-
       this.clearModel()
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setModel (model) {
-
-    const {fullTransform} = this.react.getState()
+    const { fullTransform } = this.react.getState()
 
     model.transform = model.transform || {
       translation: {
@@ -206,25 +199,29 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     })
 
     if (fullTransform) {
-
       this.setTransformState(
         model.transform)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   clearModel () {
-
     this.tooltip.deactivate()
 
     return this.react.setState({
 
-      Tx:'', Ty:'', Tz:'',
-      Rx:'', Ry:'', Rz:'',
-      Sx:'', Sy:'', Sz:'',
+      Tx: '',
+      Ty: '',
+      Tz: '',
+      Rx: '',
+      Ry: '',
+      Rz: '',
+      Sx: '',
+      Sy: '',
+      Sz: '',
 
       translate: false,
       selection: null,
@@ -233,30 +230,28 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   toFixedStr (float, digits = 2) {
-
     return float.toFixed(digits).toString()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setTransformState (transform) {
-
     this.react.setState({
 
       Tx: this.toFixedStr(transform.translation.x),
       Ty: this.toFixedStr(transform.translation.y),
       Tz: this.toFixedStr(transform.translation.z),
 
-      Rx: this.toFixedStr(transform.rotation.x * 180/Math.PI),
-      Ry: this.toFixedStr(transform.rotation.y * 180/Math.PI),
-      Rz: this.toFixedStr(transform.rotation.z * 180/Math.PI),
+      Rx: this.toFixedStr(transform.rotation.x * 180 / Math.PI),
+      Ry: this.toFixedStr(transform.rotation.y * 180 / Math.PI),
+      Rz: this.toFixedStr(transform.rotation.z * 180 / Math.PI),
 
       Sx: this.toFixedStr(transform.scale.x),
       Sy: this.toFixedStr(transform.scale.y),
@@ -264,30 +259,33 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   clearTransformState () {
-
     this.react.setState({
 
-      Tx:'', Ty:'', Tz:'',
-      Rx:'', Ry:'', Rz:'',
-      Sx:'', Sy:'', Sz:''
+      Tx: '',
+      Ty: '',
+      Tz: '',
+      Rx: '',
+      Ry: '',
+      Rz: '',
+      Sx: '',
+      Sy: '',
+      Sz: ''
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onTransform (data) {
-
-    const {fullTransform, pick} = this.react.getState()
+    const { fullTransform, pick } = this.react.getState()
 
     if (pick) {
-
       this.tooltip.deactivate()
 
       await this.react.setState({
@@ -296,30 +294,26 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     }
 
     if (fullTransform) {
-
       data.model.transform = Object.assign(
         data.model.transform,
         data.transform)
 
       this.setModel(data.model)
-
     } else {
-
-      const transform = this.getFragmentTransform (
+      const transform = this.getFragmentTransform(
         data.fragIds[0])
 
-      this.setTransformState (transform)
+      this.setTransformState(transform)
     }
 
     this.emit('transform', data)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onDeactivate () {
-
     this.tooltip.deactivate()
 
     this.react.setState({
@@ -329,13 +323,12 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getFragmentTransform (fragId) {
-
-    const {model} = this.react.getState()
+    const { model } = this.react.getState()
 
     const fragProxy =
       this.viewer.impl.getFragmentProxy(
@@ -364,7 +357,7 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
         y: euler.y,
         z: euler.z
       },
-      scale:{
+      scale: {
         x: fragProxy.scale.x,
         y: fragProxy.scale.y,
         z: fragProxy.scale.z
@@ -372,13 +365,12 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSelection (event) {
-
-    const {fullTransform} = this.react.getState()
+    const { fullTransform } = this.react.getState()
 
     const selection = event.selections.length
       ? event.selections[0]
@@ -389,27 +381,22 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     })
 
     if (!fullTransform) {
-
       if (selection) {
-
-        const transform = this.getFragmentTransform (
+        const transform = this.getFragmentTransform(
           selection.fragIdsArray[0])
 
-        this.setTransformState (transform)
-
+        this.setTransformState(transform)
       } else {
-
-        this.clearTransformState ()
+        this.clearTransformState()
       }
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTransformSelection (transformSelection) {
-
     this.react.setState({
       transformSelection
     })
@@ -417,18 +404,16 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     this.emit('transformSelection', transformSelection)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onKeyDownNumeric (e) {
-
-    //backspace, ENTER, ->, <-, delete, '.', '-', ',',
+    // backspace, ENTER, ->, <-, delete, '.', '-', ',',
     const allowed = [8, 13, 37, 39, 46, 188, 189, 190]
 
     if (allowed.indexOf(e.keyCode) > -1 ||
       (e.keyCode > 47 && e.keyCode < 58)) {
-
       return
     }
 
@@ -436,23 +421,21 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     e.preventDefault()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   toFloat (value) {
-
     const floatValue = parseFloat(value)
 
     return isNaN(floatValue) ? 0 : floatValue
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onInputChanged (e, key) {
-
     const state = this.react.getState()
 
     state[key] = e.target.value
@@ -462,7 +445,6 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     const value = e.target.value
 
     switch (key) {
-
       case 'Tx':
         transform.translation.x =
           this.toFloat(value)
@@ -478,15 +460,15 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
 
       case 'Rx':
         transform.rotation.x =
-          this.toFloat(value) * Math.PI/180
+          this.toFloat(value) * Math.PI / 180
         break
       case 'Ry':
         transform.rotation.y =
-          this.toFloat(value) * Math.PI/180
+          this.toFloat(value) * Math.PI / 180
         break
       case 'Rz':
         transform.rotation.z =
-          this.toFloat(value) * Math.PI/180
+          this.toFloat(value) * Math.PI / 180
         break
 
       case 'Sx':
@@ -508,20 +490,19 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
 
     await this.react.setState(state)
 
-    this.applyTransform (transform)
+    this.applyTransform(transform)
 
     state.transformExtension.clearSelection()
 
     this.viewer.impl.sceneUpdated(true)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getTransform () {
-
-    const {fullTransform, model, selection} =
+    const { fullTransform, model, selection } =
       this.react.getState()
 
     return !fullTransform
@@ -529,23 +510,22 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
       : model.transform
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Applies transform to specific model
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   applyTransform (transform, offset = {
-      scale: {
-        x: 0.0, y: 0.0, z: 0.0
-      },
-      translation: {
-        x: 0.0, y: 0.0, z: 0.0
-      },
-      rotation: {
-        x: 0.0, y: 0.0, z: 0.0
-      }
-    }) {
-
-    const {fullTransform, model, selection} =
+    scale: {
+      x: 0.0, y: 0.0, z: 0.0
+    },
+    translation: {
+      x: 0.0, y: 0.0, z: 0.0
+    },
+    rotation: {
+      x: 0.0, y: 0.0, z: 0.0
+    }
+  }) {
+    const { fullTransform, model, selection } =
       this.react.getState()
 
     const euler = new THREE.Euler(
@@ -565,33 +545,27 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     }
 
     if (fullTransform) {
+      const fragCount = model.getFragmentList()
+        .fragments.fragId2dbId.length
 
-      const fragCount = model.getFragmentList().
-        fragments.fragId2dbId.length
-
-      //fragIds range from 0 to fragCount-1
+      // fragIds range from 0 to fragCount-1
       for (var fragId = 0; fragId < fragCount; ++fragId) {
-
         this.transformFragProxy(
           model, fragId, fragTransform)
       }
-
     } else {
-
       selection.fragIdsArray.forEach((fragId) => {
-
         this.transformFragProxy(
           model, fragId, fragTransform)
       })
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   transformFragProxy (model, fragId, transform) {
-
     const fragProxy =
       this.viewer.impl.getFragmentProxy(
         model, fragId)
@@ -599,18 +573,15 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     fragProxy.getAnimTransform()
 
     if (transform.position) {
-
       fragProxy.position = transform.position
     }
 
     if (transform.scale) {
-
       fragProxy.scale = transform.scale
     }
 
     if (transform.quaternion) {
-
-      //Not a standard three.js quaternion
+      // Not a standard three.js quaternion
       fragProxy.quaternion._x = transform.quaternion.x
       fragProxy.quaternion._y = transform.quaternion.y
       fragProxy.quaternion._z = transform.quaternion.z
@@ -620,13 +591,12 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     fragProxy.updateAnimTransform()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   translate () {
-
-    const {transformExtension, translate} =
+    const { transformExtension, translate } =
       this.react.getState()
 
     translate
@@ -639,13 +609,12 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   rotate () {
-
-    const {transformExtension, rotate} =
+    const { transformExtension, rotate } =
       this.react.getState()
 
     rotate
@@ -658,13 +627,12 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   pickPosition () {
-
-    const {transformExtension} = this.react.getState()
+    const { transformExtension } = this.react.getState()
 
     transformExtension.pickPosition()
 
@@ -675,16 +643,14 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setDocking (docked) {
-
     const id = ModelTransformerExtension.ExtensionId
 
     if (docked) {
-
       await this.react.popRenderExtension(id)
 
       await this.react.pushViewerPanel(this, {
@@ -692,26 +658,23 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
         height: 250,
         width: 300
       })
-
     } else {
-
       await this.react.popViewerPanel(id)
 
       this.react.pushRenderExtension(this)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onFullModelTransformChecked (fullTransform) {
-
-    const {transformExtension} =  this.react.getState()
+    const { transformExtension } = this.react.getState()
 
     this.viewer.clearSelection()
 
-    transformExtension.setFullTransform (
+    transformExtension.setFullTransform(
       fullTransform)
 
     this.react.setState({
@@ -719,40 +682,40 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle (docked) {
-
     const spanClass = docked
       ? 'fa fa-chain-broken'
       : 'fa fa-chain'
 
     return (
-      <div className="title">
+      <div className='title'>
         <label>
           Model Transformer
         </label>
-        <div className="model-transformer-controls">
-          <button onClick={() => this.setDocking(docked)}
-            title="Toggle docking mode">
-            <span className={spanClass}/>
+        <div className='model-transformer-controls'>
+          <button
+            onClick={() => this.setDocking(docked)}
+            title='Toggle docking mode'
+          >
+            <span className={spanClass} />
           </button>
         </div>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderControls () {
-
     const state = this.react.getState()
 
-    const {model, selection} = state
+    const { model, selection } = state
 
     const disabled = state.fullTransform
       ? !model
@@ -765,17 +728,17 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
       state.transformSelection.type !== 'translate'
 
     return (
-      <div className="controls">
+      <div className='controls'>
 
-        <div className="row">
+        <div className='row'>
 
-          <Label text={'Translation:'}/>
+          <Label text='Translation:' />
 
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Tx')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-trans"
-            data-placeholder="x"
+            className='input-trans'
+            data-placeholder='x'
             disabled={disabled}
             html={state.Tx}
           />
@@ -783,8 +746,8 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Ty')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-trans"
-            data-placeholder="y"
+            className='input-trans'
+            data-placeholder='y'
             disabled={disabled}
             html={state.Ty}
           />
@@ -792,30 +755,32 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Tz')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-trans"
-            data-placeholder="z"
+            className='input-trans'
+            data-placeholder='z'
             disabled={disabled}
             html={state.Tz}
           />
 
-          <button className={state.translate ? 'active':''}
+          <button
+            className={state.translate ? 'active' : ''}
             onClick={() => this.translate()}
             disabled={!model}
-            title="Translate">
-            <span className="fa fa-arrows-alt"/>
+            title='Translate'
+          >
+            <span className='fa fa-arrows-alt' />
           </button>
 
         </div>
 
-        <div className="row">
+        <div className='row'>
 
-          <Label text={'Rotation:'}/>
+          <Label text='Rotation:' />
 
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Rx')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-rot"
-            data-placeholder="rx"
+            className='input-rot'
+            data-placeholder='rx'
             disabled={disabled}
             html={state.Rx}
           />
@@ -823,8 +788,8 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Ry')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-rot"
-            data-placeholder="ry"
+            className='input-rot'
+            data-placeholder='ry'
             disabled={disabled}
             html={state.Ry}
           />
@@ -832,29 +797,31 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Rz')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-rot"
-            data-placeholder="rz"
+            className='input-rot'
+            data-placeholder='rz'
             html={state.Rz}
           />
 
-          <button className={state.rotate ? 'active':''}
+          <button
+            className={state.rotate ? 'active' : ''}
             onClick={() => this.rotate()}
             disabled={!model}
-            title="Rotate">
-            <span className="fa fa-refresh"/>
+            title='Rotate'
+          >
+            <span className='fa fa-refresh' />
           </button>
 
         </div>
 
-        <div className="row">
+        <div className='row'>
 
-          <Label text={'Scale:'}/>
+          <Label text='Scale:' />
 
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Sx')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-scale"
-            data-placeholder="sx"
+            className='input-scale'
+            data-placeholder='sx'
             disabled={disabled}
             html={state.Sx}
           />
@@ -862,8 +829,8 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Sy')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-scale"
-            data-placeholder="sy"
+            className='input-scale'
+            data-placeholder='sy'
             disabled={disabled}
             html={state.Sy}
           />
@@ -871,51 +838,53 @@ class ModelTransformerExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Sz')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-scale"
-            data-placeholder="sz"
+            className='input-scale'
+            data-placeholder='sz'
             disabled={disabled}
             html={state.Sz}
           />
 
-          <button className={state.pick ? 'active':''}
-            onClick={() => this.pickPosition() }
+          <button
+            className={state.pick ? 'active' : ''}
+            onClick={() => this.pickPosition()}
             disabled={pickDisabled}
-            title="Pick position">
-            <span className="fa fa-crosshairs"/>
+            title='Pick position'
+          >
+            <span className='fa fa-crosshairs' />
           </button>
 
         </div>
 
         {
           this.options.showFullModelTransform &&
-          <div className="row">
-            <label>
+            <div className='row'>
+              <label>
               Full Model Transform:
-            </label>
-            <Switch onChange={(checked) => {
+              </label>
+              <Switch onChange={(checked) => {
                 this.onFullModelTransformChecked(checked)
               }}
-            />
-          </div>
+              />
+            </div>
         }
 
-        </div>
+      </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
     return (
       <WidgetContainer
         renderTitle={() => this.renderTitle(opts.docked)}
         showTitle={opts.showTitle}
-        className={this.className}>
+        className={this.className}
+      >
 
-        { this.renderControls() }
+        {this.renderControls()}
 
       </WidgetContainer>
     )

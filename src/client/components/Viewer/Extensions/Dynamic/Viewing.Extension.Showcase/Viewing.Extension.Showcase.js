@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // Viewing.Extension.Showcase
 // by Philippe Leefsma, July 2017
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import EventTool from 'Viewer.EventTool'
 import Skybox from './Viewer.Skybox'
@@ -16,14 +16,12 @@ import zpos from './img/bridge/skybox-zpos.png'
 import zneg from './img/bridge/skybox-zneg.png'
 
 class ShowcaseExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.onCameraChanged =
       this.onCameraChanged.bind(this)
@@ -51,25 +49,22 @@ class ShowcaseExtension extends MultiModelExtensionBase {
     this.stopwatch = new Stopwatch()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.Showcase'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
-  load() {
-
+  /// //////////////////////////////////////////////////////
+  load () {
     console.log('Viewing.Extension.Showcase loaded')
 
     this.eventTool.on('mousewheel', (e) => {
-
       window.clearTimeout(this.timeoutId)
 
       this.timeoutId = window.setTimeout(() => {
@@ -84,7 +79,6 @@ class ShowcaseExtension extends MultiModelExtensionBase {
     })
 
     this.eventTool.on('buttondown', (e) => {
-
       window.clearTimeout(this.timeoutId)
 
       this.userInteraction = true
@@ -93,7 +87,6 @@ class ShowcaseExtension extends MultiModelExtensionBase {
     })
 
     this.eventTool.on('buttonup', (e) => {
-
       this.timeoutId = window.setTimeout(() => {
         this.stopwatch.getElapsedMs()
         this.runAnimation()
@@ -111,12 +104,11 @@ class ShowcaseExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Setup navigation
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   configureNavigation () {
-
     const nav = this.viewer.navigation
 
     nav.setLockSettings({
@@ -129,7 +121,6 @@ class ShowcaseExtension extends MultiModelExtensionBase {
 
     nav.fitBounds(true, this.bounds)
 
-
     nav.toPerspective()
 
     setTimeout(() => {
@@ -139,18 +130,15 @@ class ShowcaseExtension extends MultiModelExtensionBase {
     }, 2000)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Model completed load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelCompletedLoad (event) {
-
     if (event.model.dbModelId) {
-
       const urn = this.options.containerURN
 
       this.loadContainer(this.options.containerURN, this.options.env).then(() => {
-
         this.configureNavigation()
       })
 
@@ -162,27 +150,23 @@ class ShowcaseExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load container model
   //
-  /////////////////////////////////////////////////////////
-  loadContainer (urn,env) {
-
-    return new Promise(async(resolve) => {
-
+  /// //////////////////////////////////////////////////////
+  loadContainer (urn, env) {
+    return new Promise(async (resolve) => {
       this.viewer.loadModel(env == 'Local' ? urn : this.options.getViewablePath(await this.options.loadDocument(urn)), {}, (model) => {
-
-        resolve (model)
+        resolve(model)
       })
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
-  unload() {
-
+  /// //////////////////////////////////////////////////////
+  unload () {
     console.log('Viewing.Extension.Showcase unloaded')
 
     window.cancelAnimationFrame(this.animId)
@@ -196,13 +180,12 @@ class ShowcaseExtension extends MultiModelExtensionBase {
     this.eventTool.off()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Clamp vector length, not avail in three.js version
   // used by the viewer
   //
-  /////////////////////////////////////////////////////////
-  clampLength (vector, min, max ) {
-
+  /// //////////////////////////////////////////////////////
+  clampLength (vector, min, max) {
     const length = vector.length()
 
     vector.divideScalar(length || 1)
@@ -211,32 +194,29 @@ class ShowcaseExtension extends MultiModelExtensionBase {
       Math.max(min, Math.min(max, length)))
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Camera changed event
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onCameraChanged () {
-
     const nav = this.viewer.navigation
 
     const pos = nav.getPosition()
 
     if (pos.length() > 700.0 || pos.length() < 100.0) {
-
       this.clampLength(pos, 100.0, 700.0)
 
       nav.fitBounds(true, this.bounds)
 
-      nav.setView(pos, new THREE.Vector3(0,0,0))
+      nav.setView(pos, new THREE.Vector3(0, 0, 0))
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Rotate camera around axis
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   rotateCamera (axis, speed, dt) {
-
     const nav = this.viewer.navigation
 
     const up = nav.getCameraUpVector()
@@ -244,28 +224,26 @@ class ShowcaseExtension extends MultiModelExtensionBase {
     const pos = nav.getPosition()
 
     const matrix = new THREE.Matrix4().makeRotationAxis(
-      axis, speed * dt);
+      axis, speed * dt)
 
     pos.applyMatrix4(matrix)
     up.applyMatrix4(matrix)
 
-    nav.setView(pos, new THREE.Vector3(0,0,0))
+    nav.setView(pos, new THREE.Vector3(0, 0, 0))
     nav.setCameraUpVector(up)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // starts animation
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   runAnimation () {
-
     if (!this.userInteraction) {
-
       const dt = this.stopwatch.getElapsedMs() * 0.001
 
-      const axis = new THREE.Vector3(0,1,0)
+      const axis = new THREE.Vector3(0, 1, 0)
 
-      this.rotateCamera(axis, 10.0 * Math.PI/180, dt)
+      this.rotateCamera(axis, 10.0 * Math.PI / 180, dt)
 
       this.animId = window.requestAnimationFrame(
         this.runAnimation)

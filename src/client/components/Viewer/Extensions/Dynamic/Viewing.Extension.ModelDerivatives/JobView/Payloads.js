@@ -1,6 +1,6 @@
 const Payloads = {
 
-  stl: ({urn}) => {
+  stl: ({ urn }) => {
     return ({
       input: {
         urn
@@ -17,7 +17,7 @@ const Payloads = {
     })
   },
 
-  step: ({urn}) => {
+  step: ({ urn }) => {
     return ({
       input: {
         urn
@@ -34,12 +34,12 @@ const Payloads = {
     })
   },
 
-  dwg: ({urn}) => {
+  dwg: ({ urn }) => {
     return ({
       input: {
         urn
       },
-      output:{
+      output: {
         force: true,
         formats: [{
           type: 'dwg'
@@ -51,12 +51,12 @@ const Payloads = {
     })
   },
 
-  iges: ({urn}) => {
+  iges: ({ urn }) => {
     return ({
       input: {
         urn
       },
-      output:{
+      output: {
         force: true,
         formats: [{
           type: 'iges'
@@ -68,12 +68,12 @@ const Payloads = {
     })
   },
 
-  obj: ({urn, modelGuid, objectIds = [-1]}) => {
+  obj: ({ urn, modelGuid, objectIds = [-1] }) => {
     return ({
       input: {
         urn
       },
-      output:{
+      output: {
         force: false,
         formats: [{
           type: 'obj',
@@ -89,12 +89,12 @@ const Payloads = {
     })
   },
 
-  svf: ({urn}) => {
+  svf: ({ urn }) => {
     return ({
       input: {
         urn
       },
-      output:{
+      output: {
         force: true,
         formats: [{
           type: 'svf',
@@ -107,12 +107,12 @@ const Payloads = {
     })
   },
 
-  fbx: ({urn}) => {
+  fbx: ({ urn }) => {
     return ({
       input: {
         urn
       },
-      output:{
+      output: {
         force: true,
         formats: [{
           type: 'fbx'
@@ -124,12 +124,12 @@ const Payloads = {
     })
   },
 
-  ifc: ({urn}) => {
+  ifc: ({ urn }) => {
     return ({
       input: {
         urn
       },
-      output:{
+      output: {
         force: true,
         formats: [{
           type: 'ifc'

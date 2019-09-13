@@ -1,19 +1,17 @@
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // IoTPropertyPanel
 // by Philippe Leefsma, April 2016
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 
 export default class PropertyPanel extends
   Autodesk.Viewing.UI.PropertyPanel {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (container, id, title) {
-
-    super (container, id, title)
+    super(container, id, title)
 
     $(this.container).addClass('toolPanelBase')
     $(this.container).addClass('IoT')
@@ -23,15 +21,14 @@ export default class PropertyPanel extends
     this.properties = []
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // createTitleBar override
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   createTitleBar (title) {
+    var titleBar = document.createElement('div')
 
-    var titleBar = document.createElement("div")
-
-    titleBar.className = "dockingPanelTitle"
+    titleBar.className = 'dockingPanelTitle'
 
     this.titleTextId = guid()
 
@@ -46,10 +43,8 @@ export default class PropertyPanel extends
 
     $(titleBar).append(html)
 
-    this.addEventListener(titleBar, 'click', (event)=> {
-
+    this.addEventListener(titleBar, 'click', (event) => {
       if (!this.movedSinceLastClick) {
-
         this.onTitleClick(event)
       }
 
@@ -57,50 +52,43 @@ export default class PropertyPanel extends
     })
 
     this.addEventListener(titleBar, 'dblclick', (event) => {
-
       this.onTitleDoubleClick(event)
     })
 
     return titleBar
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // setTitle override
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   setTitle (text, options) {
-
     if (options && options.localizeTitle) {
-
       $(`#${this.titleTextId}`).attr('data-i18n', text)
 
       text = Autodesk.Viewing.i18n.translate(text)
-
     } else {
-
       $(`#${this.titleTextId}`).removeAttr('data-i18n')
     }
 
     $(`#${this.titleTextId}`).text(text)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // setNodeProperties override
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setNodeProperties (nodeId) {
-
     super.setNodeProperties(nodeId)
 
     this.nodeId = nodeId
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Adds new meta property to panel
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   addMetaProperty (metaProperty, options) {
-
     var element = this.tree.getElementForNode({
       name: metaProperty.name,
       value: metaProperty.value,
@@ -108,82 +96,72 @@ export default class PropertyPanel extends
     })
 
     if (element) {
-
       return false
     }
 
     var parent = null
 
     if (metaProperty.category) {
-
       parent = this.tree.getElementForNode({
         name: metaProperty.category
       })
 
       if (!parent) {
         parent = this.tree.createElement_({
-            name: metaProperty.category,
-            type: 'category'
-          },
-          this.tree.myRootContainer,
-          options && options.localizeCategory ? {localize: true} : null)
+          name: metaProperty.category,
+          type: 'category'
+        },
+        this.tree.myRootContainer,
+        options && options.localizeCategory ? { localize: true } : null)
       }
-    }
-    else {
-
+    } else {
       parent = this.tree.myRootContainer
     }
 
     this.tree.createElement_(
       metaProperty,
       parent,
-      options && options.localizeProperty ? {localize: true} : null)
+      options && options.localizeProperty ? { localize: true } : null)
 
     return true
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // setProperties override
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setProperties (properties) {
-
-    //super.setProperties(properties)
+    // super.setProperties(properties)
 
     this.removeAllProperties()
 
     properties.forEach((prop) => {
-
       this.addMetaProperty(prop)
     })
 
     this.properties = properties
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // setVisible override
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setVisible (show) {
-
     if (!this.properties || !this.properties.length) {
-
-      return super.setVisible (false)
+      return super.setVisible(false)
     }
 
-    super.setVisible (show)
+    super.setVisible(show)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // displayProperty override
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   displayProperty (property, parent, options) {
-
     var name = document.createElement('div')
 
-    if(property.nameId) {
-
+    if (property.nameId) {
       name.id = property.nameId
     }
 
@@ -206,15 +184,14 @@ export default class PropertyPanel extends
 
     var value = null
 
-    //native properties dont have a dataType
-    //display them just as text
-    if(!property.dataType) {
+    // native properties dont have a dataType
+    // display them just as text
+    if (!property.dataType) {
       value = createTextProperty(property, parent)
       return [name, value]
     }
 
     switch (property.dataType) {
-
       case 'text':
         value = createTextProperty(property, parent)
         break
@@ -239,19 +216,16 @@ export default class PropertyPanel extends
     return [name, value]
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // onPropertyClick handle
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   async onPropertyClick (property, event) {
+    if (!property.dataType) { return }
 
-    if(!property.dataType)
-      return
-
-    switch(property.dataType){
-
+    switch (property.dataType) {
       case 'text':
-        //nothing to do for text
+        // nothing to do for text
         break
 
       // opens link in new tab
@@ -271,12 +245,11 @@ export default class PropertyPanel extends
   }
 }
 
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 // Creates a text property
 //
-/////////////////////////////////////////////////////////////////
-function createTextProperty(property, parent){
-
+/// //////////////////////////////////////////////////////////////
+function createTextProperty (property, parent) {
   var value = document.createElement('div')
   value.textContent = property.value
   value.title = property.value
@@ -287,12 +260,11 @@ function createTextProperty(property, parent){
   return value
 }
 
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 // Creates a link property
 //
-/////////////////////////////////////////////////////////////////
-function createLinkProperty(property, parent){
-
+/// //////////////////////////////////////////////////////////////
+function createLinkProperty (property, parent) {
   var id = guid()
 
   var html = `
@@ -308,19 +280,18 @@ function createLinkProperty(property, parent){
   return $('#' + id)[0]
 }
 
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 // Creates an image property
 //
-/////////////////////////////////////////////////////////////////
-function createImageProperty(property, parent){
-
+/// //////////////////////////////////////////////////////////////
+function createImageProperty (property, parent) {
   var id = guid()
 
   var html = [
 
     '<div id="' + id + '" class="propertyValue derivative">' +
-    '<a href="' + property.href +'">',
-    '<img src="' + property.href +'" width="128" height="128"> </img>' +
+    '<a href="' + property.href + '">',
+    '<img src="' + property.href + '" width="128" height="128"> </img>' +
     '</a>',
     '</div>'
 
@@ -331,18 +302,17 @@ function createImageProperty(property, parent){
   return $('#' + id)[0]
 }
 
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 // Creates a file property
 //
-/////////////////////////////////////////////////////////////////
-function createFileProperty(property, parent){
-
+/// //////////////////////////////////////////////////////////////
+function createFileProperty (property, parent) {
   var id = guid()
 
   var html = [
 
     '<div id="' + id + '" class="propertyValue derivative">' +
-    '<a href="' + property.href +'">',
+    '<a href="' + property.href + '">',
     property.value,
     '</a>',
     '</div>'
@@ -354,12 +324,11 @@ function createFileProperty(property, parent){
   return $('#' + id)[0]
 }
 
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 // guid util
 //
-/////////////////////////////////////////////////////////////////
-function guid(format = 'xxxxxxxxxx') {
-
+/// //////////////////////////////////////////////////////////////
+function guid (format = 'xxxxxxxxxx') {
   var d = new Date().getTime()
 
   var guid = format.replace(
@@ -373,13 +342,12 @@ function guid(format = 'xxxxxxxxxx') {
   return guid
 }
 
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 function downloadURI (uri, name) {
-
-  var link = document.createElement("a")
+  var link = document.createElement('a')
   link.download = name
   link.href = uri
   link.click()

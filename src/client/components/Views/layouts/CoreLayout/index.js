@@ -6,8 +6,8 @@ import {
   layoutChange,
   themeChange,
   saveAppState,
-  //fetchUser,
-  setUser,
+  // fetchUser,
+  setUser
 } from '../../../../store/app'
 
 // import {
@@ -23,7 +23,7 @@ const mapDispatchToProps = {
   layoutChange,
   saveAppState,
   themeChange,
-  //fetchUser,
+  // fetchUser,
   setUser
 }
 

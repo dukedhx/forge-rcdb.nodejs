@@ -1,15 +1,15 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.Kinematics
 // by Philippe Leefsma, January 2017
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import './Viewing.Extension.Kinematics.scss'
 import WidgetContainer from 'WidgetContainer'
 import EventTool from 'Viewer.EventTool'
 import 'rc-tooltip/assets/bootstrap.css'
 import ScriptLoader from 'ScriptLoader'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import { ReactLoader } from 'Loader'
 import Toolkit from 'Viewer.Toolkit'
 import 'rc-slider/assets/index.css'
@@ -22,14 +22,12 @@ import Label from 'Label'
 import React from 'react'
 
 class KinematicsExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.eventTool = new EventTool(this.viewer)
 
@@ -38,30 +36,27 @@ class KinematicsExtension extends MultiModelExtensionBase {
     this.meshMap = {}
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'kinematics'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.Kinematics'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     this.viewer.setQualityLevel(false, false)
     this.viewer.setGroundReflection(true)
     this.viewer.setGroundShadow(true)
@@ -71,44 +66,39 @@ class KinematicsExtension extends MultiModelExtensionBase {
       UIHierarchy: null,
       showLoader: true
 
-    }).then (() => {
-
+    }).then(() => {
       this.react.pushRenderExtension(this)
     })
 
-    this.eventTool.on ('singleclick', (event) => {
-
+    this.eventTool.on('singleclick', (event) => {
       const hitTest = this.viewer.clientToWorld(
         event.canvasX, event.canvasY, true)
 
       if (hitTest) {
-
         console.log(hitTest)
       }
     })
 
-    //this.eventTool.activate()
+    // this.eventTool.activate()
 
     console.log('Viewing.Extension.Kinematics loaded')
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   toVector3 (xyz) {
-
     return new THREE.Vector3(xyz.x, xyz.y, xyz.z)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   loadHierarchy (component) {
-
     const mesh = Toolkit.buildComponentMesh(
       this.viewer,
       this.viewer.model,
@@ -121,33 +111,27 @@ class KinematicsExtension extends MultiModelExtensionBase {
     const children = component.children || []
 
     children.forEach((child) => {
-
       mesh.add(this.loadHierarchy(child))
     })
 
     return mesh
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getComponent (dbId, parent) {
-
     if (parent.dbId === dbId) {
-
       return parent
     }
 
     if (parent.children) {
-
-      for (let component of parent.children) {
-
+      for (const component of parent.children) {
         const res = this.getComponent(
           dbId, component)
 
         if (res) {
-
           return res
         }
       }
@@ -156,38 +140,35 @@ class KinematicsExtension extends MultiModelExtensionBase {
     return null
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log('Viewing.Extension.Kinematics unloaded')
 
     this.react.popViewerPanel(this)
 
-    super.unload ()
+    super.unload()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelRootLoaded (event) {
-
     super.onModelRootLoaded()
 
     this.options.loader.show(false)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelCompletedLoad (event) {
-
     this.hierarchy = this.options.hierarchy
 
     const rootMesh = this.loadHierarchy(
@@ -203,26 +184,24 @@ class KinematicsExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onSelection (event) {
-
     if (event.selections.length) {
 
-      //const dbId = event.selections[0].dbIdArray[0]
+      // const dbId = event.selections[0].dbIdArray[0]
 
-      //const component = this.getComponent(dbId)
+      // const component = this.getComponent(dbId)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  rotateMesh (mesh, {axis, centre, angle}) {
-
+  /// //////////////////////////////////////////////////////
+  rotateMesh (mesh, { axis, centre, angle }) {
     const quaternion = new THREE.Quaternion()
 
     quaternion.setFromAxisAngle(axis, angle)
@@ -245,12 +224,11 @@ class KinematicsExtension extends MultiModelExtensionBase {
     mesh.position.z = position.z
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   assignMeshTransform (mesh, dbId) {
-
     const quaternion = new THREE.Quaternion()
     const position = new THREE.Vector3()
     const scale = new THREE.Vector3()
@@ -259,11 +237,10 @@ class KinematicsExtension extends MultiModelExtensionBase {
       position, quaternion, scale)
 
     const fragIds =
-      Toolkit.getLeafFragIds (
+      Toolkit.getLeafFragIds(
         this.viewer.model, dbId)
 
     fragIds.forEach((fragId) => {
-
       const fragProxy =
         this.viewer.impl.getFragmentProxy(
           this.viewer.model, fragId)
@@ -277,63 +254,53 @@ class KinematicsExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   assignMeshTransformRec (mesh, component) {
-
-    this.assignMeshTransform (
+    this.assignMeshTransform(
       mesh, component.dbId)
 
     const children = component.children || []
 
     children.forEach((child) => {
-
-      this.assignMeshTransformRec (
+      this.assignMeshTransformRec(
         this.meshMap[child.dbId], child)
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Animation: {
   //  onUpdate,
   //  duration,
   //  easing
   // }
   //
-  /////////////////////////////////////////////////////////
-  animate ({onComplete, onUpdate, duration, easing}) {
-
+  /// //////////////////////////////////////////////////////
+  animate ({ onComplete, onUpdate, duration, easing }) {
     const stopwatch = new Stopwatch()
 
     let dt = 0.0
 
     const animationStep = () => {
-
       dt += stopwatch.getElapsedMs()
 
       if (dt >= duration) {
-
         onUpdate(1.0)
-
       } else {
-
-        const param = dt/duration
+        const param = dt / duration
 
         const animParam = easing
-          ? easing(param, duration/1000)
+          ? easing(param, duration / 1000)
           : param
 
         onUpdate(animParam)
       }
 
       if (dt < duration) {
-
         requestAnimationFrame(animationStep)
-
       } else {
-
         onComplete()
       }
     }
@@ -341,14 +308,12 @@ class KinematicsExtension extends MultiModelExtensionBase {
     animationStep()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   restoreHierarchy (targetHierarchy, param = 1.0) {
-
     const restoreTransformRec = (targetComp) => {
-
       const mesh = this.meshMap[targetComp.dbId]
 
       const component = this.getComponent(
@@ -370,7 +335,6 @@ class KinematicsExtension extends MultiModelExtensionBase {
       const children = targetComp.children || []
 
       children.forEach((child) => {
-
         restoreTransformRec(child)
       })
     }
@@ -380,7 +344,7 @@ class KinematicsExtension extends MultiModelExtensionBase {
     this.viewer.impl.sceneUpdated(true)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //  From viewer.getState:
   //  Allow extensions to inject their state data
@@ -389,15 +353,14 @@ class KinematicsExtension extends MultiModelExtensionBase {
   //    viewer.loadedExtensions[extensionName].getState(
   //      viewerState);
   //  }
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getState (state) {
-
     state.kinematics = {
       hierarchy: this.hierarchy
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //    From viewer.restoreState:
   //    Allow extensions to restore their data
@@ -406,15 +369,12 @@ class KinematicsExtension extends MultiModelExtensionBase {
   //      viewer.loadedExtensions[extensionName].restoreState(
   //        viewerState, immediate);
   //    }
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   restoreState (state, immediate) {
-
     if (state.kinematics) {
-
       const targetHierarchy = state.kinematics.hierarchy
 
       if (immediate) {
-
         this.restoreHierarchy(targetHierarchy)
 
         this.hierarchy = targetHierarchy
@@ -422,19 +382,15 @@ class KinematicsExtension extends MultiModelExtensionBase {
         this.react.setState({
           UIHierarchy: this.hierarchy
         })
-
       } else {
-
         this.animate({
 
           onUpdate: (param) => {
-
             this.restoreHierarchy(
               targetHierarchy,
               param)
           },
           onComplete: () => {
-
             this.hierarchy = targetHierarchy
 
             this.react.setState({
@@ -448,12 +404,11 @@ class KinematicsExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSliderChanged (props, dbId) {
-
     const { value, dragging, offset } = props
 
     const component = this.getComponent(
@@ -476,24 +431,26 @@ class KinematicsExtension extends MultiModelExtensionBase {
 
     return (
       <Tooltip
-        prefixCls="rc-slider-tooltip"
+        prefixCls='rc-slider-tooltip'
         visible={dragging}
         overlay={value}
-        placement="top">
-        <Slider.Handle className="rc-slider-handle"
-          offset={offset}/>
+        placement='top'
+      >
+        <Slider.Handle
+          className='rc-slider-handle'
+          offset={offset}
+        />
       </Tooltip>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // React method - render panel title
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle () {
-
     return (
-      <div className="title">
+      <div className='title'>
         <label>
           Kinematics
         </label>
@@ -501,22 +458,19 @@ class KinematicsExtension extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   hierarchyToArray (root) {
-
     const result = []
 
     const hierarchyToArrayRec = (component) => {
-
       result.push(component)
 
       const children = component.children || []
 
       children.forEach((child) => {
-
         hierarchyToArrayRec(child)
       })
     }
@@ -526,12 +480,11 @@ class KinematicsExtension extends MultiModelExtensionBase {
     return result.reverse()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderSliders () {
-
     const { UIHierarchy } = this.react.getState()
 
     const items = this.hierarchyToArray(UIHierarchy)
@@ -540,11 +493,10 @@ class KinematicsExtension extends MultiModelExtensionBase {
     const guid = this.guid()
 
     const sliderItems = items.map((item) => {
-
       return (
         <Slider
           handle={(props) => this.onSliderChanged(props, item.dbId)}
-          defaultValue={item.angle * 180.0/Math.PI}
+          defaultValue={item.angle * 180.0 / Math.PI}
           key={guid + item.dbId}
           min={item.bounds.min}
           max={item.bounds.max}
@@ -554,42 +506,41 @@ class KinematicsExtension extends MultiModelExtensionBase {
     })
 
     return (
-      <div className="sliders">
-        { sliderItems }
+      <div className='sliders'>
+        {sliderItems}
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // React method - render panel controls
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderControls () {
-
     const { showLoader } = this.react.getState()
 
     return (
-      <div className="ui-controls">
-        <ReactLoader show={showLoader}/>
-          <label>
+      <div className='ui-controls'>
+        <ReactLoader show={showLoader} />
+        <label>
             Controls:
-          </label>
-          { !showLoader && this.renderSliders ()}
+        </label>
+        {!showLoader && this.renderSliders()}
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // React method - render extension UI
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
     return (
       <WidgetContainer
         renderTitle={() => this.renderTitle()}
         showTitle={opts.showTitle}
-        className={this.className}>
+        className={this.className}
+      >
         {this.renderControls()}
       </WidgetContainer>
     )

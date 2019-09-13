@@ -3,34 +3,31 @@ import BarChart from 'BarChart'
 import React from 'react'
 
 class PropertyBarChart extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor () {
-
-    super ()
+    super()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render () {
-
     const { guid, title, data, viewer } = this.props
 
     return (
-      <div className="property-bar-chart">
-        <div className="title controls">
+      <div className='property-bar-chart'>
+        <div className='title controls'>
           <label>
-            { title }
+            {title}
           </label>
         </div>
 
-        <BarChart onGroupClicked={(e) => {
-
+        <BarChart
+          onGroupClicked={(e) => {
             const dbIds = e.dbIds
 
             Toolkit.isolateFull(

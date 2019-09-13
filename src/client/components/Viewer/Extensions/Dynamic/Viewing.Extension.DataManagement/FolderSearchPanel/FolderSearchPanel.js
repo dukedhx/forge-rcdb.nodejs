@@ -7,14 +7,12 @@ import ReactDOM from 'react-dom'
 import React from 'react'
 
 class PanelContent extends BaseComponent {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.search = this.search.bind(this)
 
@@ -32,18 +30,18 @@ class PanelContent extends BaseComponent {
       showLoader: false,
       searchGuid: null,
       filters: {
-        displayName:{
+        displayName: {
           label: 'Display Name:',
           operator,
           value: ''
         },
-        createTime:{
+        createTime: {
           label: 'Create Time:',
           isQuantity: true,
           operator,
           value: ''
         },
-        createUserName:{
+        createUserName: {
           label: 'Create Username:',
           operator,
           value: ''
@@ -68,12 +66,11 @@ class PanelContent extends BaseComponent {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onInputChanged (e, name) {
-
     const filter = this.state.filters[name]
 
     this.assignState({
@@ -86,26 +83,23 @@ class PanelContent extends BaseComponent {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   search () {
-
-    const {filters} = this.state
+    const { filters } = this.state
 
     this.assignState({
       showLoader: true
     })
 
     const keys = Object.keys(filters).filter((key) => {
-
       return (filters[key].value.length > 0)
     })
 
     const filtersExprs = keys.map((key) => {
-
-      const {operator, value} = filters[key]
+      const { operator, value } = filters[key]
 
       return `filter[${key}]${operator.expr}${value}`
     })
@@ -115,8 +109,7 @@ class PanelContent extends BaseComponent {
     this.props.dmAPI.searchFolder(
       this.projectId,
       this.folderId,
-      filter).then ((res) => {
-
+      filter).then((res) => {
       const searchResults = [
         ...(res.included || []),
         ...(res.data || [])
@@ -127,9 +120,7 @@ class PanelContent extends BaseComponent {
         showLoader: false,
         searchResults
       })
-
     }, () => {
-
       this.assignState({
         searchGuid: this.props.guid(),
         showLoader: false,
@@ -138,42 +129,41 @@ class PanelContent extends BaseComponent {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getDropdownItems (filterKey, filter) {
-
     const menuItemsQuantity = [{
-        label: 'less than',
-        expr: '-lt='
-      }, {
-        label: 'less or equal',
-        expr: '-le='
-      }, {
-        label: 'equal to',
-        expr: '-eq='
-      }, {
-        label: 'greater or equal',
-        expr: '-ge='
-      }, {
-        label: 'greater than',
-        expr: '-gt='
-      }]
+      label: 'less than',
+      expr: '-lt='
+    }, {
+      label: 'less or equal',
+      expr: '-le='
+    }, {
+      label: 'equal to',
+      expr: '-eq='
+    }, {
+      label: 'greater or equal',
+      expr: '-ge='
+    }, {
+      label: 'greater than',
+      expr: '-gt='
+    }]
 
     const menuItemsString = [{
-        label: 'equal to',
-        expr: '-eq='
-      }, {
-        label: 'starts with',
-        expr: '-starts='
-      }, {
-        label: 'ends with',
-        expr: '-ends='
-      }, {
-        label: 'contains',
-        expr: '-contains='
-      }]
+      label: 'equal to',
+      expr: '-eq='
+    }, {
+      label: 'starts with',
+      expr: '-starts='
+    }, {
+      label: 'ends with',
+      expr: '-ends='
+    }, {
+      label: 'contains',
+      expr: '-contains='
+    }]
 
     const menuItems = filter.isQuantity
       ? menuItemsQuantity
@@ -181,9 +171,9 @@ class PanelContent extends BaseComponent {
 
     return menuItems.map((operator, idx) => {
       return (
-        <MenuItem eventKey={idx} key={idx}
+        <MenuItem
+          eventKey={idx} key={idx}
           onClick={() => {
-
             this.assignState({
               filters: Object.assign({},
                 this.state.filters, {
@@ -192,60 +182,62 @@ class PanelContent extends BaseComponent {
                   })
                 })
             })
-          }}>
-          { operator.label }
+          }}
+        >
+          {operator.label}
         </MenuItem>
       )
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
+  /// //////////////////////////////////////////////////////
+  render () {
     const filterKeys = Object.keys(this.state.filters)
 
     const filterItems = filterKeys.map((filterKey) => {
+      const filter = this.state.filters[filterKey]
 
-        const filter = this.state.filters[filterKey]
-
-        return (
-          <div className="filter" key={filterKey}>
-            <label>
-              {filter.label}
-            </label>
-            <DropdownButton
-              title={filter.operator.label}
-              key={`dropdown-${filterKey}`}
-              id={`dropdown-${filterKey}`}>
-              { this.getDropdownItems(filterKey, filter) }
-            </DropdownButton>
-            <input
-              onChange={(e) => this.onInputChanged(e, filterKey)}
-              className="input-filter"
-            />
-          </div>
-        )
-      })
+      return (
+        <div className='filter' key={filterKey}>
+          <label>
+            {filter.label}
+          </label>
+          <DropdownButton
+            title={filter.operator.label}
+            key={`dropdown-${filterKey}`}
+            id={`dropdown-${filterKey}`}
+          >
+            {this.getDropdownItems(filterKey, filter)}
+          </DropdownButton>
+          <input
+            onChange={(e) => this.onInputChanged(e, filterKey)}
+            className='input-filter'
+          />
+        </div>
+      )
+    })
 
     const {
       searchResults,
       searchGuid,
       showLoader
-      } = this.state
+    } = this.state
 
     return (
-      <div className="panel-content">
-        { filterItems }
-        <button className="search-btn"
-          onClick={this.search}>
-          <span className="fa fa-search"/>
+      <div className='panel-content'>
+        {filterItems}
+        <button
+          className='search-btn'
+          onClick={this.search}
+        >
+          <span className='fa fa-search' />
           Search ...
         </button>
-        <div className="results">
-          <ReactLoader show={showLoader}/>
+        <div className='results'>
+          <ReactLoader show={showLoader} />
           <SearchTreeView
             onVersionNodeCreated={this.props.onVersionNodeCreated}
             onItemNodeCreated={this.props.onItemNodeCreated}
@@ -265,13 +257,11 @@ class PanelContent extends BaseComponent {
 }
 
 export default class FolderSearchPanel extends EventsEmitter {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (data, options) {
-
     super()
 
     this.onVersionNodeCreated = this.onVersionNodeCreated.bind(this)
@@ -296,69 +286,63 @@ export default class FolderSearchPanel extends EventsEmitter {
     this.data = data
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onClose () {
-
     this.emit('panel.close', this.id)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onVersionNodeCreated (node) {
-
     this.emit('version.created', node)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onItemNodeCreated (node) {
-
     this.emit('item.created', node)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onLoadViewable (node) {
-
     this.emit('load.viewable', node)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle () {
-
     return (
-      <div className="title">
-        <span className="fa fa-search"/>
+      <div className='title'>
+        <span className='fa fa-search' />
         <label>
-          { `Search Folder: ${this.data.name}`}
+          {`Search Folder: ${this.data.name}`}
         </label>
-        <div className="controls">
+        <div className='controls'>
           <button onClick={this.onClose}>
-            <span className="fa fa-times"/>
+            <span className='fa fa-times' />
           </button>
         </div>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
+  /// //////////////////////////////////////////////////////
+  render () {
     return (
       <PanelContent
         onVersionNodeCreated={this.onVersionNodeCreated}

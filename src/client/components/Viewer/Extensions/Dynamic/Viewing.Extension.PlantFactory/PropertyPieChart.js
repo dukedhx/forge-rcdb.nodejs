@@ -3,34 +3,31 @@ import PieChart from 'PieChart'
 import React from 'react'
 
 class PropertyPieChart extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor () {
-
-    super ()
+    super()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render () {
-
     const { guid, title, data, viewer, style } = this.props
 
     return (
-      <div className="property-pie-chart" style={style}>
-        <div className="title controls">
+      <div className='property-pie-chart' style={style}>
+        <div className='title controls'>
           <label>
-            { title }
+            {title}
           </label>
         </div>
 
-        <PieChart onSegmentClicked={(data, expanded) => {
-
+        <PieChart
+          onSegmentClicked={(data, expanded) => {
             const dbIds = expanded ? [] : data.dbIds
 
             Toolkit.isolateFull(

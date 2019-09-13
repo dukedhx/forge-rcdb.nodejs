@@ -1,15 +1,15 @@
-///////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////
 // WebHooks Viewer Extension
 // By Philippe Leefsma, Autodesk Inc, January 2017
 //
-///////////////////////////////////////////////////////////
-import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
+/// ////////////////////////////////////////////////////////
+import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex'
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import WidgetContainer from 'WidgetContainer'
 import { history as browserHistory } from 'BrowserContext'
 import { Tabs, Tab } from 'react-bootstrap'
 import WebHooksAPI from './WebHooks.API'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import ManageView from './ManageView'
 import CreateView from './CreateView'
 import EventsView from './EventsView'
@@ -19,16 +19,13 @@ import Image from 'Image'
 import Label from 'Label'
 import React from 'react'
 
-
 class WebHooksExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
-	// Class constructor
+  /// //////////////////////////////////////////////////////
+  // Class constructor
   //
-  /////////////////////////////////////////////////////////
-	constructor (viewer, options) {
-
-		super (viewer, options)
+  /// //////////////////////////////////////////////////////
+  constructor (viewer, options) {
+    super(viewer, options)
 
     this.onTabSelected = this.onTabSelected.bind(this)
     this.onCreateHook = this.onCreateHook.bind(this)
@@ -37,21 +34,17 @@ class WebHooksExtension extends MultiModelExtensionBase {
       apiUrl: '/api/hooks'
     })
 
-
-
     this.react = options.react
-	}
+  }
 
-	/////////////////////////////////////////////////////////
-	// Load callback
+  /// //////////////////////////////////////////////////////
+  // Load callback
   //
-  /////////////////////////////////////////////////////////
-	load () {
-
+  /// //////////////////////////////////////////////////////
+  load () {
     this.options.loader.show(false)
 
     if (!this.viewer.model) {
-
       this.viewer.container.classList.add('empty')
     }
 
@@ -62,20 +55,15 @@ class WebHooksExtension extends MultiModelExtensionBase {
       tabsWidth: 0,
       hooks: []
 
-    }).then (async() => {
-
+    }).then(async () => {
       if (!this.options.appState.user) {
-
         try {
-
           const user = await this.forgeSvc.getUser()
 
           await this.react.setState({
             user
           })
-
         } catch (ex) {
-
           return this.showLogin()
         }
       }
@@ -85,52 +73,46 @@ class WebHooksExtension extends MultiModelExtensionBase {
 
     console.log('Viewing.Extension.WebHooks loaded')
 
-		return true
-	}
+    return true
+  }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'web-hooks'
   }
 
-  /////////////////////////////////////////////////////////
-	// Extension Id
+  /// //////////////////////////////////////////////////////
+  // Extension Id
   //
-  /////////////////////////////////////////////////////////
-	static get ExtensionId () {
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
+    return 'Viewing.Extension.WebHooks'
+  }
 
-		return 'Viewing.Extension.WebHooks'
-	}
-
-  /////////////////////////////////////////////////////////
-	// Unload callback
+  /// //////////////////////////////////////////////////////
+  // Unload callback
   //
-  /////////////////////////////////////////////////////////
-	unload () {
-
+  /// //////////////////////////////////////////////////////
+  unload () {
     console.log('Viewing.Extension.WebHooks loaded')
 
-    super.unload ()
+    super.unload()
 
-		return true
-	}
+    return true
+  }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   showLogin () {
-
     const onClose = (result) => {
-
       this.dialogSvc.off('dialog.close', onClose)
 
       if (result === 'OK') {
-
         this.forgeSvc.login()
         return
       }
@@ -145,42 +127,36 @@ class WebHooksExtension extends MultiModelExtensionBase {
       className: 'login-dlg',
       title: 'Forge Login required ...',
       content:
-        <div>
+  <div>
           Press OK to login ...
-        </div>,
+  </div>,
       open: true
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTabSelected (tabKey) {
-
     this.react.setState({
       activeTabKey: tabKey
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onCreateHook (system, event, scope) {
-
     try {
-
       if (event.id) {
-
         const res =
           await this.webHooksAPI.createEventHook(
             system.id, event.id, scope)
 
         console.log(res)
-
       } else {
-
         const res =
           await this.webHooksAPI.createSystemHook(
             system.id, scope)
@@ -197,9 +173,7 @@ class WebHooksExtension extends MultiModelExtensionBase {
         id: this.guid(),
         position: 'tl'
       })
-
     } catch (ex) {
-
       this.notifySvc.add({
         message: event.id || 'system-wide',
         title: 'Hook rejected ... :(',
@@ -212,25 +186,23 @@ class WebHooksExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderManageTab () {
-
-    const {hooks} = this.react.getState()
+    const { hooks } = this.react.getState()
 
     return (
-      <ManageView webHooksAPI={this.webHooksAPI}/>
+      <ManageView webHooksAPI={this.webHooksAPI} />
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderCreateTab () {
-
     return (
       <CreateView
         onCreateHook={this.onCreateHook}
@@ -238,33 +210,31 @@ class WebHooksExtension extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderEventsTab () {
-
-    const {user} = this.react.getState()
+    const { user } = this.react.getState()
 
     return (
-      !!user && <EventsView user={user}/>
+      !!user && <EventsView user={user} />
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderContent () {
-
-    const {activeTabKey, tabsWidth} =
+    const { activeTabKey, tabsWidth } =
       this.react.getState()
 
     const nbTabs = 3
 
     const style = {
       width:
-        `${Math.floor((tabsWidth-8)/nbTabs-15)}px`
+        `${Math.floor((tabsWidth - 8) / nbTabs - 15)}px`
     }
 
     const tabTitle = (title) => {
@@ -278,65 +248,75 @@ class WebHooksExtension extends MultiModelExtensionBase {
     const showLoader = false
 
     return (
-      <div className="content">
-        <ReactLoader show={showLoader}/>
-        <Measure bounds onResize={(rect) => {
-          this.react.setState({
-            tabsWidth: rect.bounds.width
-          })
-        }}>
-        {
-          ({ measureRef }) =>
-            <div ref={measureRef} className="tabs-container">
-              <Tabs activeKey={activeTabKey}
-                onSelect={this.onTabSelected}
-                id="hooks-create-tab"
-                className="tabs">
-                <Tab className="tab-container"
-                  title={tabTitle('Create Hook')}
-                  eventKey="hook-create"
-                  key="hook-create">
-                    { this.renderCreateTab() }
-                </Tab>
-                <Tab className="tab-container"
-                  title={tabTitle('Manage Hooks')}
-                  eventKey="hook-manage"
-                  key="hook-manage">
-                    { this.renderManageTab() }
-                </Tab>
-                <Tab className="tab-container"
-                  title={tabTitle('Events Log')}
-                  eventKey="hook-events"
-                  key="hook-events">
-                    { this.renderEventsTab() }
-                </Tab>
-              </Tabs>
-            </div>
+      <div className='content'>
+        <ReactLoader show={showLoader} />
+        <Measure
+          bounds onResize={(rect) => {
+            this.react.setState({
+              tabsWidth: rect.bounds.width
+            })
+          }}
+        >
+          {
+            ({ measureRef }) =>
+              <div ref={measureRef} className='tabs-container'>
+                <Tabs
+                  activeKey={activeTabKey}
+                  onSelect={this.onTabSelected}
+                  id='hooks-create-tab'
+                  className='tabs'
+                >
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Create Hook')}
+                    eventKey='hook-create'
+                    key='hook-create'
+                  >
+                    {this.renderCreateTab()}
+                  </Tab>
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Manage Hooks')}
+                    eventKey='hook-manage'
+                    key='hook-manage'
+                  >
+                    {this.renderManageTab()}
+                  </Tab>
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Events Log')}
+                    eventKey='hook-events'
+                    key='hook-events'
+                  >
+                    {this.renderEventsTab()}
+                  </Tab>
+                </Tabs>
+              </div>
           }
         </Measure>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
     return (
       <WidgetContainer
         className={this.className}
-        title="Web Hooks"
-        showTitle={true}>
+        title='Web Hooks'
+        showTitle
+      >
 
-        { this.renderContent () }
+        {this.renderContent()}
 
       </WidgetContainer>
     )
   }
 }
 
-Autodesk.Viewing.theExtensionManager.registerExtension (
+Autodesk.Viewing.theExtensionManager.registerExtension(
   WebHooksExtension.ExtensionId,
   WebHooksExtension)

@@ -4,31 +4,28 @@ import './ViewerView.scss'
 import React from 'react'
 import queryString from 'query-string'
 class ViewerView extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.onModelRootLoaded = this.onModelRootLoaded.bind(this)
     this.onViewerCreated = this.onViewerCreated.bind(this)
     this.onError = this.onError.bind(this)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillMount () {
-
-    const {query} = this.props.location
+    const { query } = this.props.location
 
     const embed = query.embed
-        ? (query.embed.toLowerCase() === 'true')
-        : false
+      ? (query.embed.toLowerCase() === 'true')
+      : false
 
     const navbarState = !embed
       ? { links: { settings: false } }
@@ -37,24 +34,21 @@ class ViewerView extends React.Component {
     this.props.setNavbarState(navbarState)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onError (error) {
-
     if (error.responseJSON === 'Not Found') {
-
       browserHistory.push('/404')
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onViewerCreated (viewer, loader) {
-
     this.viewer = viewer
     this.loader = loader
 
@@ -63,12 +57,11 @@ class ViewerView extends React.Component {
       this.onModelRootLoaded)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelRootLoaded (e) {
-
     this.viewer.removeEventListener(
       Autodesk.Viewing.MODEL_ROOT_LOADED_EVENT,
       this.onModelRootLoaded)
@@ -81,12 +74,11 @@ class ViewerView extends React.Component {
     this.loader.show(false)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
+  /// //////////////////////////////////////////////////////
+  render () {
     const viewStyle = {
       height: !this.props.appState.navbar.visible
         ? 'calc(100vh)'
@@ -96,7 +88,7 @@ class ViewerView extends React.Component {
     const params = queryString.parse(this.props.location.search)
 
     return (
-      <div className="viewer-view" style={viewStyle}>
+      <div className='viewer-view' style={viewStyle}>
         <ViewerConfigurator
           setNavbarState={this.props.setNavbarState}
           onViewerCreated={this.onViewerCreated}
@@ -106,7 +98,7 @@ class ViewerView extends React.Component {
           location={this.props.location}
           onError={this.onError}
           database='gallery'
-          showLoader={true}
+          showLoader
         />
       </div>
     )

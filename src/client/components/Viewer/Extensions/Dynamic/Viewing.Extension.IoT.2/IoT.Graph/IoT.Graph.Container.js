@@ -2,13 +2,10 @@ import IoTGraph from './IoT.Graph'
 import React from 'react'
 
 export default class IoTGraphContainer extends React.Component {
-
   render () {
-
-    const { graphData, id, name} = this.props.item
+    const { graphData, id, name } = this.props.item
 
     const graphs = graphData.map((data, idx) => {
-
       const graphName = `${name} - ${data.name}`
 
       return (
@@ -24,7 +21,7 @@ export default class IoTGraphContainer extends React.Component {
     })
 
     return (
-      <div className="graph-container">
+      <div className='graph-container'>
         {graphs}
       </div>
     )

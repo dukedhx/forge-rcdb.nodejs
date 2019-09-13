@@ -5,13 +5,13 @@ import routes from './routes'
 import store from './store'
 import React from 'react'
 import 'bootstrap'
-//i18 imports
-//import LanguageProvider from './translations/LanguageProvider'
-//import { translationMessages } from './i18n'
+// i18 imports
+// import LanguageProvider from './translations/LanguageProvider'
+// import { translationMessages } from './i18n'
 
 ReactDOM.render(
-    <Provider store={store}>
-          {routes()}
-    </Provider>,
-    document.getElementById('root')
+  <Provider store={store}>
+    {routes()}
+  </Provider>,
+  document.getElementById('root')
 )

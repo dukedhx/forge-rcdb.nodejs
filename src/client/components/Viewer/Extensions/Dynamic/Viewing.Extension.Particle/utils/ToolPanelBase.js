@@ -1,11 +1,10 @@
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 import './ToolPanelBase.css'
 
 function getDefaultOptions () {
-
   return {
     shadow: true,
     movable: true,
@@ -15,13 +14,11 @@ function getDefaultOptions () {
 
 export default class ToolPanelBase extends
   Autodesk.Viewing.UI.DockingPanel {
-
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
-  static guid(format = 'xxxxxxxxxx') {
-
+  /// ////////////////////////////////////////////////////////////////
+  static guid (format = 'xxxxxxxxxx') {
     var d = new Date().getTime()
 
     var guid = format.replace(
@@ -35,12 +32,11 @@ export default class ToolPanelBase extends
     return guid
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
-  constructor(container, title, options = {}) {
-
+  /// ////////////////////////////////////////////////////////////////
+  constructor (container, title, options = {}) {
     super(container,
       ToolPanelBase.guid(),
       title,
@@ -56,45 +52,39 @@ export default class ToolPanelBase extends
     this._btnElement = options.buttonElement
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
-  htmlContent(id) {
-
+  /// //////////////////////////////////////////////////////////
+  htmlContent (id) {
     return '<div></div>'
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
-  unload() {
-
+  /// //////////////////////////////////////////////////////////
+  unload () {
     this.setVisible(false)
 
     $(this.container).remove()
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
-  isVisible() {
-
+  /// //////////////////////////////////////////////////////////
+  isVisible () {
     return this._isVisible
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // setVisible override
   //
-  /////////////////////////////////////////////////////////////
-  setVisible(show = false) {
-
-    if(show !== this._isVisible){
-
-      if(typeof this._events !== 'undefined') {
-
+  /// //////////////////////////////////////////////////////////
+  setVisible (show = false) {
+    if (show !== this._isVisible) {
+      if (typeof this._events !== 'undefined') {
         this.emit((show ? 'open' : 'close'), {
           result: this._dialogResult
         })
@@ -103,32 +93,26 @@ export default class ToolPanelBase extends
 
     this._isVisible = show
 
-    if(this._btnElement) {
-
-      if(show)
-        this._btnElement.classList.add('active')
-      else
-        this._btnElement.classList.remove('active')
+    if (this._btnElement) {
+      if (show) { this._btnElement.classList.add('active') } else { this._btnElement.classList.remove('active') }
     }
 
     super.setVisible(show)
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // Toggles panel visibility
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   toggleVisibility () {
-
     this.setVisible(!this._isVisible)
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // initialize override
   //
-  /////////////////////////////////////////////////////////////
-  initialize() {
-
+  /// //////////////////////////////////////////////////////////
+  initialize () {
     this.title = this.createTitleBar(
       this.titleLabel || this.container.id)
 
@@ -138,11 +122,11 @@ export default class ToolPanelBase extends
       this.titleLabel || this.container.id,
       this.options)
 
-    if(this.options.movable) {
+    if (this.options.movable) {
       this.initializeMoveHandlers(this.title)
     }
 
-    if(this.options.closable){
+    if (this.options.closable) {
       this.closer = this.createCloseButton()
       $(this.title).append(this.closer)
     }
@@ -157,15 +141,14 @@ export default class ToolPanelBase extends
     this.container.classList.add('toolPanelBase')
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // createTitleBar override
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   createTitleBar (title) {
-    
-    var titleBar = document.createElement("div")
+    var titleBar = document.createElement('div')
 
-    titleBar.className = "dockingPanelTitle"
+    titleBar.className = 'dockingPanelTitle'
 
     this.titleTextId = ToolPanelBase.guid()
 
@@ -180,112 +163,94 @@ export default class ToolPanelBase extends
 
     $(titleBar).append(html)
 
-    this.addEventListener(titleBar, 'click', (event)=> {
-      
+    this.addEventListener(titleBar, 'click', (event) => {
       if (!this.movedSinceLastClick) {
-        
         this.onTitleClick(event)
       }
-      
+
       this.movedSinceLastClick = false
     })
 
     this.addEventListener(titleBar, 'dblclick', (event) => {
-      
       this.onTitleDoubleClick(event)
     })
 
     return titleBar
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // setTitle override
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   setTitle (text, options) {
-  
     if (options && options.localizeTitle) {
-
       $(`#${this.titleTextId}`).attr('data-i18n', text)
 
       text = Autodesk.Viewing.i18n.translate(text)
-      
     } else {
-
       $(`#${this.titleTextId}`).removeAttr('data-i18n')
     }
 
     $(`#${this.titleTextId}`).text(text)
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // onTitleDoubleClick override
   //
-  /////////////////////////////////////////////////////////////
-  onTitleDoubleClick(event) {
-
+  /// //////////////////////////////////////////////////////////
+  onTitleDoubleClick (event) {
     this._isMinimized = !this._isMinimized
 
-    if(this._isMinimized) {
-
+    if (this._isMinimized) {
       this._height = $(this.container).css('height')
 
       $(this.container).css({
-        'height':'32px',
-        'min-height':'32px'
+        height: '32px',
+        'min-height': '32px'
       })
-    }
-    else {
-
+    } else {
       $(this.container).css({
-        'height':this._height,
-        'min-height':'100px'
+        height: this._height,
+        'min-height': '100px'
       })
     }
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
-  on(event, fct) {
-
+  /// ////////////////////////////////////////////////////////////////
+  on (event, fct) {
     this._events[event] = this._events[event]	|| []
     this._events[event].push(fct)
     return fct
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
-  off(event, fct) {
-
-    if(event in this._events === false)
-      return
+  /// ////////////////////////////////////////////////////////////////
+  off (event, fct) {
+    if (event in this._events === false) { return }
 
     this._events[event].splice(
       this._events[event].indexOf(fct), 1)
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
-  emit(event /* , args... */) {
-
-    if(this._events[event] === undefined)
-      return
+  /// ////////////////////////////////////////////////////////////////
+  emit (event /* , args... */) {
+    if (this._events[event] === undefined) { return }
 
     var handlers = this._events[event].slice()
 
-    for(var i = 0; i < handlers.length; ++i) {
-
+    for (var i = 0; i < handlers.length; ++i) {
       var result = handlers[i].apply(this,
         Array.prototype.slice.call(arguments, 1))
 
-      if(result !== undefined )
-        return result
+      if (result !== undefined) { return result }
     }
 
     return undefined

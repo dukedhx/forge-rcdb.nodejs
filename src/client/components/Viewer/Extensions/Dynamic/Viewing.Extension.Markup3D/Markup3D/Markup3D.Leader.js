@@ -1,14 +1,12 @@
 import Stopwatch from 'Stopwatch'
 
 export default class Leader {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  constructor(container, startPoint) {
-
-    var snap = Snap (container)
+  /// //////////////////////////////////////////////////////////////
+  constructor (container, startPoint) {
+    var snap = Snap(container)
 
     this.line = snap.paper.line(
       startPoint.x, startPoint.y,
@@ -18,8 +16,8 @@ export default class Leader {
       fill: 'none',
       strokeWidth: 1,
       stroke: '#000000',
-      strokeLinecap: "round",
-      strokeDasharray: "1 5 1 5"
+      strokeLinecap: 'round',
+      strokeDasharray: '1 5 1 5'
     })
 
     var pts = [startPoint.x, startPoint.y]
@@ -27,7 +25,7 @@ export default class Leader {
     this.arrow = snap.paper.polygon(pts)
 
     this.arrow.attr({
-      fill:"#B80000"
+      fill: '#B80000'
     })
 
     this.leader = snap.group(
@@ -45,16 +43,13 @@ export default class Leader {
     this.animationId = 0
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setVisible (show) {
-
-    return new Promise((resolve, reject)=> {
-
+    return new Promise((resolve, reject) => {
       if (show) {
-
         this.leader.attr({
           visibility: 'visible'
         })
@@ -65,19 +60,15 @@ export default class Leader {
 
       var step = (show ? 0.002 : -0.002)
 
-      const _animation = ()=> {
-
+      const _animation = () => {
         this.scaleFactor += step * Math.max(
           this.timer.getElapsedMs(), 1)
 
         if (this.scaleFactor >= 1.0) {
-
           this.scaleFactor = 1.0
           this.draw()
           return resolve()
-        }
-        else if (this.scaleFactor <= 0.0) {
-
+        } else if (this.scaleFactor <= 0.0) {
           this.scaleFactor = 0.0
 
           this.leader.attr({
@@ -100,29 +91,27 @@ export default class Leader {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   update (startPoint, endPoint) {
-
     this.startPoint = startPoint
     this.endPoint = endPoint
 
     this.dir = {
-     x: endPoint.x - startPoint.x,
-     y: endPoint.y - startPoint.y
+      x: endPoint.x - startPoint.x,
+      y: endPoint.y - startPoint.y
     }
 
     this.draw()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   draw () {
-
     var startPoint = {
       x: this.endPoint.x - this.scaleFactor * this.dir.x,
       y: this.endPoint.y - this.scaleFactor * this.dir.y
@@ -137,7 +126,7 @@ export default class Leader {
       y: this.dir.y
     }
 
-    if(norm > 0){
+    if (norm > 0) {
       nDir.x /= norm
       nDir.y /= norm
     }
@@ -152,13 +141,13 @@ export default class Leader {
     })
 
     var orthoDir = {
-      x:  nDir.y * this.scaleFactor,
+      x: nDir.y * this.scaleFactor,
       y: -nDir.x * this.scaleFactor
     }
 
     var pts = [
-      startPoint.x - 3  * nDir.x,
-      startPoint.y - 3  * nDir.y,
+      startPoint.x - 3 * nDir.x,
+      startPoint.y - 3 * nDir.y,
       startPoint.x + 20 * nDir.x + 5 * orthoDir.x,
       startPoint.y + 20 * nDir.y + 5 * orthoDir.y,
       startPoint.x + 20 * nDir.x - 5 * orthoDir.x,
@@ -170,12 +159,11 @@ export default class Leader {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  remove() {
-
+  /// //////////////////////////////////////////////////////////////
+  remove () {
     this.leader.remove()
   }
 }

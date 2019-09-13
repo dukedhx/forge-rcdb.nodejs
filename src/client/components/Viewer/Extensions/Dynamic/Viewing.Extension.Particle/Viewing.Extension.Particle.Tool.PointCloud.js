@@ -3,13 +3,11 @@ import Toolkit from 'Viewer.Toolkit'
 import Stopwatch from 'Stopwatch'
 
 export default class ParticleToolPointCloud extends EventsEmitter {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
-  constructor (viewer, particleSystem, options = {}){
-
+  /// //////////////////////////////////////////////////////////////
+  constructor (viewer, particleSystem, options = {}) {
     super()
 
     viewer.toolController.registerTool(this)
@@ -25,38 +23,33 @@ export default class ParticleToolPointCloud extends EventsEmitter {
     this.active = false
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Tool names
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getNames () {
-
-    return ["Viewing.Particle.Tool.PointCloud"]
+    return ['Viewing.Particle.Tool.PointCloud']
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Tool name
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getName () {
-
-    return "Viewing.Particle.Tool.PointCloud"
+    return 'Viewing.Particle.Tool.PointCloud'
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Activate Tool
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   activate () {
-
     if (!this.active) {
-
       this.stopwatch.getElapsedMs()
 
       this.active = true
 
       if (!this.pointCloud) {
-
         this.createPointCloud()
       }
 
@@ -67,14 +60,12 @@ export default class ParticleToolPointCloud extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Deactivate tool
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   deactivate () {
-
     if (this.active) {
-
       this.active = false
 
       this.viewer.toolController.deactivateTool(
@@ -86,18 +77,15 @@ export default class ParticleToolPointCloud extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setMaxParticles (maxParticles) {
-
     this.maxParticles = maxParticles
 
     if (this.geometry) {
-
-      for(var i= 0; i<this.geometry.vertices.length; ++i) {
-
+      for (var i = 0; i < this.geometry.vertices.length; ++i) {
         this.geometry.vertices[i].x = -5000
         this.geometry.vertices[i].y = -5000
         this.geometry.vertices[i].z = -5000
@@ -109,14 +97,12 @@ export default class ParticleToolPointCloud extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   clearParticles () {
-
-    for(var i= 0; i<this.geometry.vertices.length; ++i) {
-
+    for (var i = 0; i < this.geometry.vertices.length; ++i) {
       this.geometry.vertices[i].x = -5000
       this.geometry.vertices[i].y = -5000
       this.geometry.vertices[i].z = -5000
@@ -127,30 +113,27 @@ export default class ParticleToolPointCloud extends EventsEmitter {
     this.viewer.impl.invalidate(true, false, false)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   filterParticle (particle) {
-
     var result = false
 
-    this.bounds.forEach((bound)=>{
-
-      switch(bound.type){
-
+    this.bounds.forEach((bound) => {
+      switch (bound.type) {
         case 'sphere':
 
-          if(bound.max){
-            if(!particle.getPosition().withinSphere(
-                bound.center, bound.max)) {
+          if (bound.max) {
+            if (!particle.getPosition().withinSphere(
+              bound.center, bound.max)) {
               result = true
             }
           }
 
-          if(bound.min){
-            if(particle.getPosition().withinSphere(
-                bound.center, bound.min)) {
+          if (bound.min) {
+            if (particle.getPosition().withinSphere(
+              bound.center, bound.min)) {
               result = true
             }
           }
@@ -159,8 +142,8 @@ export default class ParticleToolPointCloud extends EventsEmitter {
 
         case 'box':
 
-          if(!particle.getPosition().withinBox(
-              bound.center, bound.size)) {
+          if (!particle.getPosition().withinBox(
+            bound.center, bound.size)) {
             result = true
           }
 
@@ -171,12 +154,11 @@ export default class ParticleToolPointCloud extends EventsEmitter {
     return result
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Update loop without shaders
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   update () {
-
     this.particleSystem.step(
       this.stopwatch.getElapsedMs() * 0.001)
 
@@ -187,13 +169,11 @@ export default class ParticleToolPointCloud extends EventsEmitter {
     let particle
 
     while (true) {
-
       particle = this.particleSystem.nextParticle()
 
       ++index
 
       if (!particle.ptr) {
-
         break
       }
 
@@ -208,50 +188,43 @@ export default class ParticleToolPointCloud extends EventsEmitter {
     this.emit('fps.tick')
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   updateParticle (particle, index) {
-
     var vertex = this.geometry.vertices[index]
 
     if (particle.getRecycled()) {
-
       vertex.x = -5000.0
       vertex.y = -5000.0
       vertex.z = -5000.0
-
     } else if (this.filterParticle(particle)) {
-
       particle.setLifeTime(-1)
 
       vertex.x = -5000.0
       vertex.y = -5000.0
       vertex.z = -5000.0
-
     } else {
-
       const pos = particle.getPosition()
 
       vertex.x = pos.getX()
       vertex.y = pos.getY()
       vertex.z = pos.getZ()
 
-      //var color = this.shader.uniforms.color.value
+      // var color = this.shader.uniforms.color.value
       //
-      //color.x = Math.random()
-      //color.y = Math.random()
-      //color.z = Math.random()
+      // color.x = Math.random()
+      // color.y = Math.random()
+      // color.z = Math.random()
     }
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // Creates 1M vertices PointCloud supported by Forge Viewer
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   createPointCloud (maxPoints = 1000000) {
-
     // Vertex Shader code
     const vertexShader = `
       attribute vec4 color;
@@ -282,7 +255,7 @@ export default class ParticleToolPointCloud extends EventsEmitter {
       depthTest: false,
       fragmentShader,
       vertexShader,
-      attributes:{
+      attributes: {
         color: {
           type: 'v4',
           value: []
@@ -294,8 +267,7 @@ export default class ParticleToolPointCloud extends EventsEmitter {
     // and shader attribute colors
     this.geometry = new THREE.Geometry()
 
-    for(var i = 0; i < maxPoints; ++i) {
-
+    for (var i = 0; i < maxPoints; ++i) {
       this.geometry.vertices.push(
         new THREE.Vector3(-5000, -5000, -5000))
 

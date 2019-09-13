@@ -6,13 +6,11 @@ import Leader from './Markup3D.Leader'
 import throttle from 'lodash/throttle'
 
 export default class Markup3D extends EventsEmitter {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer, screenPoint, dbId, fragId, worldPoint, opts = {}) {
-
     super()
 
     this.occlusionDist = opts.occlusionDist || 25
@@ -56,7 +54,6 @@ export default class Markup3D extends EventsEmitter {
     // creates single container for all Leader objects
     // if doesnt exist
     if ($('.leader-container').length === 0) {
-
       $(viewer.container).append(
         '<svg class="markup3D leader-container"></svg>')
     }
@@ -64,7 +61,7 @@ export default class Markup3D extends EventsEmitter {
     this.leaderContainer =
       $('.leader-container')[0]
 
-    this.onMouseUpHandler = (event)=>
+    this.onMouseUpHandler = (event) =>
       this.onMouseUp(event)
 
     $(viewer.container).on(
@@ -100,7 +97,6 @@ export default class Markup3D extends EventsEmitter {
       opts.properties)
 
     this.labelMarker.on('created', () => {
-
       this.labelMarker.off('created')
 
       this.created = true
@@ -111,34 +107,30 @@ export default class Markup3D extends EventsEmitter {
     this.setLeaderEndPoint(screenPoint)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   startDrag () {
-
     this.labelMarker.startDrag()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   endDrag () {
-
     this.labelMarker.endDrag()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setVisible (show, force = false) {
-
-    //update only if it's a toggle
+    // update only if it's a toggle
 
     if (show === this.visible && !force) {
-
       return
     }
 
@@ -149,12 +141,11 @@ export default class Markup3D extends EventsEmitter {
     this.leader.setVisible(show)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setLabelItem (item) {
-
     this.labelMarker.item = item
 
     this.labelMarker.updateLabel(
@@ -162,12 +153,11 @@ export default class Markup3D extends EventsEmitter {
       item.value)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   normalize (screenPoint) {
-
     var viewport = this.viewer.navigation.getScreenViewport()
 
     var n = {
@@ -178,12 +168,11 @@ export default class Markup3D extends EventsEmitter {
     return n
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   screenToWorld (screenPoint) {
-
     var n = this.normalize(screenPoint)
 
     var worldPoint = this.viewer.utilities.getHitPoint(
@@ -192,7 +181,7 @@ export default class Markup3D extends EventsEmitter {
     return worldPoint
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Return hit data
   // {
   //  dbId: nb
@@ -201,9 +190,8 @@ export default class Markup3D extends EventsEmitter {
   //  intersectPoint: THREE.Vector3
   //  model: RenderModel
   // }
-  /////////////////////////////////////////////////////////////////
-  getHitData(x, y) {
-
+  /// //////////////////////////////////////////////////////////////
+  getHitData (x, y) {
     y = 1.0 - y
 
     x = x * 2.0 - 1.0
@@ -214,15 +202,14 @@ export default class Markup3D extends EventsEmitter {
     var result = this.viewer.impl.hitTestViewport(
       vpVec, false)
 
-    return result ? result : null
+    return result || null
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  direction() {
-
+  /// //////////////////////////////////////////////////////////////
+  direction () {
     var dir = {
       x: this.endPoint.x - this.startPoint.x,
       y: this.endPoint.y - this.startPoint.y
@@ -231,12 +218,11 @@ export default class Markup3D extends EventsEmitter {
     return dir
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setLeaderEndPoint (endPoint) {
-
     this.endPoint = {
       x: endPoint.x - this.offset.x,
       y: endPoint.y - this.offset.y
@@ -245,34 +231,29 @@ export default class Markup3D extends EventsEmitter {
     this.update()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onTrackerModified (e) {
-
     this.startPoint = {
       x: e.screenPoint.x,
       y: e.screenPoint.y
     }
 
     if (this.occlusion && this.checkOcclusion()) {
-
       this.setVisible(false)
-
     } else {
-
       this.update()
       this.setVisible(true)
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   checkOcclusion () {
-
     var n = this.normalize({
       x: this.startPoint.x + this.offset.x,
       y: this.startPoint.y + this.offset.y
@@ -282,9 +263,7 @@ export default class Markup3D extends EventsEmitter {
       n.x, n.y)
 
     if (hitData) {
-
-      if(hitData.dbId != this.dbId) {
-
+      if (hitData.dbId != this.dbId) {
         return true
       }
 
@@ -301,26 +280,24 @@ export default class Markup3D extends EventsEmitter {
         dist.y * dist.y +
         dist.z * dist.z
 
-     if(d > this.occlusionDist){
-
-       return true
-     }
+      if (d > this.occlusionDist) {
+        return true
+      }
     }
 
-   return false
+    return false
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   update () {
-
     var dir = this.direction()
 
     var norm = Math.sqrt(dir.x * dir.x + dir.y * dir.y)
 
-    if(norm > 0) {
+    if (norm > 0) {
       dir.x = dir.x / norm
       dir.y = dir.y / norm
     }
@@ -343,12 +320,11 @@ export default class Markup3D extends EventsEmitter {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   updateFragmentTransform () {
-
     var pos = this.meshPosition(
       this.fragId)
 
@@ -369,26 +345,22 @@ export default class Markup3D extends EventsEmitter {
     this.pinMarker.setWorldPoint(worldPoint)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   updateVisibilty (event) {
-
-    switch(event.type) {
-
+    switch (event.type) {
       case 'isolate':
 
-        //if this node is isolated or all nodes visible
-        if(event.nodeIdArray.indexOf(this.dbId) > -1 ||
+        // if this node is isolated or all nodes visible
+        if (event.nodeIdArray.indexOf(this.dbId) > -1 ||
           !event.nodeIdArray.length) {
-
           this.update()
           this.setVisible(true)
 
-        //if another node is isolated
-        } else if(event.nodeIdArray.length) {
-
+        // if another node is isolated
+        } else if (event.nodeIdArray.length) {
           this.setVisible(false)
         }
 
@@ -396,9 +368,8 @@ export default class Markup3D extends EventsEmitter {
 
       case 'hide':
 
-        //this node is hidden
-        if(event.nodeIdArray.indexOf(this.dbId) > -1) {
-
+        // this node is hidden
+        if (event.nodeIdArray.indexOf(this.dbId) > -1) {
           this.setVisible(false)
         }
 
@@ -406,9 +377,8 @@ export default class Markup3D extends EventsEmitter {
 
       case 'show':
 
-        //this node is shown
-        if(event.nodeIdArray.indexOf(this.dbId) > -1) {
-
+        // this node is shown
+        if (event.nodeIdArray.indexOf(this.dbId) > -1) {
           this.update()
           this.setVisible(true)
         }
@@ -417,12 +387,11 @@ export default class Markup3D extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  meshPosition(fragId) {
-
+  /// //////////////////////////////////////////////////////////////
+  meshPosition (fragId) {
     var mesh = this.viewer.impl.getRenderProxy(
       this.viewer.model,
       fragId)
@@ -434,37 +403,33 @@ export default class Markup3D extends EventsEmitter {
     return pos
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  onMouseUp(event) {
-
+  /// //////////////////////////////////////////////////////////////
+  onMouseUp (event) {
     if (this.dragging) {
-
       this.labelMarker.endDrag()
 
       this.emit('drag.end', this)
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  remove() {
-
+  /// //////////////////////////////////////////////////////////////
+  remove () {
     this.pinMarker.remove()
     this.leader.remove()
     this.labelMarker.remove()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  save() {
-
+  /// //////////////////////////////////////////////////////////////
+  save () {
     var screenPoint = {
       x: this.startPoint.x + this.offset.x,
       y: this.startPoint.y + this.offset.y
@@ -484,12 +449,11 @@ export default class Markup3D extends EventsEmitter {
     return state
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  static load(viewer, state, options = {}) {
-
+  /// //////////////////////////////////////////////////////////////
+  static load (viewer, state, options = {}) {
     var markup = new Markup3D(
       viewer,
       state.screenPoint,
@@ -511,15 +475,12 @@ export default class Markup3D extends EventsEmitter {
       state.item)
 
     if (markup.occlusion && markup.checkOcclusion()) {
-
       markup.labelMarker.setVisible(false)
       markup.pinMarker.setVisible(false)
       markup.leader.setVisible(false)
       markup.visible = false
       markup.update()
-
     } else {
-
       markup.update()
       markup.setVisible(true, true)
     }

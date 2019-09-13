@@ -4,14 +4,12 @@ import { ReactLoader } from 'Loader'
 import React from 'react'
 
 export default class NewSceneView extends BaseComponent {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.onRootNodeCreated = this.onRootNodeCreated.bind(this)
     this.onInputChanged = this.onInputChanged.bind(this)
@@ -21,59 +19,51 @@ export default class NewSceneView extends BaseComponent {
     this.toolkitAPI = this.props.arvrToolkitAPI
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onInputChanged (e) {
-
     this.sceneId = e.target.value
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onRootNodeCreated (tree, node) {
 
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onNodeChecked (node) {
-
     const nodeId = node.id.toString()
 
     if (node.checked) {
-
       this.includedDbIds.push(nodeId)
 
       this.removedDbIds =
         this.removedDbIds.filter((id) => {
-
           return id !== nodeId
         })
-
     } else {
-
       this.removedDbIds.push(nodeId)
 
       this.includedDbIds =
         this.includedDbIds.filter((id) => {
-
           return id !== nodeId
         })
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async createScene () {
-
     const sceneId = this.sceneId || this.guid()
 
     const notification = this.props.notifySvc.add({
@@ -86,15 +76,13 @@ export default class NewSceneView extends BaseComponent {
     })
 
     try {
-
-      const {urn, projectId, versionId} = this.props.model
+      const { urn, projectId, versionId } = this.props.model
 
       const opts = {
 
       }
 
       if (projectId) {
-
         const sceneDef3Legged = {
           prj: {
             projectId,
@@ -108,9 +96,7 @@ export default class NewSceneView extends BaseComponent {
         await this.toolkitAPI.createScene3Legged(
           projectId, versionId,
           sceneId, sceneDef3Legged, opts)
-
       } else {
-
         const sceneDef2Legged = {
           prj: {
             urn
@@ -133,9 +119,7 @@ export default class NewSceneView extends BaseComponent {
       this.props.notifySvc.update(notification)
 
       this.props.onSceneCreated()
-
     } catch (ex) {
-
       console.log(ex)
 
       notification.title = `Scene ${sceneId} failed :(`
@@ -146,12 +130,11 @@ export default class NewSceneView extends BaseComponent {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   guid (format = 'xxxx-xxxx-xxxx') {
-
     var d = new Date().getTime()
 
     const guid = format.replace(
@@ -165,14 +148,12 @@ export default class NewSceneView extends BaseComponent {
     return guid
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   shouldComponentUpdate (nextProps) {
-
     if (nextProps.guid !== this.props.guid) {
-
       this.includedDbIds = []
 
       this.removedDbIds = []
@@ -183,39 +164,38 @@ export default class NewSceneView extends BaseComponent {
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render () {
+    const { guid, hierarchy } = this.props
 
-    const {guid, hierarchy} = this.props
-
-    return(
-      <div className="new-scene">
-        <ReactLoader show={!hierarchy}/>
+    return (
+      <div className='new-scene'>
+        <ReactLoader show={!hierarchy} />
         {
           this.props.hierarchy &&
-          <div className="content">
-            <div className="controls">
-              <input
-                onChange={this.onInputChanged}
-                placeholder="Scene name..."
-                type="text"
-              />
-              <button onClick={this.createScene}>
-                <span className="fa fa-cloud-upload"/>
+            <div className='content'>
+              <div className='controls'>
+                <input
+                  onChange={this.onInputChanged}
+                  placeholder='Scene name...'
+                  type='text'
+                />
+                <button onClick={this.createScene}>
+                  <span className='fa fa-cloud-upload' />
                 Create scene ...
-              </button>
+                </button>
+              </div>
+              <HierarchyTreeView
+                onRootNodeCreated={this.onRootNodeCreated}
+                onNodeChecked={this.onNodeChecked}
+                hierarchy={hierarchy}
+                showSwitch
+                guid={guid}
+              />
             </div>
-            <HierarchyTreeView
-              onRootNodeCreated={this.onRootNodeCreated}
-              onNodeChecked={this.onNodeChecked}
-              hierarchy={hierarchy}
-              showSwitch={true}
-              guid={guid}
-            />
-          </div>
         }
       </div>
     )

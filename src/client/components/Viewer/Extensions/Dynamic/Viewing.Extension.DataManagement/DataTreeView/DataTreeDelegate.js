@@ -2,16 +2,13 @@ import ContextMenu from './DataContextMenu'
 import DataTreeNode from './DataTreeNode'
 import { TreeDelegate } from 'TreeView'
 
-
 export default class DataTreeDelegate extends TreeDelegate {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super ()
+    super()
 
     this.onContextDetails = this.onContextDetails.bind(this)
 
@@ -25,7 +22,7 @@ export default class DataTreeDelegate extends TreeDelegate {
 
     this.on('node.dblClick', (node) => {
 
-      //console.log(node)
+      // console.log(node)
     })
 
     this.derivativesAPI = props.derivativesAPI
@@ -33,14 +30,12 @@ export default class DataTreeDelegate extends TreeDelegate {
     this.dmAPI = props.dmAPI
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onContextDetails (data) {
-
     switch (data.type) {
-
       case 'hubs':
         this.showPayload(
           `${this.dmAPI.apiUrl}/hubs/` +
@@ -99,16 +94,15 @@ export default class DataTreeDelegate extends TreeDelegate {
           `${this.dmAPI.apiUrl}/projects/` +
           `${data.node.props.projectId}/items/` +
           `${data.node.props.itemId}/versions`)
-          break
+        break
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   showPayload (uri, target = '_blank') {
-
     const link = document.createElement('a')
 
     document.body.appendChild(link)
@@ -120,40 +114,36 @@ export default class DataTreeDelegate extends TreeDelegate {
     document.body.removeChild(link)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createRootNode (props) {
-
     this.rootNode = new DataTreeNode(props)
 
     return this.rootNode
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   destroy () {
-
     this.rootNode.destroy()
 
     this.off()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createTreeNode (node, parentDomElement) {
-
     const container = document.createElement('div')
 
     parentDomElement.appendChild(container)
 
     node.type.split('.').forEach((cls) => {
-
       parentDomElement.classList.add(cls)
     })
 
@@ -167,12 +157,11 @@ export default class DataTreeDelegate extends TreeDelegate {
     node.mount(container)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   nodeClickSelector (event) {
-
     const className = event.target.className
 
     return (
@@ -180,53 +169,41 @@ export default class DataTreeDelegate extends TreeDelegate {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   forEachChild (node, addChild) {
-
     node.addChild = addChild
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   filterNodes (filter, node = this.rootNode) {
-
     const name = node.name.toLowerCase()
 
     let visibleItems = 0
 
     if (node.children) {
-
       node.children.forEach((child) => {
-
         visibleItems += this.filterNodes(filter, child)
       })
 
       if (visibleItems) {
-
-        node.parentDomElement.style.display ='inline-block'
-
+        node.parentDomElement.style.display = 'inline-block'
       } else {
-
         node.parentDomElement.style.display =
           name.indexOf(filter) < 0
             ? 'none'
             : 'inline-block'
       }
-
     } else {
-
       if (name.indexOf(filter) < 0) {
-
         node.parentDomElement.style.display = 'none'
-
       } else {
-
-        node.parentDomElement.style.display ='inline-block'
+        node.parentDomElement.style.display = 'inline-block'
 
         ++visibleItems
       }

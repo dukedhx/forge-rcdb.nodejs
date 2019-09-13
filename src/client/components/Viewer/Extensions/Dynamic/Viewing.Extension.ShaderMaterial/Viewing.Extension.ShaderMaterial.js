@@ -1,43 +1,39 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // ShaderMaterial Extension
 // By Philippe Leefsma, February 2016
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import Toolkit from 'Viewer.Toolkit'
 import texture from './texture.png'
 import Stopwatch from 'Stopwatch'
 
 class ShaderMaterialExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.update = this.update.bind(this)
 
     this.stopwatch = new Stopwatch()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.ShaderMaterial'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
-  load() {
-
+  /// //////////////////////////////////////////////////////
+  load () {
     const vertexShader = `
       varying vec2 vUv;
       void main() {
@@ -62,26 +58,26 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
     `
 
     const shaderParams = {
-        side: THREE.DoubleSide,
-        fragmentShader,
-        vertexShader,
-        attributes: {
+      side: THREE.DoubleSide,
+      fragmentShader,
+      vertexShader,
+      attributes: {
 
-        },
-        uniforms: {
-          //resolution: {
-          //  value: 1
-          //},
-          texture: {
-            value: this.generateTexture(12),
-            type: 't'
-          }
-          //param: {
-          //  value: Math.PI,
-          //  type: 'f'
-          //}
+      },
+      uniforms: {
+        // resolution: {
+        //  value: 1
+        // },
+        texture: {
+          value: this.generateTexture(12),
+          type: 't'
         }
+        // param: {
+        //  value: Math.PI,
+        //  type: 'f'
+        // }
       }
+    }
 
     this.material = this.createShaderMaterial(
       Object.assign({}, shaderParams, {
@@ -90,19 +86,18 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
 
     this.updateActive = true
 
-    //this.update ()
+    // this.update ()
 
     console.log('Viewing.Extension.ShaderMaterial loaded')
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
-  unload() {
-
+  /// //////////////////////////////////////////////////////
+  unload () {
     console.log('Viewing.Extension.ShaderMaterial unloaded')
 
     this.updateActive = false
@@ -112,12 +107,11 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createShaderMaterial (shader) {
-
     const material = new THREE.ShaderMaterial(shader)
 
     const materials = this.viewer.impl.getMaterials()
@@ -130,24 +124,23 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
     return material
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   generateTexture (size) {
-
     const pixels = []
 
     for (let i = 0; i < size; ++i) {
-      for (let j = 0; j < size ; ++j) {
+      for (let j = 0; j < size; ++j) {
         const color = Math.random()
         const pixel = parseInt(color * 0xff)
         pixels.push(pixel, 0xff - pixel, 0, 0xff)
       }
     }
 
-    const dataTexture = new THREE.DataTexture (
-      Uint8Array.from (pixels),
+    const dataTexture = new THREE.DataTexture(
+      Uint8Array.from(pixels),
       size, size,
       THREE.RGBAFormat,
       THREE.UnsignedByteType,
@@ -162,10 +155,9 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
   }
 
   calculateUVsGeo (geometry, size) {
-
     geometry.computeBoundingBox()
 
-    const {min, max} = geometry.boundingBox
+    const { min, max } = geometry.boundingBox
 
     const range = new THREE.Vector2(
       max.x - min.x,
@@ -185,7 +177,6 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
     uvs.splice(0, uvs.length)
 
     geometry.faces.forEach((face) => {
-
       const v1 = geometry.vertices[face.a]
       const v2 = geometry.vertices[face.b]
       const v3 = geometry.vertices[face.c]
@@ -206,29 +197,27 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
     geometry.uvsNeedUpdate = true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onSelection (event) {
-
     if (event.selections && event.selections.length) {
-
       const selection = event.selections[0]
 
       const dbId = selection.dbIdArray[0]
 
       const model = this.viewer.model
 
-      //const material = new THREE.MeshPhongMaterial({
+      // const material = new THREE.MeshPhongMaterial({
       //  specular: new THREE.Color(0xff0000),
       //  color: new THREE.Color(0xff0000),
       //  side: THREE.DoubleSide
-      //})
+      // })
       //
-      //const materials = this.viewer.impl.getMaterials()
+      // const materials = this.viewer.impl.getMaterials()
       //
-      //materials.addMaterial(
+      // materials.addMaterial(
       //  'test-material',
       //  material,
       //  true)
@@ -239,10 +228,10 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
 
       this.calculateUVsGeo(mesh.geometry, 12)
 
-      //const fragIds = await Toolkit.getFragIds (
+      // const fragIds = await Toolkit.getFragIds (
       //  selection.model, dbId)
       //
-      //this.setMaterial(selection.model,
+      // this.setMaterial(selection.model,
       //  fragIds, this.material)
 
       Toolkit.hide(this.viewer, dbId, model)
@@ -255,29 +244,25 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setMaterial (model, fragIds, material) {
-
     const fragList = model.getFragmentList()
 
     fragIds.forEach((fragId) => {
-
       fragList.setMaterial(fragId, material)
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   update () {
-
     if (this.updateActive) {
-
-      requestAnimationFrame (this.update)
+      requestAnimationFrame(this.update)
 
       const dt = this.stopwatch.getElapsedMs() * 0.001
 
@@ -287,7 +272,7 @@ class ShaderMaterialExtension extends MultiModelExtensionBase {
 
       param.needsUpdate = true
 
-      this.viewer.impl.invalidate (true)
+      this.viewer.impl.invalidate(true)
     }
   }
 }

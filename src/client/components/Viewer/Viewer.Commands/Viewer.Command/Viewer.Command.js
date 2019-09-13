@@ -3,10 +3,8 @@ import ViewerToolkit from 'Viewer.Toolkit'
 import EventsEmitter from 'EventsEmitter'
 
 export default class ViewerCommand extends EventsEmitter {
-
   constructor (viewer, options = {}) {
-
-    super ()
+    super()
 
     this.commandTool = new CommandTool(viewer, options)
 
@@ -17,48 +15,41 @@ export default class ViewerCommand extends EventsEmitter {
     this.viewer = viewer
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   activate () {
-
     if (!this.commandTool.active) {
-
       this.commandTool.activate()
 
       this.commandTool.on('activate', (tool) => {
-
         this.emit('command.activate', this)
       })
 
       this.commandTool.on('deactivate', (tool) => {
-
         this.emit('command.deactivate', this)
       })
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   deactivate () {
-
     if (this.commandTool.active) {
-
       this.commandTool.deactivate()
 
       this.commandTool.off()
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   createButtonControl (options) {
-
     const control = ViewerToolkit.createButton(
       options.id,
       options.icon,
@@ -68,7 +59,6 @@ export default class ViewerCommand extends EventsEmitter {
     var parentControl = options.parentControl
 
     if (!parentControl) {
-
       const viewerToolbar = this.viewer.getToolbar(true)
 
       parentControl = new Autodesk.Viewing.UI.ControlGroup(

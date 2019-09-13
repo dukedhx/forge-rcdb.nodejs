@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // Viewing.Extension.Particle
 // by Philippe Leefsma, March 2016
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 import ParticleToolPointCloud from './Viewing.Extension.Particle.Tool.PointCloud'
 import ParticleToolMesh from './Viewing.Extension.Particle.Tool.Mesh'
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
@@ -15,14 +15,12 @@ import FPS from './utils/FPSMeter'
 import dat from 'dat-gui'
 
 class ParticleExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
-  constructor(viewer, options) {
-
-    super (viewer, options)
+  /// //////////////////////////////////////////////////////////////
+  constructor (viewer, options) {
+    super(viewer, options)
 
     this.options = options
 
@@ -52,43 +50,38 @@ class ParticleExtension extends MultiModelExtensionBase {
     this.tool = 'Point Cloud'
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.Particle'
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////////////
-  load() {
-
+  /// //////////////////////////////////////////////////////////////
+  load () {
     console.log('Viewing.Extension.Particle loaded')
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelRootLoaded () {
-
     this.options.loader.show(false)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onGeometryLoaded () {
-
     this.loadScene().then(() => {
-
       this.viewer.setProgressiveRendering(false)
 
       $(this.viewer.container).append(
@@ -102,7 +95,7 @@ class ParticleExtension extends MultiModelExtensionBase {
 
       var fps = new FPSMeter(
         document.getElementById('particle-toolbar'), {
-          maxFps:    20, //expected
+          maxFps: 20, // expected
           smoothing: 10,
           show: 'fps',
           decimals: 1,
@@ -123,15 +116,14 @@ class ParticleExtension extends MultiModelExtensionBase {
 
       this.transformTool.on('transform.select',
         (event) => {
-
           return this.onSelect(event)
         })
 
-      this.particleToolMesh.on('fps.tick',()=>{
+      this.particleToolMesh.on('fps.tick', () => {
         fps.tick()
       })
 
-      this.particleToolPointCloud.on('fps.tick',()=>{
+      this.particleToolPointCloud.on('fps.tick', () => {
         fps.tick()
       })
 
@@ -140,7 +132,6 @@ class ParticleExtension extends MultiModelExtensionBase {
       this.activeParticleTool = this.particleToolPointCloud
 
       if (this.options.autoStart) {
-
         this.particleToolPointCloud.activate()
       }
 
@@ -148,22 +139,19 @@ class ParticleExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // load control panel
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   loadPanel () {
-
     this.particlePanel = new ParticlePanel(
       this, this.viewer, null)
 
     this.particlePanel.on('objectModified', (event) => {
-
       this.onObjectModified(event)
     })
 
     this.particlePanel.on('maxParticles.changed', (value) => {
-
       this.particleToolPointCloud.setMaxParticles(value)
 
       this.particleToolMesh.setMaxParticles(value)
@@ -171,26 +159,18 @@ class ParticleExtension extends MultiModelExtensionBase {
       this.particleSystem.setMaxParticles(value)
 
       if (value > 0) {
-
-        if(!this.activeParticleTool.active) {
-
+        if (!this.activeParticleTool.active) {
           this.activeParticleTool.activate()
-
         } else {
-
           this.activeParticleTool.clearParticles()
         }
-
       } else {
-
         this.activeParticleTool.deactivate()
       }
     })
 
     this.particlePanel.on('tool.changed', (value) => {
-
       switch (value) {
-
         case 'Mesh':
           this.activeParticleTool = this.particleToolMesh
           this.particleToolPointCloud.deactivate()
@@ -208,7 +188,6 @@ class ParticleExtension extends MultiModelExtensionBase {
     })
 
     this.particlePanel.on('shaders.changed', (value) => {
-
       this.particleToolMesh.activateShaders(value === 'ON')
     })
 
@@ -218,23 +197,20 @@ class ParticleExtension extends MultiModelExtensionBase {
       this.activeParticleTool)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////////////
-  unload() {
-
+  /// //////////////////////////////////////////////////////////////
+  unload () {
     console.log('Viewing.Extension.Particle unloaded')
 
     $('#particle-toolbar').remove()
 
     if (this.particlePanel) {
-
       this.particlePanel.setVisible(false)
     }
 
     if (this.viewer.activeParticleTool) {
-
       this.viewer.activeParticleTool.deactivate()
     }
 
@@ -245,36 +221,30 @@ class ParticleExtension extends MultiModelExtensionBase {
     this.particleToolMesh.particleSystem.destroy()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  onTxChange(txChange) {
-
+  /// //////////////////////////////////////////////////////////////
+  onTxChange (txChange) {
     txChange.dbIds.forEach((dbId) => {
-
       this.updateObjectPosition(dbId)
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onSelect (select) {
-
     if (select.dbIds.length) {
-
       var obj = this.particleSystem.getObjectById(
         select.dbIds[0])
 
-      if(this.particlePanel) {
-
+      if (this.particlePanel) {
         this.particlePanel.setSelected(obj)
       }
 
       if (obj) {
-
         return {
           transformable: obj.getTransformable(),
           selectable: obj.getSelectable()
@@ -282,24 +252,19 @@ class ParticleExtension extends MultiModelExtensionBase {
       }
 
       return { selectable: false }
-
     } else {
-
-      if(this.particlePanel) {
-
+      if (this.particlePanel) {
         this.particlePanel.setSelected(null)
       }
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onObjectModified (event) {
-
     switch (event.property) {
-
       case 'charge':
       case 'force':
 
@@ -318,12 +283,11 @@ class ParticleExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   createMaterial (props) {
-
     var material = new THREE.MeshPhongMaterial(props)
 
     this.viewer.impl.matman().addMaterial(
@@ -334,12 +298,11 @@ class ParticleExtension extends MultiModelExtensionBase {
     return material
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Creates object materials
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   createObjectMaterials () {
-
     var materials = [
 
       this.createMaterial({
@@ -362,12 +325,11 @@ class ParticleExtension extends MultiModelExtensionBase {
     return materials
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Update object position
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   async updateObjectPosition (dbId) {
-
     var bbox = await Toolkit.getWorldBoundingBox(
       this.viewer.model, dbId)
 
@@ -379,21 +341,16 @@ class ParticleExtension extends MultiModelExtensionBase {
       (bbox.min.z + bbox.max.z) / 2)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Load Scene settings from properties
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   loadScene () {
-
-    return new Promise((resolve, reject)=> {
-
-      this.viewer.search('particle.scene', async(dbIds)=>{
-
-        if (dbIds.length != 1)
-          return reject('Invalid Particle scene')
+    return new Promise((resolve, reject) => {
+      this.viewer.search('particle.scene', async (dbIds) => {
+        if (dbIds.length != 1) { return reject('Invalid Particle scene') }
 
         try {
-
           var propSettings = await Toolkit.getProperty(
             this.viewer.model, dbIds[0], 'particle.settings')
 
@@ -408,7 +365,6 @@ class ParticleExtension extends MultiModelExtensionBase {
           this.bounds = []
 
           for (var i = 1; i <= settings.bounds; ++i) {
-
             var propBounds = await Toolkit.getProperty(
               this.viewer.model, dbIds[0], 'particle.bound' + i)
 
@@ -426,24 +382,21 @@ class ParticleExtension extends MultiModelExtensionBase {
           ]
 
           return resolve(Promise.all(tasks))
-        }
-        catch (ex) {
+        } catch (ex) {
           return reject(ex)
         }
       })
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Parses scene bounds
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   parseBound (propBound) {
-
     var bound = JSON.parse(propBound.displayValue)
 
-    switch(bound.type) {
-
+    switch (bound.type) {
       case 'box':
 
         return {
@@ -477,16 +430,13 @@ class ParticleExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Loads scene objects
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   loadObject (dbId) {
-
-    return new Promise(async(resolve, reject) => {
-
+    return new Promise(async (resolve, reject) => {
       try {
-
         var propSettings = await Toolkit.getProperty(
           this.viewer.model, dbId, 'particle.settings')
 
@@ -509,24 +459,18 @@ class ParticleExtension extends MultiModelExtensionBase {
           this.viewer.model, dbId, material)
 
         return resolve()
-      }
-      catch (ex) {
-
-        //throwing Invalid DbId
-        //return reject(ex)
+      } catch (ex) {
+        // throwing Invalid DbId
+        // return reject(ex)
         return resolve()
       }
     })
   }
 
   loadObjects () {
-
-    return new Promise((resolve, reject)=> {
-
-      this.viewer.search('particle.object', (dbIds)=>{
-
-        var tasks = dbIds.map((dbId)=> {
-
+    return new Promise((resolve, reject) => {
+      this.viewer.search('particle.object', (dbIds) => {
+        var tasks = dbIds.map((dbId) => {
           return this.loadObject(dbId)
         })
 
@@ -535,16 +479,13 @@ class ParticleExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Load scene emitters
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   loadEmitter (dbId) {
-
-    return new Promise(async(resolve, reject) => {
-
+    return new Promise(async (resolve, reject) => {
       try {
-
         var bbox = await Toolkit.getWorldBoundingBox(
           this.viewer.model, dbId)
 
@@ -568,7 +509,7 @@ class ParticleExtension extends MultiModelExtensionBase {
           settings.dir[1],
           settings.dir[2])
 
-        var magnitude = offset.magnitude();
+        var magnitude = offset.magnitude()
 
         emitter.setOffset(
           offset.getX() * 0.5 / magnitude,
@@ -576,9 +517,9 @@ class ParticleExtension extends MultiModelExtensionBase {
           offset.getZ() * 0.5 / magnitude)
 
         emitter.setPosition(
-          (bbox.min.x + bbox.max.x) /2,
-          (bbox.min.y + bbox.max.y) /2,
-          (bbox.min.z + bbox.max.z) /2)
+          (bbox.min.x + bbox.max.x) / 2,
+          (bbox.min.y + bbox.max.y) / 2,
+          (bbox.min.z + bbox.max.z) / 2)
 
         var matIdx = emitter.charge < 0 ? 0 : 1
 
@@ -589,26 +530,20 @@ class ParticleExtension extends MultiModelExtensionBase {
           dbId, material)
 
         return resolve()
-      }
-      catch(ex){
-
+      } catch (ex) {
         console.log(ex)
 
-        //throwing Invalid DbId
-        //return reject(ex)
+        // throwing Invalid DbId
+        // return reject(ex)
         return resolve()
       }
     })
   }
 
   loadEmitters () {
-
     return new Promise((resolve, reject) => {
-
       this.viewer.search('particle.emitter', (dbIds) => {
-
-        var tasks = dbIds.map((dbId)=> {
-
+        var tasks = dbIds.map((dbId) => {
           return this.loadEmitter(dbId)
         })
 
@@ -617,16 +552,13 @@ class ParticleExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Load scene fields
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   loadField (dbId) {
-
-    return new Promise(async(resolve, reject) => {
-
+    return new Promise(async (resolve, reject) => {
       try {
-
         var bbox = await Toolkit.getWorldBoundingBox(
           this.viewer.model, dbId)
 
@@ -644,9 +576,9 @@ class ParticleExtension extends MultiModelExtensionBase {
         field.setForce(settings.force)
 
         field.setPosition(
-          (bbox.min.x + bbox.max.x) /2,
-          (bbox.min.y + bbox.max.y) /2,
-          (bbox.min.z + bbox.max.z) /2)
+          (bbox.min.x + bbox.max.x) / 2,
+          (bbox.min.y + bbox.max.y) / 2,
+          (bbox.min.z + bbox.max.z) / 2)
 
         var matIdx = settings.force < 0 ? 0 : 1
 
@@ -657,24 +589,18 @@ class ParticleExtension extends MultiModelExtensionBase {
           dbId, material)
 
         return resolve()
-      }
-      catch(ex){
-
-        //throwing Invalid DbId
-        //return reject(ex)
+      } catch (ex) {
+        // throwing Invalid DbId
+        // return reject(ex)
         return resolve()
       }
     })
   }
 
   loadFields () {
-
     return new Promise((resolve, reject) => {
-
       this.viewer.search('particle.field', (dbIds) => {
-
-        var tasks = dbIds.map((dbId)=> {
-
+        var tasks = dbIds.map((dbId) => {
           return this.loadField(dbId)
         })
 

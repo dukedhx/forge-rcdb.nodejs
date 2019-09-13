@@ -2,14 +2,12 @@ import Snap from 'imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist
 import GraphicMarker from 'GraphicMarker'
 
 export default class HotSpot extends GraphicMarker {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, data) {
-
-    super (viewer.container, {x: 34, y: 34})
+    super(viewer.container, { x: 34, y: 34 })
 
     this.occlusionDist = data.occlusionDist || 10000.0
 
@@ -35,8 +33,8 @@ export default class HotSpot extends GraphicMarker {
     `)
 
     $(`#${this.svgId}`).css({
-      height:'100%',
-      width:'100%'
+      height: '100%',
+      width: '100%'
     })
 
     var snap = Snap($(`#${this.svgId}`)[0])
@@ -44,8 +42,8 @@ export default class HotSpot extends GraphicMarker {
     this.circle = snap.paper.circle(17, 17, 12)
 
     this.circle.attr({
-      stroke: data.strokeColor || "#FF0000",
-      fill: data.fillColor || "#FF8888",
+      stroke: data.strokeColor || '#FF0000',
+      fill: data.fillColor || '#FF8888',
       fillOpacity: 0.1,
       strokeWidth: 3
     })
@@ -57,16 +55,15 @@ export default class HotSpot extends GraphicMarker {
       y: offset.top
     }
 
-    this.activateLock3d (viewer)
-    this.setWorldPoint (data.worldPoint)
-    this.setSelectable (true)
+    this.activateLock3d(viewer)
+    this.setWorldPoint(data.worldPoint)
+    this.setSelectable(true)
 
     const show = !(this.occlusion && this.checkOcclusion())
 
     this.setVisible(show)
 
     if (data.tooltip) {
-
       $(`#${this.svgId}`).tooltip({
         openOn: 'hover click',
         container: 'body',
@@ -93,12 +90,11 @@ export default class HotSpot extends GraphicMarker {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   hide () {
-
     this.skipOcclusion = true
 
     this.hidden = true
@@ -106,64 +102,55 @@ export default class HotSpot extends GraphicMarker {
     super.setVisible(false)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   show () {
-
     this.skipOcclusion = false
 
     this.hidden = false
 
     if (this.occlusion) {
-
       if (!this.checkOcclusion()) {
-
         super.setVisible(true)
       }
-
     } else {
-
       super.setVisible(true)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setVisible (show) {
-
     super.setVisible(show)
 
     this.emit('visible', show)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setData (data) {
-
     this.data = Object.assign({}, this.data, data)
 
     this.circle.attr({
-      stroke: data.strokeColor || "#FF0000",
-      fill: data.fillColor || "#FF8888",
+      stroke: data.strokeColor || '#FF0000',
+      fill: data.fillColor || '#FF8888',
       fillOpacity: data.fillOpacity || 0.1,
       strokeWidth: data.strokeWidth || 3
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   animate () {
-
     return new Promise((resolve) => {
-
       this.circle.attr({
         fillOpacity: 0.95,
         opacity: 1,
@@ -171,32 +158,30 @@ export default class HotSpot extends GraphicMarker {
       })
 
       this.circle.animate({
-          fillOpacity: 0.5,
-          opacity: 0.85,
-          r: 15
-        },
-        3000,
-        mina.easein, () => {
-
-          resolve(this)
-        })
+        fillOpacity: 0.5,
+        opacity: 0.85,
+        r: 15
+      },
+      3000,
+      mina.easein, () => {
+        resolve(this)
+      })
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   remove () {
-
-    this.setVisible (false)
+    this.setVisible(false)
 
     this.removed = true
 
     super.remove()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Return hit data
   // {
   //  dbId: nb
@@ -205,9 +190,8 @@ export default class HotSpot extends GraphicMarker {
   //  intersectPoint: THREE.Vector3
   //  model: RenderModel
   // }
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getHitData (x, y) {
-
     y = 1.0 - y
 
     x = x * 2.0 - 1.0
@@ -218,33 +202,30 @@ export default class HotSpot extends GraphicMarker {
     var result = this.viewer.impl.hitTestViewport(
       vpVec, false)
 
-    return result ? result : null
+    return result || null
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTrackerModified (screenPoint) {
-
-    super.onTrackerModified (screenPoint)
+    super.onTrackerModified(screenPoint)
 
     this.screenPoint = screenPoint
 
     if (!this.skipOcclusion) {
-
       const show = !(this.occlusion && this.checkOcclusion())
 
       this.setVisible(show)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   normalize (screenPoint) {
-
     var viewport = this.viewer.navigation.getScreenViewport()
 
     var n = {
@@ -255,12 +236,11 @@ export default class HotSpot extends GraphicMarker {
     return n
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   checkOcclusion () {
-
     var n = this.normalize({
       x: this.screenPoint.x + this.offset.x,
       y: this.screenPoint.y + this.offset.y
@@ -269,9 +249,7 @@ export default class HotSpot extends GraphicMarker {
     var hitData = this.getHitData(n.x, n.y)
 
     if (hitData) {
-
       if (hitData.dbId != this.dbId) {
-
         return true
       }
 
@@ -289,7 +267,6 @@ export default class HotSpot extends GraphicMarker {
         dist.z * dist.z
 
       if (d > this.occlusionDist) {
-
         return true
       }
     }

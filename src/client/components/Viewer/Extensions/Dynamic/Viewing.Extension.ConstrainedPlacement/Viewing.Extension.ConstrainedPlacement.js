@@ -1,17 +1,15 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.ConstrainedPlacement
 // by Philippe Leefsma, November 2017
 //
-/////////////////////////////////////////////////////////
-(function(){
+/// //////////////////////////////////////////////////////
+(function () {
+  'use strict'
 
-  'use strict';
+  AutodeskNamespace('Viewing.Extension.ConstrainedPlacement')
 
-  AutodeskNamespace("Viewing.Extension.ConstrainedPlacement")
-
-  function ConstrainedPlacementExtension(viewer, options) {
-
-    this.events = new Viewing.Extension.ConstrainedPlacement.EventsEmitter
+  function ConstrainedPlacementExtension (viewer, options) {
+    this.events = new Viewing.Extension.ConstrainedPlacement.EventsEmitter()
 
     Autodesk.Viewing.Extension.call(this, viewer, options)
 
@@ -37,20 +35,17 @@
   var proto = ConstrainedPlacementExtension.prototype
 
   proto.load = function () {
-
     console.log('Viewing.Extension.ConstrainedPlacement loaded')
 
     return true
   }
 
   proto.unload = function () {
-
     console.log('Viewing.Extension.ConstrainedPlacement unloaded')
 
     this.parentControl.removeControl(this.control)
 
     if (this.panel) {
-
       this.panel.setVisible(false)
     }
 
@@ -58,7 +53,6 @@
   }
 
   proto.onToolbarCreated = function () {
-
     var controlId = 'toolbar-constrained-placement'
 
     var button =
@@ -84,7 +78,6 @@
   }
 
   proto.createPanel = function () {
-
     var panel = new Viewing.Extension.ConstrainedPlacement.Panel(
       this.viewer, {
         snapper: this.snapper
@@ -93,7 +86,6 @@
     var _events = this.events
 
     panel.events.on('complete', function (args) {
-
       _events.emit('complete', args)
 
       console.log(args)
@@ -103,7 +95,6 @@
   }
 
   proto.onButtonClicked = function () {
-
     this.panel = this.panel || this.createPanel()
 
     this.panel.setVisible(true)

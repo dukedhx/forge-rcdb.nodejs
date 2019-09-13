@@ -1,27 +1,24 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.ExtensionManager
 // by Philippe Leefsma, April 2016
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import './Viewing.Extension.ExtensionManager.scss'
 import ExtensionPane from './ExtensionPane'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import PaneManager from 'PaneManager'
 import sortBy from 'lodash/sortBy'
 import ReactDOM from 'react-dom'
 import React from 'react'
 
 class ExtensionManager extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
-  constructor(viewer, options) {
-
-    super (viewer, options)
-
+  /// //////////////////////////////////////////////////////
+  constructor (viewer, options) {
+    super(viewer, options)
 
     this.renderTitle = this.renderTitle.bind(this)
 
@@ -29,14 +26,11 @@ class ExtensionManager extends MultiModelExtensionBase {
 
     this.reactOpts = {
       pushRenderExtension: (extension) => {
-
-        return new Promise(async(resolve) => {
-
+        return new Promise(async (resolve) => {
           const state = this.react.getState()
 
           if (!state.renderExtensions.length &&
               !state.visible) {
-
             this.react.pushRenderExtension(this)
           }
 
@@ -45,8 +39,7 @@ class ExtensionManager extends MultiModelExtensionBase {
               ...state.renderExtensions, extension
             ]
 
-          }).then(async() => {
-
+          }).then(async () => {
             resolve()
 
             await this.react.forceUpdate()
@@ -56,7 +49,6 @@ class ExtensionManager extends MultiModelExtensionBase {
         })
       },
       popRenderExtension: (extensionId) => {
-
         const state = this.react.getState()
 
         const renderExtensions =
@@ -65,16 +57,13 @@ class ExtensionManager extends MultiModelExtensionBase {
           })
 
         return new Promise((resolve) => {
-
           this.react.setState({
             renderExtensions
-          }).then(async() => {
-
+          }).then(async () => {
             resolve()
 
             if (!renderExtensions.length &&
                 !state.visible) {
-
               await this.react.popRenderExtension()
             }
 
@@ -89,33 +78,29 @@ class ExtensionManager extends MultiModelExtensionBase {
     this.react = options.react
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'extension-manager'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.ExtensionManager'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     this.viewer.addEventListener(
       Autodesk.Viewing.MODEL_ROOT_LOADED_EVENT, (e) => {
-
         this.options.loader.show(false)
       })
 
@@ -130,10 +115,8 @@ class ExtensionManager extends MultiModelExtensionBase {
       extensions: extensionsByName,
       renderExtensions: []
 
-    }).then (async() => {
-
+    }).then(async () => {
       if (this.options.visible) {
-
         await this.react.pushRenderExtension(this)
       }
 
@@ -142,10 +125,8 @@ class ExtensionManager extends MultiModelExtensionBase {
       const storage = this.storageSvc.load(
         'extension-manager')
 
-      const loadExts = extensions.filter ((extension) => {
-
+      const loadExts = extensions.filter((extension) => {
         if (this.options.useStorage) {
-
           const storageExtensions = storage.extensions || []
 
           extension.enabled = extension.enabled ||
@@ -156,7 +137,6 @@ class ExtensionManager extends MultiModelExtensionBase {
       })
 
       for (const extension of loadExts) {
-
         await this.loadDynamicExtension(extension)
       }
     })
@@ -166,29 +146,25 @@ class ExtensionManager extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log('Viewing.Extension.ExtensionManager unloaded')
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onExtensionLoaded (e) {
-
     const { extensions } = this.react.getState()
 
-    for (let extension of extensions) {
-
+    for (const extension of extensions) {
       if (e.extensionId === extension.id) {
-
         extension.enabled = true
 
         this.react.setState({
@@ -200,14 +176,12 @@ class ExtensionManager extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   loadDynamicExtension (extension) {
-
     return new Promise((resolve, reject) => {
-
       const { extensions } = this.react.getState()
 
       extension.loading = true
@@ -224,63 +198,51 @@ class ExtensionManager extends MultiModelExtensionBase {
       // native extensions are the ones available
       // with the viewer API
       if (extension.native) {
-
         this.viewer.loadExtension(
           extension.id, options).then((extInstance) => {
+          extension.loading = false
+          extension.enabled = true
 
-            extension.loading = false
-            extension.enabled = true
-
-            this.react.setState({
-              extensions
-            })
-
-            resolve (extInstance)
-
-          }, (error) => {
-
-            extension.loading = false
-
-            reject (error)
+          this.react.setState({
+            extensions
           })
 
-      } else {
+          resolve(extInstance)
+        }, (error) => {
+          extension.loading = false
 
+          reject(error)
+        })
+      } else {
         this.viewer.loadDynamicExtension(
           extension.id, options).then((extInstance) => {
+          extension.loading = false
+          extension.enabled = true
 
-            extension.loading = false
-            extension.enabled = true
-
-            this.react.setState({
-              extensions
-            })
-
-            resolve (extInstance)
-
-          }, (error) => {
-
-            extension.loading = false
-
-            reject (error)
+          this.react.setState({
+            extensions
           })
+
+          resolve(extInstance)
+        }, (error) => {
+          extension.loading = false
+
+          reject(error)
+        })
       }
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onExtensionItemClicked (extension) {
-
     if (extension.loading) {
-
       return
     }
 
     if (extension.enabled) {
-
       await this.react.popViewerPanel(extension.id)
 
       this.viewer.unloadExtension(extension.id)
@@ -296,14 +258,13 @@ class ExtensionManager extends MultiModelExtensionBase {
         })
 
       await this.react.setState({
-          renderExtensions: renderExts,
-          extensions
-        })
+        renderExtensions: renderExts,
+        extensions
+      })
 
       this.react.forceUpdate()
 
       if (this.options.useStorage) {
-
         this.storageSvc.save(
           'extension-manager', {
             extensions: extensions.filter((ext) => {
@@ -313,16 +274,13 @@ class ExtensionManager extends MultiModelExtensionBase {
             })
           })
       }
-
     } else {
-
       const { extensions } = this.react.getState()
 
       const extInstance =
-        await this.loadDynamicExtension (extension)
+        await this.loadDynamicExtension(extension)
 
       if (this.options.useStorage) {
-
         this.storageSvc.save(
           'extension-manager', {
             extensions: extensions.filter((ext) => {
@@ -335,48 +293,41 @@ class ExtensionManager extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onStopResize () {
-
     const { renderExtensions } = this.react.getState()
 
     renderExtensions.forEach((extension) => {
-
       if (extension.onStopResize) {
-
         extension.onStopResize()
       }
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onResize () {
-
     const { renderExtensions } = this.react.getState()
 
     renderExtensions.forEach((extension) => {
-
       if (extension.onResize) {
-
         extension.onResize()
       }
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle () {
-
     return (
-      <div className="title">
+      <div className='title'>
         <label>
           Extension Manager
         </label>
@@ -384,64 +335,63 @@ class ExtensionManager extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderExtensions () {
-
     const { extensions } = this.react.getState()
 
     const visibleExtensions = extensions.filter(
       (extension) => {
-
         return !extension.hidden
       })
 
     return visibleExtensions.map((extension) => {
-
       const className = 'item' +
         (extension.enabled ? ' enabled' : '') +
         (extension.loading ? ' loading' : '')
 
       return (
-        <div key={extension.id} className={className}
-           onClick={() => {
+        <div
+          key={extension.id} className={className}
+          onClick={() => {
             this.onExtensionItemClicked(extension)
-          }}>
+          }}
+        >
           <label>
-            { extension.name}
+            {extension.name}
           </label>
         </div>
       )
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderExtensionManager () {
-
     return (
-      <ExtensionPane renderTitle={this.renderTitle}
+      <ExtensionPane
+        renderTitle={this.renderTitle}
         key={ExtensionManager.ExtensionId}
-        className="extension-manager">
+        className='extension-manager'
+      >
 
-        <div className="extension-list">
-          { this.renderExtensions() }
+        <div className='extension-list'>
+          {this.renderExtensions()}
         </div>
 
       </ExtensionPane>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render () {
-
     const state = this.react.getState()
 
     const renderExtensions = sortBy(
@@ -452,11 +402,10 @@ class ExtensionManager extends MultiModelExtensionBase {
     const nbExt = renderExtensions.length +
       (this.options.visible ? 1 : 0)
 
-    const extensionPanes = renderExtensions.map (
+    const extensionPanes = renderExtensions.map(
       (extension) => {
-
         const flexProp = nbExt > 1 && extension.options.flex
-          ? {flex: extension.options.flex }
+          ? { flex: extension.options.flex }
           : {}
 
         return (
@@ -466,7 +415,8 @@ class ExtensionManager extends MultiModelExtensionBase {
             onResize={(e) => this.onResize()}
             className={extension.className}
             key={extension.id}
-            {...flexProp}>
+            {...flexProp}
+          >
             {
               extension.render({
                 showTitle: false,
@@ -479,11 +429,11 @@ class ExtensionManager extends MultiModelExtensionBase {
 
     const panes = state.visible
       ? [this.renderExtensionManager(), ...extensionPanes]
-      :  extensionPanes
+      : extensionPanes
 
     return (
-      <PaneManager orientation="horizontal">
-        { panes }
+      <PaneManager orientation='horizontal'>
+        {panes}
       </PaneManager>
     )
   }

@@ -1,9 +1,9 @@
-///////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////
 // ModelDerivatives Viewer Extension
 // By Philippe Leefsma, Autodesk Inc, July 2017
 //
-///////////////////////////////////////////////////////////
-import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
+/// ////////////////////////////////////////////////////////
+import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex'
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import DerivativesAPI from './Derivatives.API'
 import WidgetContainer from 'WidgetContainer'
@@ -12,7 +12,7 @@ import { Tabs, Tab } from 'react-bootstrap'
 import HierarchyView from './HierarchyView'
 import ManifestView from './ManifestView'
 import ExportsView from './ExportsView'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import { ReactLoader } from 'Loader'
 import Measure from 'react-measure'
 import DOMPurify from 'dompurify'
@@ -23,14 +23,12 @@ import Label from 'Label'
 import React from 'react'
 
 class ModelDerivativesExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
-	// Class constructor
+  /// //////////////////////////////////////////////////////
+  // Class constructor
   //
-  /////////////////////////////////////////////////////////
-	constructor (viewer, options) {
-
-		super (viewer, options)
+  /// //////////////////////////////////////////////////////
+  constructor (viewer, options) {
+    super(viewer, options)
 
     this.onTabSelected = this.onTabSelected.bind(this)
 
@@ -38,20 +36,17 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
       apiUrl: this.options.apiUrl
     })
 
-
     this.react = options.react
-	}
+  }
 
-	/////////////////////////////////////////////////////////
-	// Load callback
+  /// //////////////////////////////////////////////////////
+  // Load callback
   //
-  /////////////////////////////////////////////////////////
-	load () {
-
+  /// //////////////////////////////////////////////////////
+  load () {
     this.options.loader.show(false)
 
     if (!this.viewer.model) {
-
       this.viewer.container.classList.add('empty')
     }
 
@@ -64,24 +59,19 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
       models: [],
       guid: null
 
-    }).then (async() => {
-
+    }).then(async () => {
       await this.react.pushRenderExtension(this)
 
       const requiresLogin = this.options.requiresLogin
 
       if (!this.options.appState.user && requiresLogin) {
-
         try {
-
           const user = await this.forgeSvc.getUser()
 
           this.react.setState({
             user
           })
-
         } catch (ex) {
-
           return this.showLogin()
         }
       }
@@ -97,77 +87,67 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
 
     console.log('Viewing.Extension.ModelDerivatives loaded')
 
-		return true
-	}
+    return true
+  }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'model-derivatives'
   }
 
-  /////////////////////////////////////////////////////////
-	// Extension Id
+  /// //////////////////////////////////////////////////////
+  // Extension Id
   //
-  /////////////////////////////////////////////////////////
-	static get ExtensionId () {
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
+    return 'Viewing.Extension.ModelDerivatives'
+  }
 
-		return 'Viewing.Extension.ModelDerivatives'
-	}
-
-  /////////////////////////////////////////////////////////
-	// Unload callback
+  /// //////////////////////////////////////////////////////
+  // Unload callback
   //
-  /////////////////////////////////////////////////////////
-	unload () {
-
+  /// //////////////////////////////////////////////////////
+  unload () {
     console.log('Viewing.Extension.ModelDerivatives loaded')
 
-    super.unload ()
+    super.unload()
 
-		return true
-	}
+    return true
+  }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setDocking (docked) {
-
     const id = ModelDerivativesExtension.ExtensionId
 
     if (docked) {
-
       await this.react.popRenderExtension(id)
 
       this.react.pushViewerPanel(this, {
         height: 250,
         width: 350
       })
-
     } else {
-
       await this.react.popViewerPanel(id)
 
       this.react.pushRenderExtension(this)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   showLogin () {
-
     const onClose = (result) => {
-
       this.dialogSvc.off('dialog.close', onClose)
 
       if (result === 'OK') {
-
         this.forgeSvc.login()
         return
       }
@@ -182,19 +162,18 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
       className: 'login-dlg',
       title: 'Forge Login required ...',
       content:
-        <div>
+  <div>
           Press OK to login ...
-        </div>,
+  </div>,
       open: true
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   selectModel (dbModel) {
-
     this.react.setState({
       selectedModel: dbModel,
       hierarchy: null,
@@ -212,15 +191,12 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
 
     this.derivativesAPI.getMetadata(urn).then(
       (metadata) => {
-
         if (metadata.data.metadata.length) {
-
-          const {guid} = metadata.data.metadata[0]
+          const { guid } = metadata.data.metadata[0]
 
           this.derivativesAPI.getHierarchy(
             urn, guid).then(
             (hierarchy) => {
-
               this.react.setState({
                 hierarchy,
                 guid
@@ -230,27 +206,24 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
       })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTabSelected (tabKey) {
-
     this.react.setState({
       activeTabKey: tabKey
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderModels () {
-
-    const {models, selectedModel} = this.react.getState()
+    const { models, selectedModel } = this.react.getState()
 
     const modelItems = models.map((dbModel) => {
-
       const thumbnailUrl = this.modelSvc.getThumbnailUrl(
         this.options.database, dbModel._id, 200)
 
@@ -258,37 +231,39 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
         ? ' active' : ''
 
       return (
-        <div className={"model-item" + active}
+        <div
+          className={'model-item' + active}
           key={dbModel._id}
           onClick={() => {
             this.selectModel(dbModel)
-          }}>
-          <Image src={thumbnailUrl}/>
-          <Label text= {dbModel.name}/>
+          }}
+        >
+          <Image src={thumbnailUrl} />
+          <Label text={dbModel.name} />
         </div>
       )
     })
 
     return (
       <WidgetContainer
-        title="Select a model to load its derivatives ..."
-        showTitle={true}>
+        title='Select a model to load its derivatives ...'
+        showTitle
+      >
 
-        <div className="models">
-          { modelItems }
+        <div className='models'>
+          {modelItems}
         </div>
 
       </WidgetContainer>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderDerivatives () {
-
-    const {activeTabKey, selectedModel, tabsWidth} =
+    const { activeTabKey, selectedModel, tabsWidth } =
       this.react.getState()
 
     const widgetTitle = 'Model Derivatives: ' +
@@ -298,86 +273,97 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
 
     const style = {
       width:
-        `${Math.floor((tabsWidth-8)/nbTabs-15)}px`
+        `${Math.floor((tabsWidth - 8) / nbTabs - 15)}px`
     }
 
     const tabTitle = (title) => {
-       return (
+      return (
         <label style={style}>
           {title}
         </label>
-       )
+      )
     }
 
     return (
       <WidgetContainer
         className={this.className}
         title={widgetTitle}
-        showTitle={true}>
-        <Measure bounds onResize={(rect) => {
-          this.react.setState({
-            tabsWidth: rect.bounds.width
-          })
-        }}>
-        {
-          ({ measureRef }) =>
-            <div ref={measureRef} className="tabs-container">
-              <Tabs activeKey={activeTabKey}
-                onSelect={this.onTabSelected}
-                id="derivatives-tab"
-                className="tabs">
-                <Tab className="tab-container"
-                  title={tabTitle('Manifest')}
-                  eventKey="manifest"
-                  key="manifest">
-                  { this.renderManifestTab() }
-                </Tab>
-                <Tab className="tab-container"
-                  title={tabTitle('Hierarchy')}
-                  eventKey="hierarchy"
-                  key="hierarchy">
-                  { this.renderHierarchyTab() }
-                </Tab>
-                <Tab className="tab-container"
-                  title={tabTitle('Exports')}
-                  eventKey="exports"
-                  key="exports">
-                  { this.renderExportsTab() }
-                </Tab>
-                <Tab className="tab-container"
-                  title={tabTitle('Custom Job')}
-                  eventKey="job"
-                  key="job">
-                  { this.renderJobTab() }
-                </Tab>
-              </Tabs>
-            </div>
+        showTitle
+      >
+        <Measure
+          bounds onResize={(rect) => {
+            this.react.setState({
+              tabsWidth: rect.bounds.width
+            })
+          }}
+        >
+          {
+            ({ measureRef }) =>
+              <div ref={measureRef} className='tabs-container'>
+                <Tabs
+                  activeKey={activeTabKey}
+                  onSelect={this.onTabSelected}
+                  id='derivatives-tab'
+                  className='tabs'
+                >
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Manifest')}
+                    eventKey='manifest'
+                    key='manifest'
+                  >
+                    {this.renderManifestTab()}
+                  </Tab>
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Hierarchy')}
+                    eventKey='hierarchy'
+                    key='hierarchy'
+                  >
+                    {this.renderHierarchyTab()}
+                  </Tab>
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Exports')}
+                    eventKey='exports'
+                    key='exports'
+                  >
+                    {this.renderExportsTab()}
+                  </Tab>
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Custom Job')}
+                    eventKey='job'
+                    key='job'
+                  >
+                    {this.renderJobTab()}
+                  </Tab>
+                </Tabs>
+              </div>
           }
         </Measure>
       </WidgetContainer>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderManifestTab () {
-
-    const {manifest} = this.react.getState()
+    const { manifest } = this.react.getState()
 
     return (
-      <ManifestView manifest={manifest}/>
+      <ManifestView manifest={manifest} />
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderHierarchyTab () {
-
-    const {hierarchy, selectedModel} = this.react.getState()
+    const { hierarchy, selectedModel } = this.react.getState()
 
     return (
       <HierarchyView
@@ -388,13 +374,12 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderExportsTab () {
-
-    const {selectedModel} = this.react.getState()
+    const { selectedModel } = this.react.getState()
 
     return (
       <ExportsView
@@ -404,13 +389,12 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderJobTab () {
-
-    const {selectedModel, guid} = this.react.getState()
+    const { selectedModel, guid } = this.react.getState()
 
     return (
       <JobView
@@ -422,63 +406,62 @@ class ModelDerivativesExtension extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderContent () {
+    const { models, selectedModel } = this.react.getState()
 
-    const {models, selectedModel} = this.react.getState()
-
-    const {showModelSelector} = this.options
+    const { showModelSelector } = this.options
 
     const showLoader = !models.length
 
     return (
-      <div className="content">
-        <ReactLoader show={showLoader}/>
+      <div className='content'>
+        <ReactLoader show={showLoader} />
         <ReflexContainer>
           {
             showModelSelector &&
-            <ReflexElement minSize={39}>
-            { this.renderModels() }
-            </ReflexElement>
+              <ReflexElement minSize={39}>
+                {this.renderModels()}
+              </ReflexElement>
           }
           {
             showModelSelector &&
             selectedModel &&
-            <ReflexSplitter/>
+              <ReflexSplitter />
           }
           {
             selectedModel &&
-            <ReflexElement minSize={39} flex={0.72}>
-              { this.renderDerivatives () }
-            </ReflexElement>
+              <ReflexElement minSize={39} flex={0.72}>
+                {this.renderDerivatives()}
+              </ReflexElement>
           }
         </ReflexContainer>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
     return (
       <WidgetContainer
         className={this.className}
-        showTitle={false}>
+        showTitle={false}
+      >
 
-        { this.renderContent () }
+        {this.renderContent()}
 
       </WidgetContainer>
     )
   }
 }
 
-Autodesk.Viewing.theExtensionManager.registerExtension (
+Autodesk.Viewing.theExtensionManager.registerExtension(
   ModelDerivativesExtension.ExtensionId,
   ModelDerivativesExtension)
 

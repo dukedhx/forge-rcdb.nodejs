@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
 // Written by Philippe Leefsma 2016 - ADN/Developer Technical Services
 //
@@ -14,7 +14,7 @@
 // MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
 // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 // UNINTERRUPTED OR ERROR FREE.
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 import SearchTreeDelegate from './SearchTreeDelegate'
 import BaseComponent from 'BaseComponent'
 import { TreeView } from 'TreeView'
@@ -23,14 +23,12 @@ import './SearchTreeView.scss'
 import React from 'react'
 
 export default class SearchTreeView extends BaseComponent {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.delegate = new SearchTreeDelegate({
       derivativesAPI: props.derivativesAPI,
@@ -39,14 +37,12 @@ export default class SearchTreeView extends BaseComponent {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getVersionsNode (nbVersions) {
-
     if (!this.versionsNode && nbVersions) {
-
       this.versionsNode = this.delegate.createNode({
         name: `Versions (${nbVersions})`,
         id: 'versions',
@@ -60,14 +56,12 @@ export default class SearchTreeView extends BaseComponent {
     return this.versionsNode
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getItemsNode (nbItems) {
-
     if (!this.itemsNode && nbItems) {
-
       this.itemsNode = this.delegate.createNode({
         name: `Items (${nbItems})`,
         type: 'node',
@@ -81,21 +75,17 @@ export default class SearchTreeView extends BaseComponent {
     return this.itemsNode
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   loadTree (searchResults) {
-
     this.delegate.on('node.destroy', (nodeId) => {
-
       this.tree.destroyNode(nodeId)
     })
 
     this.delegate.on('load.viewable', (node) => {
-
       if (this.props.onLoadViewable) {
-
         this.props.onLoadViewable(node)
       }
     })
@@ -107,14 +97,13 @@ export default class SearchTreeView extends BaseComponent {
       level: 0
     })
 
-    this.tree = new TreeView (
+    this.tree = new TreeView(
       this.delegate, this.rootNode,
       this.treeContainer, {
         excludeRoot: false
       })
 
     const items = searchResults.filter((res) => {
-
       return res.type === 'items'
     })
 
@@ -122,7 +111,6 @@ export default class SearchTreeView extends BaseComponent {
       items.length)
 
     items.forEach((res) => {
-
       const itemNode = this.delegate.createNode({
         name: res.attributes.displayName,
         projectId: this.props.projectId,
@@ -139,7 +127,6 @@ export default class SearchTreeView extends BaseComponent {
     })
 
     const versions = searchResults.filter((res) => {
-
       return res.type === 'versions'
     })
 
@@ -147,7 +134,6 @@ export default class SearchTreeView extends BaseComponent {
       versions.length)
 
     versions.forEach((res) => {
-
       const versionNode = this.delegate.createNode({
         name: res.attributes.displayName,
         projectId: this.props.projectId,
@@ -166,14 +152,12 @@ export default class SearchTreeView extends BaseComponent {
     this.rootNode.expand()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillReceiveProps (props) {
-
-    if (props.guid !== this.guid){
-
+    if (props.guid !== this.guid) {
       this.delegate.destroy()
 
       this.tree.destroy()
@@ -189,46 +173,43 @@ export default class SearchTreeView extends BaseComponent {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentDidMount () {
-
-    this.loadTree (this.props.searchResults)
+    this.loadTree(this.props.searchResults)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillUnmount () {
-
     this.delegate.destroy()
 
     this.tree.destroy()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   shouldComponentUpdate () {
-
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
+  /// //////////////////////////////////////////////////////
+  render () {
     return (
-      <div className="searchtree-container" ref={
-        (div) => this.treeContainer = div
-        }>
-      </div>
+      <div
+        className='searchtree-container' ref={
+          (div) => this.treeContainer = div
+        }
+      />
     )
   }
 }

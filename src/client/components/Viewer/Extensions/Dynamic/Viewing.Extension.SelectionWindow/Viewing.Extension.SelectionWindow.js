@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 // SelectionWindow Viewer Extension
 // By Philippe Leefsma, Autodesk Inc, August 2017
 //
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 import SelectionWindowTool from './Viewing.Extension.SelectionWindow.Tool'
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import SelectionTreeView from './SelectionTreeView'
@@ -15,14 +15,12 @@ import Label from 'Label'
 import React from 'react'
 
 class SelectionWindowExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.setPartialSelect = this.setPartialSelect.bind(this)
     this.onNodeDblClicked = this.onNodeDblClicked.bind(this)
@@ -32,20 +30,18 @@ class SelectionWindowExtension extends MultiModelExtensionBase {
     this.react = options.react
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     this.react.setState({
 
       showLoader: true,
       selection: null,
       active: false
 
-    }).then (() => {
-
+    }).then(() => {
       this.react.pushRenderExtension(this)
     })
 
@@ -73,66 +69,59 @@ class SelectionWindowExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'selection-window'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   static get ExtensionId () {
-
     return 'Viewing.Extension.SelectionWindow'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log('Viewing.Extension.SelectionWindow unloaded')
 
     this.selectionWindowTool.off()
 
-    super.unload ()
+    super.unload()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelRootLoaded () {
-
     this.selectionWindowTool =
       new SelectionWindowTool(this.viewer)
 
     this.selectionWindowTool.on('deactivate', () => {
-
-      this.react.setState({active: false})
+      this.react.setState({ active: false })
     })
 
     this.selectionWindowTool.on('activate', () => {
-
-      this.react.setState({active: true})
+      this.react.setState({ active: true })
     })
 
     this.selectionWindowTool.on('selection',
       (selection) => {
-
         this.viewer.impl.selector.setSelection(
           selection.dbIds,
           selection.model)
 
-        this.react.setState({selection})
+        this.react.setState({ selection })
       })
 
     this.viewer.toolController.registerTool(
@@ -143,73 +132,63 @@ class SelectionWindowExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelActivated (event) {
-
     this.selectionWindowTool.setModel(event.model)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setPartialSelect (partialSelect) {
-
     this.selectionWindowTool.setPartialSelect(partialSelect)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async startSelection () {
-
-    await this.react.setState({selection: null})
+    await this.react.setState({ selection: null })
 
     this.viewer.toolController.activateTool(
       this.selectionWindowTool.getName())
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setDocking (docked) {
-
     const id = SelectionWindowExtension.ExtensionId
 
     if (docked) {
-
       await this.react.popRenderExtension(id)
 
       this.react.pushViewerPanel(this, {
         height: 250,
         width: 350
       })
-
     } else {
-
-    await this.react.popViewerPanel(id)
+      await this.react.popViewerPanel(id)
 
       this.react.pushRenderExtension(this)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onNodeClicked (node) {
-
     const model = node.model
 
     if (model) {
-
       switch (node.type) {
-
         case 'component':
           this.viewer.impl.selector.setSelection(
             [node.id],
@@ -225,23 +204,20 @@ class SelectionWindowExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onNodeDblClicked (node) {
-
     const model = node.model
 
     if (model) {
-
       switch (node.type) {
-
         case 'component':
 
           model.visibilityManager.isolate(node.id)
 
-          Toolkit.isolateFull (
+          Toolkit.isolateFull(
             this.viewer,
             node.id,
             model)
@@ -253,7 +229,7 @@ class SelectionWindowExtension extends MultiModelExtensionBase {
           model.visibilityManager.isolate(
             node.props.childIds)
 
-          Toolkit.isolateFull (
+          Toolkit.isolateFull(
             this.viewer,
             node.props.childIds,
             model)
@@ -267,84 +243,88 @@ class SelectionWindowExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle (docked) {
-
     const spanClass = docked
       ? 'fa fa-chain-broken'
       : 'fa fa-chain'
 
     return (
-      <div className="title">
+      <div className='title'>
         <label>
           Selection Window
         </label>
-        <div className="selection-window-controls">
-          <button onClick={() => this.setDocking(docked)}
-            title="Toggle docking mode">
-            <span className={spanClass}/>
+        <div className='selection-window-controls'>
+          <button
+            onClick={() => this.setDocking(docked)}
+            title='Toggle docking mode'
+          >
+            <span className={spanClass} />
           </button>
         </div>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderContent () {
-
-    const {active, showLoader, selection} =
+    const { active, showLoader, selection } =
       this.react.getState()
 
     return (
-      <div className="content">
-        <ReactLoader show={showLoader}/>
-        <div className="row">
-          <button onClick={() => this.startSelection()}
-            className={`select-btn ${active ? 'active':''}`}>
-            <span className="fa fa-object-group"/>
+      <div className='content'>
+        <ReactLoader show={showLoader} />
+        <div className='row'>
+          <button
+            onClick={() => this.startSelection()}
+            className={`select-btn ${active ? 'active' : ''}`}
+          >
+            <span className='fa fa-object-group' />
             Select ...
           </button>
-          <Label text="Partial Selection: "/>
-          <Switch onChange={this.setPartialSelect}
+          <Label text='Partial Selection: ' />
+          <Switch
+            onChange={this.setPartialSelect}
             checked={false}
           />
         </div>
-        <div className="selection-tree-container">
+        <div className='selection-tree-container'>
           <SelectionTreeView
             onNodeDblClicked={this.onNodeDblClicked}
             onNodeClicked={this.onNodeClicked}
-            selection={selection}/>
+            selection={selection}
+          />
         </div>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
     return (
       <WidgetContainer
         renderTitle={() => this.renderTitle(opts.docked)}
         showTitle={opts.showTitle}
-        className={this.className}>
+        className={this.className}
+      >
 
-        { this.renderContent () }
+        {this.renderContent()}
 
       </WidgetContainer>
     )
   }
 }
 
-Autodesk.Viewing.theExtensionManager.registerExtension (
+Autodesk.Viewing.theExtensionManager.registerExtension(
   SelectionWindowExtension.ExtensionId,
   SelectionWindowExtension)
 

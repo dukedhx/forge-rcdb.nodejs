@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.Physics.Core
 // by Philippe Leefsma, July 2017
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import EventsEmitter from 'EventsEmitter'
 import Toolkit from 'Viewer.Toolkit'
@@ -10,14 +10,12 @@ import find from 'lodash/find'
 import Stopwatch from 'Stopwatch'
 
 class PhysicsCoreExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options = {}) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.softBodyHelpers = new Ammo.btSoftBodyHelpers()
 
@@ -33,55 +31,50 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
       this.gravity)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.Physics.Core'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     console.log('Viewing.Extension.Physics.Core loaded')
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log('Viewing.Extension.Physics.Core unloaded')
 
     this.runAnimation(false)
 
-    super.unload ()
+    super.unload()
 
     this.off()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async loadPhysicModel (model) {
-
     const componentStates =
       await this.getComponentStates(model)
 
     this.rigidBodies = componentStates.map(
       (componentState) => {
-
         const body = this.createComponentRigidBody(
           componentState)
 
@@ -91,53 +84,47 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
       })
 
     this.rigidBodies.forEach((rigidBody) => {
-
       this.world.addRigidBody(rigidBody)
     })
 
     this.softBodies = []
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   addRigidBody (rigidBody) {
-
     this.world.addRigidBody(rigidBody)
 
     this.rigidBodies.push(rigidBody)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getRigidBody (dbId) {
-
     return find(this.rigidBodies, (body) => {
-
       return dbId === body.initialState.dbId
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   addSoftBody (softBody) {
-
     this.world.addSoftBody(softBody, 1, -1)
 
     this.softBodies.push(softBody)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createWorld (g) {
-
     const collisionConfiguration =
       new Ammo.btSoftBodyRigidBodyCollisionConfiguration()
 
@@ -145,7 +132,7 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
       new Ammo.btCollisionDispatcher(
         collisionConfiguration)
 
-    const broadphase = new Ammo.btDbvtBroadphase
+    const broadphase = new Ammo.btDbvtBroadphase()
 
     const solver =
       new Ammo.btSequentialImpulseConstraintSolver()
@@ -165,12 +152,11 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     return world
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setGravity (gravity) {
-
     this.gravity = gravity
 
     this.world.setGravity(
@@ -178,24 +164,22 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
         0, 0, this.gravity))
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setTimeSkew (timeSkew) {
-
     this.timeSkew = timeSkew
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createCollisionShape (dbId, transform) {
-
     const vertices = this.getComponentVertices(dbId)
 
-    const {position, quaternion, scale} = transform
+    const { position, quaternion, scale } = transform
 
     const hull = new Ammo.btConvexHullShape()
 
@@ -210,12 +194,11 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     return hull
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getFragmentTransform (fragId) {
-
     const renderProxy = this.viewer.impl.getRenderProxy(
       this.viewer.model, fragId)
 
@@ -235,19 +218,17 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getComponentVertices (dbId) {
-
     const vertexArray = []
 
     const fragIds = Toolkit.getLeafFragIds(
       this.viewer.model, dbId)
 
     fragIds.forEach((fragId) => {
-
       const renderProxy =
         this.viewer.impl.getRenderProxy(
           this.viewer.model, fragId)
@@ -271,41 +252,38 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
       }]
 
       for (var oi = 0, ol = offsets.length; oi < ol; ++oi) {
-
         var start = offsets[oi].start
         var count = offsets[oi].count
         var index = offsets[oi].index
 
         for (var i = start, il = start + count; i < il; i += 3) {
+          const a = index + indices[i]
+          const b = index + indices[i + 1]
+          const c = index + indices[i + 2]
 
-           const a = index + indices[i]
-           const b = index + indices[i + 1]
-           const c = index + indices[i + 2]
+          const vA = new THREE.Vector3()
+          const vB = new THREE.Vector3()
+          const vC = new THREE.Vector3()
 
-           const vA = new THREE.Vector3()
-           const vB = new THREE.Vector3()
-           const vC = new THREE.Vector3()
+          vA.fromArray(positions, a * stride)
+          vB.fromArray(positions, b * stride)
+          vC.fromArray(positions, c * stride)
 
-           vA.fromArray(positions, a * stride)
-           vB.fromArray(positions, b * stride)
-           vC.fromArray(positions, c * stride)
-
-           vertexArray.push(vA)
-           vertexArray.push(vB)
-           vertexArray.push(vC)
-         }
+          vertexArray.push(vA)
+          vertexArray.push(vB)
+          vertexArray.push(vC)
+        }
       }
     })
 
     return vertexArray
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async getComponentStates (model) {
-
     const parseArray = (str, separator = ';') => {
       return str.split(separator).map((element) => {
         return parseFloat(element)
@@ -314,12 +292,11 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
 
     const dbIds = await Toolkit.getLeafNodes(model)
 
-    const tasks = dbIds.map(async(dbId) => {
-
-      const vLinear = await Toolkit.getProperty (
+    const tasks = dbIds.map(async (dbId) => {
+      const vLinear = await Toolkit.getProperty(
         model, dbId, 'vInit', '0;0;0')
 
-      const mass = await Toolkit.getProperty (
+      const mass = await Toolkit.getProperty(
         model, dbId, 'LMVMass', 1.0)
 
       const fragIds = Toolkit.getLeafFragIds(
@@ -331,7 +308,7 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
       return {
         vLinear: parseArray(vLinear.displayValue),
         mass: mass.displayValue,
-        vAngular: [0,0,0],
+        vAngular: [0, 0, 0],
         transform,
         fragIds,
         dbId
@@ -341,12 +318,11 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     return await Promise.all(tasks)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createComponentRigidBody (state) {
-
     const inertia = new Ammo.btVector3(0, 0, 0)
 
     const shape = this.createCollisionShape(
@@ -355,7 +331,7 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     shape.calculateLocalInertia(
       state.mass, inertia)
 
-    const transform = new Ammo.btTransform
+    const transform = new Ammo.btTransform()
 
     transform.setIdentity()
 
@@ -371,7 +347,6 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
         inertia)
 
     const fragProxies = state.fragIds.map((fragId) => {
-
       const fragProxy =
         this.viewer.impl.getFragmentProxy(
           this.viewer.model, fragId)
@@ -396,13 +371,12 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     return body
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setRigidBodyState (body, state) {
-
-    const transform = new Ammo.btTransform
+    const transform = new Ammo.btTransform()
 
     transform.setIdentity()
 
@@ -438,13 +412,12 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
         state.vAngular[2]))
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setRigidBodyTransform (body, state) {
-
-    const transform = new Ammo.btTransform
+    const transform = new Ammo.btTransform()
 
     transform.setIdentity()
 
@@ -470,36 +443,31 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     body.setActivationState(4)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   groundRigidBody (body, grounded) {
-
     const inertia = new Ammo.btVector3(0, 0, 0)
 
     if (grounded) {
-
-      body.setMassProps (0.0, inertia)
+      body.setMassProps(0.0, inertia)
 
       body.grounded = true
-
     } else {
-
       const mass = body.initialState.mass
 
-      body.setMassProps (mass, inertia)
+      body.setMassProps(mass, inertia)
 
       body.grounded = (mass === 0)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getRigidBodyVelocity (body) {
-
     const vAngular = body.getAngularVelocity()
 
     const vLinear = body.getLinearVelocity()
@@ -518,12 +486,11 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setRigidBodyVelocity (body, velocity) {
-
     body.setAngularVelocity(
       new Ammo.btVector3(
         velocity.angular.x,
@@ -539,12 +506,11 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     body.setActivationState(4)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   updateComponentTransform (body) {
-
     const transform = body.getCenterOfMassTransform()
 
     const rotation = transform.getRotation()
@@ -562,7 +528,6 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
       body.initialState.transform.position.z)
 
     body.fragProxies.forEach((fragProxy) => {
-
       fragProxy.quaternion =
         new THREE.Quaternion(
           rotation.x(),
@@ -580,12 +545,11 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   updateMeshTransform (body) {
-
     const transform = body.getCenterOfMassTransform()
 
     const rotation = transform.getRotation()
@@ -606,30 +570,26 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
       rotation.w())
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   runAnimation (run) {
-
     window.cancelAnimationFrame(this.animId)
 
     this.running = run
 
     if (run) {
-
       this.update()
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   update () {
-
     if (this.running) {
-
       const dt = this.stopwatch.getElapsedMs()
 
       const skew = this.timeSkew * 500
@@ -639,11 +599,8 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
         Math.sqrt(skew))
 
       this.rigidBodies.forEach((body) => {
-
         if (!body.grounded) {
-
           switch (body.type) {
-
             case 'COMPONENT':
               this.updateComponentTransform(body)
               break
@@ -657,7 +614,6 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
 
       this.softBodies.forEach((body) => {
 
-
       })
 
       this.viewer.impl.sceneUpdated(true)
@@ -670,21 +626,17 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   reset () {
-
     this.rigidBodies.forEach((body) => {
-
       if (!body.grounded) {
-
         this.setRigidBodyState(
           body, body.initialState)
 
         if (!this.running) {
-
           this.updateComponentTransform(body)
         }
 
@@ -695,26 +647,24 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     this.viewer.impl.sceneUpdated(true)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   activateAllRigidBodies () {
-
     this.rigidBodies.forEach((body) => {
-
       body.setActivationState(4)
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createSoftBody (state) {
 
-    //const btVector3	h=s*0.5;
-    //const btVector3	c []={	p+h*btVector3(-1,-1,-1),
+    // const btVector3	h=s*0.5;
+    // const btVector3	c []={	p+h*btVector3(-1,-1,-1),
     //  p+h*btVector3(+1,-1,-1),
     //  p+h*btVector3(-1,+1,-1),
     //  p+h*btVector3(+1,+1,-1),
@@ -723,11 +673,10 @@ class PhysicsCoreExtension extends MultiModelExtensionBase {
     //  p+h*btVector3(-1,+1,+1),
     //  p+h*btVector3(+1,+1,+1)};
 
+    // const btSoftBody = Ammo.btSoftBodyHelpers.CreateFromConvexHull(pdemo->m_softBodyWorldInfo,c,8)
 
-      //const btSoftBody = Ammo.btSoftBodyHelpers.CreateFromConvexHull(pdemo->m_softBodyWorldInfo,c,8)
-
-      //psb->generateBendingConstraints(2);
-      //pdemo->getSoftDynamicsWorld()->addSoftBody(psb);
+    // psb->generateBendingConstraints(2);
+    // pdemo->getSoftDynamicsWorld()->addSoftBody(psb);
   }
 }
 
@@ -736,7 +685,3 @@ Autodesk.Viewing.theExtensionManager.registerExtension(
   PhysicsCoreExtension)
 
 export default PhysicsCoreExtension.ExtensionId
-
-
-
-

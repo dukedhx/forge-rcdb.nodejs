@@ -1,21 +1,21 @@
 const initialState = {
-  "viewport":{
-    "eye":[87391.15872770472,-52418.6161141303,3808.015826295314],
-    "target":[197906.0067692647,33671.042387167516,-86862.75432838047],
-    "up":[0.428648156005003,0.3339114519146276,0.8395021742877],
-    "worldUpVector":[0,0,1],
-    "pivotPoint":[-1332.65625,-2874.078125,-7449],
-    "distanceToOrbit":-27082.75565679362,
-    "aspectRatio":1.3572397508038585,
-    "projection":"perspective",
-    "isOrthographic":false,
-    "fieldOfView":75
+  viewport: {
+    eye: [87391.15872770472, -52418.6161141303, 3808.015826295314],
+    target: [197906.0067692647, 33671.042387167516, -86862.75432838047],
+    up: [0.428648156005003, 0.3339114519146276, 0.8395021742877],
+    worldUpVector: [0, 0, 1],
+    pivotPoint: [-1332.65625, -2874.078125, -7449],
+    distanceToOrbit: -27082.75565679362,
+    aspectRatio: 1.3572397508038585,
+    projection: 'perspective',
+    isOrthographic: false,
+    fieldOfView: 75
   }
 }
 
 const items = [
 
-  //Conveyors
+  // Conveyors
   {
     status: 'OK',
     name: 'Conveyor',
@@ -29,7 +29,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Live Roller Conveyor'
-    },{
+    }, {
       name: 'Model',
       value: '9265'
     }, {
@@ -58,25 +58,25 @@ const items = [
       max: 1.0,
       min: 0.0
     }, {
-    threshold: 150 + (0.5 - Math.random()) * 50,
-      name: 'Amperage' ,
+      threshold: 150 + (0.5 - Math.random()) * 50,
+      name: 'Amperage',
       randomRange: 50.0,
       randomBase: 145.0,
       max: 200.0,
       min: 0.0
     }],
     state: {
-      "viewport": {
-        "eye": [88255.1447075106, -46079.521908684204, -1990.6050465916373],
-        "target": [166604.71508533583, 47129.37670997173, -116094.04732099373],
-        "up": [0.43997974062252976, 0.5234237640383375, 0.7296885575926694],
-        "worldUpVector": [0, 0, 1],
-        "pivotPoint": [-1332.65625, -2874.078125, -7449],
-        "distanceToOrbit": -14197.811020198671,
-        "aspectRatio": 1.440619667235495,
-        "projection": "perspective",
-        "isOrthographic": false,
-        "fieldOfView": 75
+      viewport: {
+        eye: [88255.1447075106, -46079.521908684204, -1990.6050465916373],
+        target: [166604.71508533583, 47129.37670997173, -116094.04732099373],
+        up: [0.43997974062252976, 0.5234237640383375, 0.7296885575926694],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -14197.811020198671,
+        aspectRatio: 1.440619667235495,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -94,7 +94,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Live Roller Conveyor'
-    },{
+    }, {
       name: 'Model',
       value: '9265'
     }, {
@@ -124,24 +124,24 @@ const items = [
       min: 0.0
     }, {
       threshold: 150 + (0.5 - Math.random()) * 50,
-      name: 'Amperage' ,
+      name: 'Amperage',
       randomRange: 50.0,
       randomBase: 145.0,
       max: 200.0,
       min: 0.0
     }],
     state: {
-      "viewport": {
-        "eye": [92752.874104877, -46169.4884891061, -1990.6050450099017],
-        "target": [162762.49882501984, 54426.85207240804, -115238.90839272905],
-        "up": [0.38766614065207616, 0.5570347686492289, 0.734457098752422],
-        "worldUpVector": [0, 0, 1],
-        "pivotPoint": [-1332.65625, -2874.078125, -7449],
-        "distanceToOrbit": -9668.38167282959,
-        "aspectRatio": 1.440619667235495,
-        "projection": "perspective",
-        "isOrthographic": false,
-        "fieldOfView": 75
+      viewport: {
+        eye: [92752.874104877, -46169.4884891061, -1990.6050450099017],
+        target: [162762.49882501984, 54426.85207240804, -115238.90839272905],
+        up: [0.38766614065207616, 0.5570347686492289, 0.734457098752422],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -9668.38167282959,
+        aspectRatio: 1.440619667235495,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -159,7 +159,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Live Roller Conveyor'
-    },{
+    }, {
       name: 'Model',
       value: '9265'
     }, {
@@ -189,24 +189,24 @@ const items = [
       min: 0.0
     }, {
       threshold: 150 + (0.5 - Math.random()) * 50,
-      name: 'Amperage' ,
+      name: 'Amperage',
       randomRange: 50.0,
       randomBase: 145.0,
       max: 200.0,
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[96616.07741145027,-46192.66798740944,-1990.6050451514138],
-        "target":[154207.82516886588,48058.838297910785,-127074.55146576429],
-        "up":[0.39083780794395245,0.639623792407429,0.6619117857146103],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-5246.180553511613,
-        "aspectRatio":1.440619667235495,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [96616.07741145027, -46192.66798740944, -1990.6050451514138],
+        target: [154207.82516886588, 48058.838297910785, -127074.55146576429],
+        up: [0.39083780794395245, 0.639623792407429, 0.6619117857146103],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -5246.180553511613,
+        aspectRatio: 1.440619667235495,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     },
     alert: {
@@ -227,7 +227,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Live Roller Conveyor'
-    },{
+    }, {
       name: 'Model',
       value: '9265'
     }, {
@@ -257,24 +257,24 @@ const items = [
       min: 0.0
     }, {
       threshold: 150 + (0.5 - Math.random()) * 50,
-      name: 'Amperage' ,
+      name: 'Amperage',
       randomRange: 50.0,
       randomBase: 145.0,
       max: 200.0,
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[100192.58950334761,-46214.12731822128,-1990.605045274157],
-        "target":[163028.31546832048,59931.26812501942,-114378.22032210509],
-        "up":[0.34308684358416164,0.579560244182019,0.7391896516612874],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-6985.068033096013,
-        "aspectRatio":1.440619667235495,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [100192.58950334761, -46214.12731822128, -1990.605045274157],
+        target: [163028.31546832048, 59931.26812501942, -114378.22032210509],
+        up: [0.34308684358416164, 0.579560244182019, 0.7391896516612874],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -6985.068033096013,
+        aspectRatio: 1.440619667235495,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -292,7 +292,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Live Roller Conveyor'
-    },{
+    }, {
       name: 'Model',
       value: '9265'
     }, {
@@ -322,24 +322,24 @@ const items = [
       min: 0.0
     }, {
       threshold: 150 + (0.5 - Math.random()) * 50,
-      name: 'Amperage' ,
+      name: 'Amperage',
       randomRange: 50.0,
       randomBase: 145.0,
       max: 200.0,
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[104087.49516436132,-46255.89922600665,-1990.6050459371033],
-        "target":[155085.58717897788,51225.79662978922,-127460.37464366421],
-        "up":[0.3485420730231898,0.6662302649608379,0.6592842007684616],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-2771.168850670859,
-        "aspectRatio":1.440619667235495,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [104087.49516436132, -46255.89922600665, -1990.6050459371033],
+        target: [155085.58717897788, 51225.79662978922, -127460.37464366421],
+        up: [0.3485420730231898, 0.6662302649608379, 0.6592842007684616],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -2771.168850670859,
+        aspectRatio: 1.440619667235495,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -357,7 +357,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Live Roller Conveyor'
-    },{
+    }, {
       name: 'Model',
       value: '9265'
     }, {
@@ -387,24 +387,24 @@ const items = [
       min: 0.0
     }, {
       threshold: 150 + (0.5 - Math.random()) * 50,
-      name: 'Amperage' ,
+      name: 'Amperage',
       randomRange: 50.0,
       randomBase: 145.0,
       max: 200.0,
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[108372.84442048208,-46189.39268376441,-1990.6050454156486],
-        "target":[163135.1143210135,59385.42897904264,-119042.73157529798],
-        "up":[0.32298137465495486,0.6226677800525984,0.7127186452663946],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-4768.927874181933,
-        "aspectRatio":1.440619667235495,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [108372.84442048208, -46189.39268376441, -1990.6050454156486],
+        target: [163135.1143210135, 59385.42897904264, -119042.73157529798],
+        up: [0.32298137465495486, 0.6226677800525984, 0.7127186452663946],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -4768.927874181933,
+        aspectRatio: 1.440619667235495,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -422,7 +422,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Live Roller Conveyor'
-    },{
+    }, {
       name: 'Model',
       value: '9265'
     }, {
@@ -452,29 +452,29 @@ const items = [
       min: 0.0
     }, {
       threshold: 150 + (0.5 - Math.random()) * 50,
-      name: 'Amperage' ,
+      name: 'Amperage',
       randomRange: 50.0,
       randomBase: 145.0,
       max: 200.0,
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[112372.79141537227,-46124.558086877594,-2286.7170190472907],
-        "target":[148201.1611140126,62903.1351560766,-123428.94553502563],
-        "up":[0.22663941323551473,0.6896761597260891,0.6877364110425851],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":7592.599863030606,
-        "aspectRatio":1.440619667235495,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [112372.79141537227, -46124.558086877594, -2286.7170190472907],
+        target: [148201.1611140126, 62903.1351560766, -123428.94553502563],
+        up: [0.22663941323551473, 0.6896761597260891, 0.6877364110425851],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: 7592.599863030606,
+        aspectRatio: 1.440619667235495,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
 
-  //DRMs
+  // DRMs
   {
     status: 'warning',
     name: 'DRM',
@@ -488,7 +488,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Multishuttle 2'
-    },{
+    }, {
       name: 'Model',
       value: 'DMS 2'
     }, {
@@ -519,17 +519,17 @@ const items = [
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[88971.41651447357,-44097.945072691466,-936.5167459019522],
-        "target":[152022.38893353072,80643.71969325992,-92097.04245408125],
-        "up":[0.24643320965292073,0.4875497973514322,0.8375952890762562],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":253.22207572292382,
-        "aspectRatio":1.791805926916221,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [88971.41651447357, -44097.945072691466, -936.5167459019522],
+        target: [152022.38893353072, 80643.71969325992, -92097.04245408125],
+        up: [0.24643320965292073, 0.4875497973514322, 0.8375952890762562],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: 253.22207572292382,
+        aspectRatio: 1.791805926916221,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -547,7 +547,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Multishuttle 2'
-    },{
+    }, {
       name: 'Model',
       value: 'DMS 2'
     }, {
@@ -577,18 +577,18 @@ const items = [
       max: 2.0,
       min: 0.0
     }],
-    state:{
-      "viewport":{
-        "eye":[92994.22509873811,-44142.27584317631,-1018.3510141817183],
-        "target":[190500.5303799387,73518.91793815968,-68059.48321913285],
-        "up":[0.25634969692440296,0.30933806053488416,0.9157482171379222],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-23435.269899217266,
-        "aspectRatio":1.4810581140350878,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+    state: {
+      viewport: {
+        eye: [92994.22509873811, -44142.27584317631, -1018.3510141817183],
+        target: [190500.5303799387, 73518.91793815968, -68059.48321913285],
+        up: [0.25634969692440296, 0.30933806053488416, 0.9157482171379222],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -23435.269899217266,
+        aspectRatio: 1.4810581140350878,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -606,7 +606,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Multishuttle 2'
-    },{
+    }, {
       name: 'Model',
       value: 'DMS 2'
     }, {
@@ -637,22 +637,22 @@ const items = [
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[96278.91496687978,-44150.487584839466,-1018.3510140716747],
-        "target":[209812.44742044972,61467.821834324546,-62671.081878271085],
-        "up":[0.27050835757583147,0.2516493127050206,0.9292458511592703],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-37910.42164832474,
-        "aspectRatio":1.6424887663398693,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [96278.91496687978, -44150.487584839466, -1018.3510140716747],
+        target: [209812.44742044972, 61467.821834324546, -62671.081878271085],
+        up: [0.27050835757583147, 0.2516493127050206, 0.9292458511592703],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -37910.42164832474,
+        aspectRatio: 1.6424887663398693,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
 
-  //DRMs
+  // DRMs
   {
     status: 'OK',
     name: 'DRM',
@@ -666,7 +666,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Multishuttle 2'
-    },{
+    }, {
       name: 'Model',
       value: 'DMS 2'
     }, {
@@ -697,17 +697,17 @@ const items = [
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[100220.48496275846,-44743.48010779832,-407.63893066962487],
-        "target":[198144.61485402368,76847.20016050377,-59337.43407617584],
-        "up":[0.22150511705452758,0.2750390317021576,0.9355688185050844],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-26599.052641162692,
-        "aspectRatio":1.667722687007874,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [100220.48496275846, -44743.48010779832, -407.63893066962487],
+        target: [198144.61485402368, 76847.20016050377, -59337.43407617584],
+        up: [0.22150511705452758, 0.2750390317021576, 0.9355688185050844],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -26599.052641162692,
+        aspectRatio: 1.667722687007874,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -725,7 +725,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Multishuttle 2'
-    },{
+    }, {
       name: 'Model',
       value: 'DMS 2'
     }, {
@@ -756,17 +756,17 @@ const items = [
       min: 0.0
     }],
     state: {
-      "viewport": {
-        "eye": [104513.42825552975, -44305.1611685688, -1036.5156145912279],
-        "target": [187381.60567092532, 75660.91061522462, -82197.81360554838],
-        "up": [0.27642852051189354, 0.40017826829453906, 0.873753184047068],
-        "worldUpVector": [0, 0, 1],
-        "pivotPoint": [-1332.65625, -2874.078125, -7449],
-        "distanceToOrbit": -19658.834544832807,
-        "aspectRatio": 1.667722687007874,
-        "projection": "perspective",
-        "isOrthographic": false,
-        "fieldOfView": 75
+      viewport: {
+        eye: [104513.42825552975, -44305.1611685688, -1036.5156145912279],
+        target: [187381.60567092532, 75660.91061522462, -82197.81360554838],
+        up: [0.27642852051189354, 0.40017826829453906, 0.873753184047068],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -19658.834544832807,
+        aspectRatio: 1.667722687007874,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -784,7 +784,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Multishuttle 2'
-    },{
+    }, {
       name: 'Model',
       value: 'DMS 2'
     }, {
@@ -815,17 +815,17 @@ const items = [
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[108568.99323124335,-44169.16155437489,-1036.5156156322148],
-        "target":[187032.95120947785,75592.34119588383,-86749.63746024927],
-        "up":[0.28149083948169307,0.4296465130666859,0.8580016206846753],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-18745.682657509322,
-        "aspectRatio":1.667722687007874,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [108568.99323124335, -44169.16155437489, -1036.5156156322148],
+        target: [187032.95120947785, 75592.34119588383, -86749.63746024927],
+        up: [0.28149083948169307, 0.4296465130666859, 0.8580016206846753],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -18745.682657509322,
+        aspectRatio: 1.667722687007874,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
@@ -843,7 +843,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'Multishuttle 2'
-    },{
+    }, {
       name: 'Model',
       value: 'DMS 2'
     }, {
@@ -874,22 +874,22 @@ const items = [
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[112808.74983141491,-44046.97840172456,-1036.5156125116055],
-        "target":[182399.3672640348,82434.44968931103,-84736.83707162837],
-        "up":[0.2417921272004978,0.4394588620958721,0.8651083606978143],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-13176.813542544678,
-        "aspectRatio":1.667722687007874,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [112808.74983141491, -44046.97840172456, -1036.5156125116055],
+        target: [182399.3672640348, 82434.44968931103, -84736.83707162837],
+        up: [0.2417921272004978, 0.4394588620958721, 0.8651083606978143],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -13176.813542544678,
+        aspectRatio: 1.667722687007874,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   },
 
-  //Sorters
+  // Sorters
   {
     status: 'OK',
     name: 'Sorter',
@@ -903,7 +903,7 @@ const items = [
     }, {
       name: 'Type',
       value: 'FlexSort SL2 Shoe Sorter'
-    },{
+    }, {
       name: 'Model',
       value: '2430'
     }, {
@@ -934,17 +934,17 @@ const items = [
       min: 0.0
     }],
     state: {
-      "viewport":{
-        "eye":[96551.90306841617,-51634.62821215773,-538.3284455574643],
-        "target":[160904.9478088526,54515.30330125261,-112059.7486808408],
-        "up":[0.3464622045153781,0.5714871678508734,0.7438859844251215],
-        "worldUpVector":[0,0,1],
-        "pivotPoint":[-1332.65625,-2874.078125,-7449],
-        "distanceToOrbit":-2112.7162953651323,
-        "aspectRatio":1.4810581140350878,
-        "projection":"perspective",
-        "isOrthographic":false,
-        "fieldOfView":75
+      viewport: {
+        eye: [96551.90306841617, -51634.62821215773, -538.3284455574643],
+        target: [160904.9478088526, 54515.30330125261, -112059.7486808408],
+        up: [0.3464622045153781, 0.5714871678508734, 0.7438859844251215],
+        worldUpVector: [0, 0, 1],
+        pivotPoint: [-1332.65625, -2874.078125, -7449],
+        distanceToOrbit: -2112.7162953651323,
+        aspectRatio: 1.4810581140350878,
+        projection: 'perspective',
+        isOrthographic: false,
+        fieldOfView: 75
       }
     }
   }

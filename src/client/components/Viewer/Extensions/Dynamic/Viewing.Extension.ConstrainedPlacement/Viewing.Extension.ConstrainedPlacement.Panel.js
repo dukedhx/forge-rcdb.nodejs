@@ -1,17 +1,15 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.ConstrainedPlacement
 // by Philippe Leefsma, November 2017
 //
-/////////////////////////////////////////////////////////
-(function(){
-
-  'use strict';
+/// //////////////////////////////////////////////////////
+(function () {
+  'use strict'
 
   AutodeskNamespace('Viewing.Extension.ConstrainedPlacement')
 
-  function ConstrainedPlacementPanel(viewer, options) {
-
-    this.events = new Viewing.Extension.ConstrainedPlacement.EventsEmitter
+  function ConstrainedPlacementPanel (viewer, options) {
+    this.events = new Viewing.Extension.ConstrainedPlacement.EventsEmitter()
 
     Autodesk.Viewing.UI.DockingPanel.call(
       this, viewer.container,
@@ -61,8 +59,8 @@
     this.xInput = document.createElement('input')
     this.yInput = document.createElement('input')
 
-    this.xInput.setAttribute("type", "text")
-    this.yInput.setAttribute("type", "text")
+    this.xInput.setAttribute('type', 'text')
+    this.yInput.setAttribute('type', 'text')
 
     content.appendChild(this.selectXBtn)
     content.appendChild(this.xInput)
@@ -88,7 +86,6 @@
   var proto = ConstrainedPlacementPanel.prototype
 
   proto.onSelectXAxis = function () {
-
     this.snapper.clearSelectionFilter()
     this.snapper.addSelectionFilter('edge')
     this.snapper.activate()
@@ -99,7 +96,6 @@
   }
 
   proto.onSelectYAxis = function () {
-
     this.snapper.clearSelectionFilter()
     this.snapper.addSelectionFilter('edge')
     this.snapper.activate()
@@ -110,7 +106,6 @@
   }
 
   proto.onSelectOrigin = function () {
-
     this.snapper.clearSelectionFilter()
     this.snapper.addSelectionFilter('vertex')
     this.snapper.activate()
@@ -122,30 +117,25 @@
 
   proto.onSnapperActivated = function () {
 
-
   }
 
   proto.onSnapperDeactivated = function () {
 
-
   }
 
   proto.onEdgeSnapped = function (edge) {
-
     switch (this.mode) {
-
       case 'SELECT_X_AXIS':
-        var xAxis = edgeToUnitVector (edge)
+        var xAxis = edgeToUnitVector(edge)
         break
 
       case 'SELECT_Y_AXIS':
-        var yAxis =  edgeToUnitVector (edge)
+        var yAxis = edgeToUnitVector(edge)
 
         if (this.xAxis) {
-
           var angle = Math.abs(yAxis.angleTo(this.xAxis))
 
-          return !(Math.abs(angle - Math.PI/2) < 0.01)
+          return !(Math.abs(angle - Math.PI / 2) < 0.01)
         }
 
         break
@@ -153,10 +143,9 @@
   }
 
   function edgeToUnitVector (edge) {
-
     var v = new THREE.Vector3()
 
-    v.subVectors (edge.vertices[1], edge.vertices[0])
+    v.subVectors(edge.vertices[1], edge.vertices[0])
 
     v.normalize()
 
@@ -164,17 +153,14 @@
   }
 
   proto.onGeometrySelected = function (args) {
-
     if (args.geometry) {
-
       switch (this.mode) {
-
         case 'SELECT_X_AXIS':
-          this.xAxis =  edgeToUnitVector (args.geometry)
+          this.xAxis = edgeToUnitVector(args.geometry)
           break
 
         case 'SELECT_Y_AXIS':
-          this.yAxis =  edgeToUnitVector (args.geometry)
+          this.yAxis = edgeToUnitVector(args.geometry)
           break
 
         case 'SELECT_ORIGIN':
@@ -187,25 +173,20 @@
   }
 
   proto.onSelection = function (event) {
-
     if (event.selections.length) {
-
       this.viewer.clearSelection()
     }
   }
 
-  proto.onDistXChanged = function(event) {
-
+  proto.onDistXChanged = function (event) {
     this.xDist = event.target.value
   }
 
-  proto.onDistYChanged = function(event) {
-
+  proto.onDistYChanged = function (event) {
     this.yDist = event.target.value
   }
 
   proto.onOK = function () {
-
     this.events.emit('complete', {
       origin: this.origin,
       xAxis: this.xAxis,
@@ -218,11 +199,9 @@
   }
 
   proto.setVisible = function (show) {
-
     Autodesk.Viewing.UI.DockingPanel.prototype.setVisible.call(this, show)
 
     if (!show && this.snapper) {
-
       this.viewer.removeEventListener(
         Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT,
         this.onSelection.bind(this))
@@ -233,7 +212,6 @@
     }
 
     if (show) {
-
       this.viewer.addEventListener(
         Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT,
         this.onSelection.bind(this))
@@ -243,6 +221,4 @@
   }
 
   Viewing.Extension.ConstrainedPlacement.Panel = ConstrainedPlacementPanel
-
 })()
-

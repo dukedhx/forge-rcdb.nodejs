@@ -3,14 +3,12 @@ import Toolkit from 'Viewer.Toolkit'
 import React from 'react'
 
 class PropertyList extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor () {
-
-    super ()
+    super()
 
     this.percentFormatter = (cell, row) => {
       return (
@@ -23,22 +21,18 @@ class PropertyList extends React.Component {
     this.lastClickedIndex = -1
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onRowClick (row, viewer) {
-
     if (this.lastClickedIndex !== row.index) {
-
       const dbIds = row.dbIds
 
       Toolkit.isolateFull(viewer, dbIds)
 
       viewer.fitToView()
-
     } else {
-
       Toolkit.isolateFull(viewer)
 
       viewer.fitToView()
@@ -47,42 +41,45 @@ class PropertyList extends React.Component {
     this.lastClickedIndex = row.index
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render () {
-
     const { title, data, viewer, style } = this.props
 
     return (
-      <div className="property-list" style={style}>
-        <div className="title controls">
+      <div className='property-list' style={style}>
+        <div className='title controls'>
           <label>
-            { title }
+            {title}
           </label>
         </div>
 
-        <div className="property-list-table">
-          <BootstrapTable data={data} striped={true} hover={true}
+        <div className='property-list-table'>
+          <BootstrapTable
+            data={data} striped hover
             options={{
               onRowClick: (row) => this.onRowClick(row, viewer)
-              }}>
+            }}
+          >
             <TableHeaderColumn
               headerAlign='left'
               dataAlign='left'
-              dataField="shortLabel"
-              isKey={true}
-              dataAlign="center"
-              dataSort={true}>
+              dataField='shortLabel'
+              isKey
+              dataAlign='center'
+              dataSort
+            >
               Value
             </TableHeaderColumn>
             <TableHeaderColumn
               width='120'
               headerAlign='left'
               dataAlign='left'
-              dataField="percent"
-              dataFormat={this.percentFormatter}>
+              dataField='percent'
+              dataFormat={this.percentFormatter}
+            >
               % Components
             </TableHeaderColumn>
           </BootstrapTable>

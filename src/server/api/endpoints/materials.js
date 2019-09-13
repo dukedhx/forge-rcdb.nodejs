@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
 // Written by Philippe Leefsma 2014 - ADN/Developer Technical Services
 //
@@ -14,7 +14,7 @@
 // MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
 // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 // UNINTERRUPTED OR ERROR FREE.
-/////////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
 import ServiceManager from '../services/SvcManager'
 import compression from 'compression'
 import express from 'express'
@@ -22,11 +22,10 @@ import mongo from 'mongodb'
 import config from 'c0nfig'
 
 export default function () {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   const router = express.Router()
 
   const shouldCompress = (req, res) => {
@@ -37,24 +36,21 @@ export default function () {
     filter: shouldCompress
   }))
 
-  ///////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////
-  router.get('/:db', async(req, res) => {
-
+  /// ////////////////////////////////////////////////////
+  router.get('/:db', async (req, res) => {
     try {
-
       const db = req.params.db
 
       const dbSvc = ServiceManager.getService(
         config.database.dbName)
 
       const materialsConfig =
-        config.database.materials[db] ||db
+        config.database.materials[db] || db
 
       if (!materialsConfig) {
-
         res.status(404)
         res.json('Invalid config')
         return
@@ -64,21 +60,16 @@ export default function () {
         sort: {
           name: 1
         },
-        query: JSON.parse(req.query.query||null)
+        query: JSON.parse(req.query.query || null)
       }
-      if(process.env.NODE_ENV=='development')
-
-      console.log(opts)
-      const items =  await (opts.query? dbSvc.findMany(materialsConfig,opts):dbSvc.getItems(
-        materialsConfig.collection ,
+      if (process.env.NODE_ENV == 'development') { console.log(opts) }
+      const items = await (opts.query ? dbSvc.findMany(materialsConfig, opts) : dbSvc.getItems(
+        materialsConfig.collection,
         opts))
 
       res.json(items)
-      if(process.env.NODE_ENV=='development')
-
-      console.log(items)
+      if (process.env.NODE_ENV == 'development') { console.log(items) }
     } catch (ex) {
-
       console.log(ex)
 
       res.status(ex.statusCode || 500)
@@ -86,14 +77,12 @@ export default function () {
     }
   })
 
-  ///////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////
   router.get('/:db/:id', async (req, res) => {
-
     try {
-
       const db = req.params.db
 
       const dbSvc = ServiceManager.getService(
@@ -103,7 +92,6 @@ export default function () {
         config.database.materials[db]
 
       if (!materialsConfig) {
-
         res.status(404)
         return res.json('Invalid collection')
       }
@@ -115,22 +103,19 @@ export default function () {
           }
         })
 
-      res.json (item)
-
+      res.json(item)
     } catch (ex) {
-
       res.status(ex.statusCode || 500)
       res.json(ex)
     }
   })
 
-  ///////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////
   router.post('/:db', async (req, res) => {
     try {
-
       const db = req.params.db
 
       const dbSvc = ServiceManager.getService(
@@ -140,7 +125,6 @@ export default function () {
         config.database.materials[db]
 
       if (!materialsConfig) {
-
         res.status(404)
         res.json('Invalid config')
         return
@@ -149,53 +133,43 @@ export default function () {
       const material = req.body
 
       const query = { _id: new mongo.ObjectId(material._id) }
-      if(process.env.NODE_ENV=='development')
-      console.log(material,query)
+      if (process.env.NODE_ENV == 'development') { console.log(material, query) }
       delete material._id
       await dbSvc.upsert(
         materialsConfig.collection,
         material, query)
 
       res.json(material)
-
     } catch (ex) {
-      if(process.env.NODE_ENV=='development')
-      console.log(ex)
+      if (process.env.NODE_ENV == 'development') { console.log(ex) }
       res.status(ex.statusCode || 500)
       res.json(ex)
     }
   })
 
+  router.post('/:db/:id', async (req, res) => {
+    try {
+      const db = req.params.db
 
-router.post('/:db/:id', async (req, res) => {
-  try {
+      const dbSvc = ServiceManager.getService(
+        config.database.dbName)
 
-    const db = req.params.db
+      const material = req.body
 
-    const dbSvc = ServiceManager.getService(
-      config.database.dbName)
+      const query = { model_id: req.params.id, dbid: material.dbid }
+      if (process.env.NODE_ENV == 'development') { console.log(material, query) }
+      delete material._id
+      await dbSvc.upsert(
+        db,
+        material, query)
 
+      res.json(material)
+    } catch (ex) {
+      if (process.env.NODE_ENV == 'development') { console.log(ex) }
+      res.status(ex.statusCode || 500)
+      res.json(ex)
+    }
+  })
 
-
-    const material = req.body
-
-    const query = { model_id: req.params.id, dbid: material.dbid }
-    if(process.env.NODE_ENV=='development')
-    console.log(material,query)
-    delete material._id
-    await dbSvc.upsert(
-      db,
-      material, query)
-
-    res.json(material)
-
-  } catch (ex) {
-    if(process.env.NODE_ENV=='development')
-    console.log(ex)
-    res.status(ex.statusCode || 500)
-    res.json(ex)
-  }
-})
-
-return router;
+  return router
 }

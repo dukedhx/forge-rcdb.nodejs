@@ -1,22 +1,18 @@
 import ContentEditable from 'react-contenteditable'
 import BaseComponent from 'BaseComponent'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import Dropzone from 'react-dropzone'
 import PropTypes from 'prop-types'
 import './DMUploader.scss'
 import React from 'react'
 
 export default class DMUploader extends BaseComponent {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
-
-
+    super(props)
 
     this.onDrop = this.onDrop.bind(this)
 
@@ -27,12 +23,11 @@ export default class DMUploader extends BaseComponent {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   guid (format = 'xxxxxxxxxx') {
-
     var d = new Date().getTime()
 
     var guid = format.replace(
@@ -46,38 +41,33 @@ export default class DMUploader extends BaseComponent {
     return guid
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onKeyDown (e) {
-
     if (e.keyCode === 13) {
-
       e.stopPropagation()
       e.preventDefault()
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onRootFilenameChanged (e) {
-
     this.assignState({
       rootFilename: e.target.value
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   isComposite (file) {
-
-    return new Promise ((resolve) => {
-
+    return new Promise((resolve) => {
       const filename = file.name
 
       const rootFilename =
@@ -85,9 +75,7 @@ export default class DMUploader extends BaseComponent {
           0, filename.length - 4)
 
       if (filename.endsWith('.zip')) {
-
         const onClose = (result) => {
-
           this.dialogSvc.off('dialog.close', onClose)
 
           return (result === 'OK')
@@ -108,34 +96,31 @@ export default class DMUploader extends BaseComponent {
           captionCancel: 'NO',
           captionOK: 'Yes',
           content:
-            <div>
-              <p>
+  <div>
+    <p>
                 Are you uploading a composite model?
-              </p>
-              <ContentEditable
-                data-placeholder={`Specify root filename: ${rootFilename}`}
-                onChange={(e) => this.onRootFilenameChanged(e)}
-                onKeyDown={(e) => this.onKeyDown(e)}
-                html={this.state.rootFilename}
-                className="root-filename"
-              />
-            </div>,
+    </p>
+    <ContentEditable
+      data-placeholder={`Specify root filename: ${rootFilename}`}
+      onChange={(e) => this.onRootFilenameChanged(e)}
+      onKeyDown={(e) => this.onKeyDown(e)}
+      html={this.state.rootFilename}
+      className='root-filename'
+    />
+  </div>,
           open: true
         })
-
       } else {
-
         resolve(false)
       }
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onDrop (files) {
-
     const composite = await this.isComposite(files[0])
 
     const uploadId = this.guid()
@@ -143,7 +128,6 @@ export default class DMUploader extends BaseComponent {
     const file = files[0]
 
     if (this.props.onInitUpload) {
-
       this.props.onInitUpload({
         uploadId,
         file
@@ -152,24 +136,22 @@ export default class DMUploader extends BaseComponent {
 
     const socketId = await this.socketSvc.getSocketId()
 
-    const {hubId, projectId, folderId, nodeId} = this.props
+    const { hubId, projectId, folderId, nodeId } = this.props
 
     const data = Object.assign({
       socketId,
       uploadId,
       nodeId,
       hubId
-      }, !!composite
+    }, composite
       ? {
-          rootFilename: composite
-        }
+        rootFilename: composite
+      }
       : null)
 
     const options = {
       progress: (percent) => {
-
         if (this.props.onProgress) {
-
           this.props.onProgress({
             uploadId,
             percent,
@@ -185,19 +167,20 @@ export default class DMUploader extends BaseComponent {
       file, options)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render () {
-
-    return(
-      <div className="dm-uploader">
-        <Dropzone className="content"
+    return (
+      <div className='dm-uploader'>
+        <Dropzone
+          className='content'
           onDrop={this.onDrop}
-          multiple={false} >
+          multiple={false}
+        >
           <p>
-            <span className="fa fa-cloud-upload"/>
+            <span className='fa fa-cloud-upload' />
             Drop a file here or click to browse ...
           </p>
         </Dropzone>

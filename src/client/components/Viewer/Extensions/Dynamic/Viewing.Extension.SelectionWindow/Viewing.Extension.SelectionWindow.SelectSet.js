@@ -1,28 +1,25 @@
-///////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////
 // SelectSet util for Selection Window in Forge Viewer
 // By Philippe Leefsma, September 2017
 //
-///////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////
 import geometryIntersectsBox3 from './GeometryIntersectsBox3'
 import Toolkit from 'Viewer.Toolkit'
 
 export default class SelectSet {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer) {
-
     this.viewer = viewer
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Set model: required to compute the bounding boxes
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setModel (model) {
-
     this.model = model
 
     const instanceTree = model.getData().instanceTree
@@ -35,10 +32,9 @@ export default class SelectSet {
 
     this.boundingSphere = bbox.getBoundingSphere()
 
-    const leafIds = await Toolkit.getLeafNodes (model)
+    const leafIds = await Toolkit.getLeafNodes(model)
 
     this.boundingBoxInfo = leafIds.map((dbId) => {
-
       const bbox = this.getLeafComponentBoundingBox(
         model, dbId)
 
@@ -49,18 +45,16 @@ export default class SelectSet {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Returns bounding box as it appears in the viewer
   // (transformations could be applied)
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getModifiedWorldBoundingBox (fragIds, fragList) {
-
     const fragbBox = new THREE.Box3()
     const nodebBox = new THREE.Box3()
 
-    fragIds.forEach(function(fragId) {
-
+    fragIds.forEach(function (fragId) {
       fragList.getWorldBounds(fragId, fragbBox)
 
       nodebBox.union(fragbBox)
@@ -69,12 +63,11 @@ export default class SelectSet {
     return nodebBox
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Returns bounding box for fragment list
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async getComponentBoundingBox (model, dbId) {
-
     const fragIds = await Toolkit.getFragIds(
       model, dbId)
 
@@ -85,7 +78,6 @@ export default class SelectSet {
   }
 
   getLeafComponentBoundingBox (model, dbId) {
-
     const fragIds = Toolkit.getLeafFragIds(
       model, dbId)
 
@@ -95,12 +87,11 @@ export default class SelectSet {
       fragIds, fragList)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Creates Raycaster object from the mouse pointer
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   pointerToRay (pointer) {
-
     const camera = this.viewer.navigation.getCamera()
     const pointerVector = new THREE.Vector3()
     const rayCaster = new THREE.Raycaster()
@@ -109,11 +100,10 @@ export default class SelectSet {
 
     const rect = domElement.getBoundingClientRect()
 
-    const x =  ((pointer.clientX - rect.left) / rect.width) * 2 - 1
+    const x = ((pointer.clientX - rect.left) / rect.width) * 2 - 1
     const y = -((pointer.clientY - rect.top) / rect.height) * 2 + 1
 
     if (camera.isPerspective) {
-
       pointerVector.set(x, y, 0.5)
 
       pointerVector.unproject(camera)
@@ -121,9 +111,7 @@ export default class SelectSet {
       rayCaster.set(camera.position,
         pointerVector.sub(
           camera.position).normalize())
-
     } else {
-
       pointerVector.set(x, y, -15)
 
       pointerVector.unproject(camera)
@@ -138,14 +126,13 @@ export default class SelectSet {
     return rayCaster.ray
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Returns true if the box is contained inside the
   // closed volume defined by the the input planes
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   containsBox (planes, box) {
-
-    const {min, max} = box
+    const { min, max } = box
 
     const vertices = [
       new THREE.Vector3(min.x, min.y, min.z),
@@ -158,12 +145,9 @@ export default class SelectSet {
       new THREE.Vector3(max.x, min.y, max.z)
     ]
 
-    for (let vertex of vertices) {
-
-      for (let plane of planes) {
-
+    for (const vertex of vertices) {
+      for (const plane of planes) {
         if (plane.distanceToPoint(vertex) < 0) {
-
           return false
         }
       }
@@ -172,28 +156,23 @@ export default class SelectSet {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Returns true if at least one vertex is contained in
   // closed volume defined by the the input planes
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   containsVertex (planes, vertices) {
-
-    for (let vertex of vertices) {
-
+    for (const vertex of vertices) {
       let isInside = true
 
-      for (let plane of planes) {
-
+      for (const plane of planes) {
         if (plane.distanceToPoint(vertex) < 0) {
-
           isInside = false
           break
         }
       }
 
       if (isInside) {
-
         return true
       }
     }
@@ -201,12 +180,11 @@ export default class SelectSet {
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Returns the oriented camera plane
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getCameraPlane () {
-
     const camera = this.viewer.navigation.getCamera()
 
     const normal = camera.target.clone().sub(
@@ -215,20 +193,19 @@ export default class SelectSet {
     const pos = camera.position
 
     const dist =
-      - normal.x * pos.x
-      - normal.y * pos.y
-      - normal.z * pos.z
+      -normal.x * pos.x -
+      normal.y * pos.y -
+      normal.z * pos.z
 
-    return new THREE.Plane (normal, dist)
+    return new THREE.Plane(normal, dist)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Creates pyramid geometry to perform tri-box
   // intersection analysis
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createPyramidGeometry (vertices) {
-
     var geometry = new THREE.Geometry()
 
     geometry.vertices = vertices
@@ -245,30 +222,25 @@ export default class SelectSet {
     return geometry
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Determine if the bounding boxes are
   // inside, outside or intersect with the selection window
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   filterBoundingBoxes (planes, vertices, partialSelect) {
-
     const geometry = this.createPyramidGeometry(vertices)
 
     const intersect = []
     const outside = []
     const inside = []
 
-    for (let bboxInfo of this.boundingBoxInfo) {
-
+    for (const bboxInfo of this.boundingBoxInfo) {
       // if bounding box inside, then we can be sure
       // the mesh is inside too
 
-      if (this.containsBox (planes, bboxInfo.bbox)) {
-
+      if (this.containsBox(planes, bboxInfo.bbox)) {
         inside.push(bboxInfo)
-
       } else if (partialSelect) {
-
         // otherwise need a more precise tri-box
         // analysis to determine if the bbox intersect
         // the pyramid geometry
@@ -279,9 +251,7 @@ export default class SelectSet {
         intersects.length
           ? intersect.push(bboxInfo)
           : outside.push(bboxInfo)
-
       } else {
-
         outside.push(bboxInfo)
       }
     }
@@ -293,14 +263,13 @@ export default class SelectSet {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Runs the main logic of the select set:
   // computes a pyramid shape from the selection window
   // corners and determines enclosed meshes from the model
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   compute (pointer1, pointer2, partialSelect) {
-
     // build 4 rays to project the 4 corners
     // of the selection window
 
@@ -331,18 +300,18 @@ export default class SelectSet {
     })
 
     // first we compute the top of the pyramid
-    const top = new THREE.Vector3(0,0,0)
+    const top = new THREE.Vector3(0, 0, 0)
 
-    top.add (ray1.origin)
-    top.add (ray2.origin)
-    top.add (ray3.origin)
-    top.add (ray4.origin)
+    top.add(ray1.origin)
+    top.add(ray2.origin)
+    top.add(ray3.origin)
+    top.add(ray4.origin)
 
     top.multiplyScalar(0.25)
 
     // we use the bounding sphere to determine
     // the height of the pyramid
-    const {center, radius} = this.boundingSphere
+    const { center, radius } = this.boundingSphere
 
     // compute distance from pyramid top to center
     // of bounding sphere
@@ -399,7 +368,7 @@ export default class SelectSet {
     plane2.setFromCoplanarPoints(top, v2, v3)
     plane3.setFromCoplanarPoints(top, v3, v4)
     plane4.setFromCoplanarPoints(top, v4, v1)
-    plane5.setFromCoplanarPoints( v3, v2, v1)
+    plane5.setFromCoplanarPoints(v3, v2, v1)
 
     const planes = [
       plane1, plane2,
@@ -420,7 +389,6 @@ export default class SelectSet {
     // all inside bboxes need to be part of the selection
 
     const dbIdsInside = result.inside.map((bboxInfo) => {
-
       return bboxInfo.dbId
     })
 
@@ -428,9 +396,7 @@ export default class SelectSet {
     // we need to return the intersect bboxes
 
     if (partialSelect) {
-
       const dbIdsIntersect = result.intersect.map((bboxInfo) => {
-
         return bboxInfo.dbId
       })
 
@@ -439,7 +405,7 @@ export default class SelectSet {
       // or outside the selection window but it would
       // be a much more expensive computation
 
-      //const dbIdsIntersectAccurate =
+      // const dbIdsIntersectAccurate =
       //  dbIdsIntersect.filter((dbId) => {
       //
       //    const geometry =

@@ -2,13 +2,11 @@ import EventsEmitter from 'EventsEmitter'
 import './TransformGizmos'
 
 export default class TransformTool extends EventsEmitter {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer) {
-
     super()
 
     viewer.toolController.registerTool(this)
@@ -44,30 +42,27 @@ export default class TransformTool extends EventsEmitter {
       this.handleSelectionChanged.bind(this)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  getNames() {
-
-    return ["Viewing.Transform.Tool"]
+  /// //////////////////////////////////////////////////////////////
+  getNames () {
+    return ['Viewing.Transform.Tool']
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
-  getName() {
-
-    return "Viewing.Transform.Tool"
+  /// //////////////////////////////////////////////////////////////
+  getName () {
+    return 'Viewing.Transform.Tool'
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Creates a dummy mesh to attach control to
   //
-  ///////////////////////////////////////////////////////////////////////////
-  createTransformMesh() {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  createTransformMesh () {
     var material = new THREE.MeshPhongMaterial(
       { color: 0xff0000 })
 
@@ -85,14 +80,12 @@ export default class TransformTool extends EventsEmitter {
     return sphere
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // on translation change
   //
-  ///////////////////////////////////////////////////////////////////////////
-  onTxChange() {
-
-    for(var fragId in this._selectedFragProxyMap) {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  onTxChange () {
+    for (var fragId in this._selectedFragProxyMap) {
       var fragProxy = this._selectedFragProxyMap[fragId]
 
       var position = new THREE.Vector3(
@@ -113,29 +106,25 @@ export default class TransformTool extends EventsEmitter {
     })
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // on camera changed
   //
-  ///////////////////////////////////////////////////////////////////////////
-  onCameraChanged() {
-
-    if(this._transformControlTx) {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  onCameraChanged () {
+    if (this._transformControlTx) {
       this._transformControlTx.update()
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // item selected callback
   //
-  ///////////////////////////////////////////////////////////////////////////
-  onAggregateSelectionChanged(event) {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  onAggregateSelectionChanged (event) {
     var dbIdArray = []
     var fragIdsArray = []
 
-    if(event.selections && event.selections.length) {
-
+    if (event.selections && event.selections.length) {
       var selection = event.selections[0]
 
       dbIdArray = selection.dbIdArray
@@ -146,16 +135,14 @@ export default class TransformTool extends EventsEmitter {
     this.handleSelectionChanged(dbIdArray, fragIdsArray)
   }
 
-  handleSelectionChanged(dbIdArray, fragIdsArray) {
-
+  handleSelectionChanged (dbIdArray, fragIdsArray) {
     this._selectedFragProxyMap = {}
 
     this._dbIds = dbIdArray
 
-    //component unselected
+    // component unselected
 
-    if(!fragIdsArray.length) {
-
+    if (!fragIdsArray.length) {
       this._hitPoint = null
 
       this._transformControlTx.visible = false
@@ -175,13 +162,11 @@ export default class TransformTool extends EventsEmitter {
     }
 
     if (this._hitPoint) {
-
       this._selectSet = this.emit('transform.select', {
         dbIds: this._dbIds
       })
 
       if (this._selectSet) {
-
         if (!this._selectSet.selectable) {
           this._hitPoint = null
           this.viewer.select([])
@@ -206,8 +191,7 @@ export default class TransformTool extends EventsEmitter {
         Autodesk.Viewing.CAMERA_CHANGE_EVENT,
         this.onCameraChanged)
 
-      fragIdsArray.forEach((fragId)=> {
-
+      fragIdsArray.forEach((fragId) => {
         var fragProxy = this.viewer.impl.getFragmentProxy(
           this.viewer.model,
           fragId)
@@ -232,12 +216,11 @@ export default class TransformTool extends EventsEmitter {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // normalize screen coordinates
   //
-  ///////////////////////////////////////////////////////////////////////////
-  normalize(screenPoint) {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  normalize (screenPoint) {
     var viewport = this.viewer.navigation.getScreenViewport()
 
     var n = {
@@ -248,12 +231,11 @@ export default class TransformTool extends EventsEmitter {
     return n
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // get 3d hit point on mesh
   //
-  ///////////////////////////////////////////////////////////////////////////
-  getHitPoint(event) {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  getHitPoint (event) {
     var screenPoint = {
       x: event.clientX,
       y: event.clientY
@@ -266,14 +248,12 @@ export default class TransformTool extends EventsEmitter {
     return hitPoint
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
-  activate() {
-
+  /// ////////////////////////////////////////////////////////////////
+  activate () {
     if (!this.active) {
-
       console.log(this.getName() + ' activated')
 
       this.active = true
@@ -288,7 +268,7 @@ export default class TransformTool extends EventsEmitter {
       this._transformControlTx = new THREE.TransformControls(
         this.viewer.impl.camera,
         this.viewer.impl.canvas,
-        "translate")
+        'translate')
 
       this._transformControlTx.setSize(
         bbox.getBoundingSphere().radius * 5)
@@ -315,14 +295,12 @@ export default class TransformTool extends EventsEmitter {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // deactivate tool
   //
-  ///////////////////////////////////////////////////////////////////////////
-  deactivate() {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  deactivate () {
     if (this.active) {
-
       this.active = false
 
       this.viewer.toolController.deactivateTool(
@@ -353,58 +331,50 @@ export default class TransformTool extends EventsEmitter {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
-  handleButtonDown(event, button) {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  handleButtonDown (event, button) {
     this._hitPoint = this.getHitPoint(event)
 
     this._isDragging = true
 
-    if (this._transformControlTx.onPointerDown(event))
-      return true
+    if (this._transformControlTx.onPointerDown(event)) { return true }
 
-    //return _transRotControl.onPointerDown(event)
+    // return _transRotControl.onPointerDown(event)
     return false
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
-  handleButtonUp(event, button) {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  handleButtonUp (event, button) {
     this._isDragging = false
 
-    if (this._transformControlTx.onPointerUp(event))
-      return true
+    if (this._transformControlTx.onPointerUp(event)) { return true }
 
-    //return _transRotControl.onPointerUp(event)
+    // return _transRotControl.onPointerUp(event)
     return false
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
-  handleMouseMove(event) {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  handleMouseMove (event) {
     if (this._isDragging) {
-
-      if (this._transformControlTx.onPointerMove(event) ) {
-
+      if (this._transformControlTx.onPointerMove(event)) {
         return true
       }
 
       return false
     }
 
-    if (this._transformControlTx.onPointerHover(event))
-      return true
+    if (this._transformControlTx.onPointerHover(event)) { return true }
 
-    //return _transRotControl.onPointerHover(event)
+    // return _transRotControl.onPointerHover(event)
     return false
   }
 }

@@ -1,12 +1,12 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.DualViewer
 // by Philippe Leefsma, April 2016
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import WidgetContainer from 'WidgetContainer'
 import './Viewing.Extension.DualViewer.scss'
-import {ReactLoader as Loader} from 'Loader'
+import { ReactLoader as Loader } from 'Loader'
 import throttle from 'lodash/throttle'
 import Toolkit from 'Viewer.Toolkit'
 import Viewer from 'Viewer'
@@ -17,14 +17,12 @@ import {
 } from 'react-bootstrap'
 
 class DualViewerExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
-  constructor(viewer, options) {
-
-    super (viewer, options)
+  /// //////////////////////////////////////////////////////
+  constructor (viewer, options) {
+    super(viewer, options)
 
     this.onDualViewerSelection =
       this.onDualViewerSelection.bind(this)
@@ -44,30 +42,27 @@ class DualViewerExtension extends MultiModelExtensionBase {
     this.react = options.react
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'dual-viewer'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.DualViewer'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     this.pathIndex = this.options.defaultPathIndex || 0
 
     this.react.setState({
@@ -77,8 +72,7 @@ class DualViewerExtension extends MultiModelExtensionBase {
       activeView: '',
       items: []
 
-    }).then (() => {
-
+    }).then(() => {
       this.react.pushRenderExtension(this)
     })
 
@@ -87,14 +81,12 @@ class DualViewerExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     if (this.viewerModel) {
-
       this.dualViewer.impl.unloadModel(
         this.viewerModel)
     }
@@ -106,14 +98,12 @@ class DualViewerExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onModelActivated (event) {
-
     if (event.source !== 'model.loaded') {
-
       await this.react.setState({
         disabled: true
       })
@@ -139,14 +129,12 @@ class DualViewerExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onViewerCreated (viewer) {
-
     try {
-
       this.viewerModel = null
 
       this.dualViewer = viewer
@@ -170,13 +158,12 @@ class DualViewerExtension extends MultiModelExtensionBase {
         this.viewerDocument, '2d')
 
       if (items.length) {
-
         await this.react.setState({
           disabled: false,
           items
         })
 
-        this.setActiveView (items[this.pathIndex])
+        this.setActiveView(items[this.pathIndex])
 
         $('#viewer-dropdown').parent().find('ul').css({
           height: Math.min(
@@ -188,20 +175,17 @@ class DualViewerExtension extends MultiModelExtensionBase {
           Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT,
           this.onDualViewerSelection)
       }
-
-    } catch(ex) {
-
+    } catch (ex) {
       console.log('Viewer Initialization Error:')
       console.log(ex)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSelection (e) {
-
     const dbIdArray = e.selections.length
       ? e.selections[0].dbIdArray
       : []
@@ -209,7 +193,6 @@ class DualViewerExtension extends MultiModelExtensionBase {
     const model = this.dualViewer.model
 
     if (!this.selection1Locked && model && model.selector) {
-
       this.selection2Locked = true
 
       model.selector.setSelection(dbIdArray)
@@ -218,12 +201,11 @@ class DualViewerExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onDualViewerSelection (e) {
-
     const dbIdArray = e.selections.length
       ? e.selections[0].dbIdArray
       : []
@@ -233,7 +215,6 @@ class DualViewerExtension extends MultiModelExtensionBase {
       this.viewer.model
 
     if (!this.selection2Locked && model.selector) {
-
       this.selection1Locked = true
 
       model.selector.setSelection(dbIdArray)
@@ -242,50 +223,50 @@ class DualViewerExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle () {
-
     const state = this.react.getState()
 
     const menuItems = state.items.map((item, idx) => {
       return (
-        <MenuItem eventKey={idx} key={idx} onClick={() => {
+        <MenuItem
+          eventKey={idx} key={idx} onClick={() => {
+            this.setActiveView(item)
 
-          this.setActiveView (item)
-
-          this.pathIndex = idx
-        }}>
-          { item.name }
+            this.pathIndex = idx
+          }}
+        >
+          {item.name}
         </MenuItem>
       )
     })
 
     return (
-      <div className="title">
+      <div className='title'>
         <label>
-        {this.options.title || '2D View'}
+          {this.options.title || '2D View'}
         </label>
 
         <DropdownButton
-          title={"View: " + state.activeView }
+          title={'View: ' + state.activeView}
           disabled={state.disabled}
-          key={"viewer-dropdown"}
-          id="viewer-dropdown">
-         { menuItems }
+          key='viewer-dropdown'
+          id='viewer-dropdown'
+        >
+          {menuItems}
         </DropdownButton>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setActiveView (item) {
-
     await this.react.setState({
       activeView: item.name,
       showLoader: true,
@@ -295,7 +276,6 @@ class DualViewerExtension extends MultiModelExtensionBase {
     const path = this.viewerDocument.getViewablePath(item)
 
     if (this.viewerModel) {
-
       this.dualViewer.impl.unloadModel(
         this.viewerModel)
     }
@@ -306,7 +286,6 @@ class DualViewerExtension extends MultiModelExtensionBase {
     }
 
     this.dualViewer.loadModel(path, options, (model) => {
-
       this.dualViewer.fitToView()
 
       this.viewerModel = model
@@ -315,9 +294,7 @@ class DualViewerExtension extends MultiModelExtensionBase {
         showLoader: false,
         disabled: false
       })
-
     }, () => {
-
       this.viewerModel = null
 
       this.react.setState({
@@ -327,12 +304,11 @@ class DualViewerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onStopResize () {
-
     const state = this.react.getState()
 
     $('#viewer-dropdown').parent().find('ul').css({
@@ -342,41 +318,40 @@ class DualViewerExtension extends MultiModelExtensionBase {
     })
 
     if (this.dualViewer && this.dualViewer.impl) {
-
       this.dualViewer.resize()
 
       this.dualViewer.fitToView()
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onResize () {
-
     if (this.dualViewer && this.dualViewer.impl) {
-
       this.dualViewer.resize()
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render (opts = {showTitle: true}) {
-
+  /// //////////////////////////////////////////////////////
+  render (opts = { showTitle: true }) {
     const state = this.react.getState()
 
     return (
-      <WidgetContainer renderTitle={this.renderTitle}
+      <WidgetContainer
+        renderTitle={this.renderTitle}
         showTitle={opts.showTitle}
-        className={this.className}>
+        className={this.className}
+      >
 
-        <Loader show={state.showLoader}/>
+        <Loader show={state.showLoader} />
 
-        <Viewer flex={0.40}
+        <Viewer
+          flex={0.40}
           onViewerCreated={
             (viewer) => {
               clearTimeout(this.timeoutId)
@@ -396,5 +371,3 @@ class DualViewerExtension extends MultiModelExtensionBase {
 Autodesk.Viewing.theExtensionManager.registerExtension(
   DualViewerExtension.ExtensionId,
   DualViewerExtension)
-
-

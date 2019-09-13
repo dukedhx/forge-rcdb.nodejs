@@ -1,52 +1,47 @@
 
 const EntityClassFactory = (BaseEntity, handlerMng) =>
   class extends BaseEntity {
+  /// //////////////////////////////////////////////////////
+    //
+    //
+    /// //////////////////////////////////////////////////////
+    constructor (params) {
+      super(params)
 
-  /////////////////////////////////////////////////////////
-  //
-  //
-  /////////////////////////////////////////////////////////
-  constructor (params) {
+      this.handler = handlerMng.getHandler(
+        params.property._id)
 
-    super (params)
+      this.handler.onCreate(params.property)
+    }
 
-    this.handler = handlerMng.getHandler(
-      params.property._id)
+    /// //////////////////////////////////////////////////////
+    //
+    //
+    /// //////////////////////////////////////////////////////
+    onModify (context) {
+      this.handler.onModify(context)
 
-    this.handler.onCreate(params.property)
-  }
+      const absPath = context[0].getAbsolutePath()
 
-  /////////////////////////////////////////////////////////
-  //
-  //
-  /////////////////////////////////////////////////////////
-  onModify (context) {
+      const path = absPath.split('.')
 
-    this.handler.onModify(context)
+      if (path.length > 2) {
+        const parentHandlerId = path[path.length - 3]
 
-    const absPath = context[0].getAbsolutePath()
+        const parentHandler = handlerMng.getHandler(
+          parentHandlerId)
 
-    const path = absPath.split('.')
+        parentHandler.onModify(context)
+      }
+    }
 
-    if (path.length > 2) {
-
-      const parentHandlerId = path[path.length-3]
-
-      const parentHandler = handlerMng.getHandler(
-        parentHandlerId)
-
-      parentHandler.onModify(context)
+    /// //////////////////////////////////////////////////////
+    //
+    //
+    /// //////////////////////////////////////////////////////
+    onRemove () {
+      this.handler.onRemove()
     }
   }
-
-  /////////////////////////////////////////////////////////
-  //
-  //
-  /////////////////////////////////////////////////////////
-  onRemove() {
-
-    this.handler.onRemove()
-  }
-}
 
 export default EntityClassFactory

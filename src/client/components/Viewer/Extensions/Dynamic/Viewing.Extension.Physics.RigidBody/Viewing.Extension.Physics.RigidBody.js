@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.Physics
 // by Philippe Leefsma, July 2017
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import ContentEditable from 'react-contenteditable'
 import './Viewing.Extension.Physics.RigidBody.scss'
@@ -10,7 +10,7 @@ import WidgetContainer from 'WidgetContainer'
 import EventTool from 'Viewer.EventTool'
 import 'rc-tooltip/assets/bootstrap.css'
 import ScriptLoader from 'ScriptLoader'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import { ReactLoader } from 'Loader'
 import Toolkit from 'Viewer.Toolkit'
 import 'rc-slider/assets/index.css'
@@ -23,14 +23,12 @@ import Label from 'Label'
 import React from 'react'
 
 class PhysicsExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.onTransformSelection = this.onTransformSelection.bind(this)
     this.onSimulationStep = this.onSimulationStep.bind(this)
@@ -47,30 +45,27 @@ class PhysicsExtension extends MultiModelExtensionBase {
     this.react = options.react
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'physics-rigid'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.Physics.RigidBody'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     this.viewer.setQualityLevel(false, false)
     this.viewer.setProgressiveRendering(false)
     this.viewer.setGroundReflection(false)
@@ -86,23 +81,23 @@ class PhysicsExtension extends MultiModelExtensionBase {
       showLoader: true,
       transform: null,
 
-      Vx:'', Vy:'', Vz:'',
-      Ax:'', Ay:'', Az:''
+      Vx: '',
+      Vy: '',
+      Vz: '',
+      Ax: '',
+      Ay: '',
+      Az: ''
 
-    }).then (() => {
-
+    }).then(() => {
       this.react.pushRenderExtension(this)
     })
 
-    this.eventTool.on ('mousemove', (event) => {
-
+    this.eventTool.on('mousemove', (event) => {
       this.mouseEvent = event
     })
 
-    this.eventTool.on ('keydown', (event) => {
-
-      if (event.keyCode === 32) { //SPACE
-
+    this.eventTool.on('keydown', (event) => {
+      if (event.keyCode === 32) { // SPACE
         const pointer = this.mouseEvent.pointers
           ? this.mouseEvent.pointers[0]
           : this.mouseEvent
@@ -112,7 +107,7 @@ class PhysicsExtension extends MultiModelExtensionBase {
           this.viewer.impl.camera,
           pointer)
 
-        this.createProjectile (rayCaster.ray)
+        this.createProjectile(rayCaster.ray)
       }
     })
 
@@ -121,12 +116,11 @@ class PhysicsExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createMaterial (color = 0xFF9800) {
-
     const material = new THREE.MeshPhongMaterial({
       color
     })
@@ -137,12 +131,11 @@ class PhysicsExtension extends MultiModelExtensionBase {
     return material
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Creates Raycatser object from the pointer
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   pointerToRaycaster (domElement, camera, pointer) {
-
     const pointerVector = new THREE.Vector3()
     const pointerDir = new THREE.Vector3()
     const ray = new THREE.Raycaster()
@@ -156,7 +149,6 @@ class PhysicsExtension extends MultiModelExtensionBase {
     const y = -((py - rect.top) / rect.height) * 2 + 1
 
     if (camera.isPerspective) {
-
       pointerVector.set(x, y, 0.5)
 
       pointerVector.unproject(camera)
@@ -164,9 +156,7 @@ class PhysicsExtension extends MultiModelExtensionBase {
       ray.set(camera.position,
         pointerVector.sub(
           camera.position).normalize())
-
     } else {
-
       pointerVector.set(x, y, -1)
 
       pointerVector.unproject(camera)
@@ -181,12 +171,11 @@ class PhysicsExtension extends MultiModelExtensionBase {
     return ray
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createProjectile (ray) {
-
     const { physicsCore } = this.react.getState()
 
     const radius = 8
@@ -206,13 +195,13 @@ class PhysicsExtension extends MultiModelExtensionBase {
 
     const shape = new Ammo.btSphereShape(radius)
 
-    //shape.setMargin(0.05)
+    // shape.setMargin(0.05)
 
     const inertia = new Ammo.btVector3(0, 0, 0)
 
     shape.calculateLocalInertia(mass, inertia)
 
-    const transform = new Ammo.btTransform
+    const transform = new Ammo.btTransform()
 
     transform.setIdentity()
 
@@ -253,27 +242,25 @@ class PhysicsExtension extends MultiModelExtensionBase {
     this.viewer.impl.sceneUpdated(true)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log('Viewing.Extension.Physics.RigidBody unloaded')
 
     this.react.popViewerPanel(this)
 
-    super.unload ()
+    super.unload()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Panel docking mode
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createFPS () {
-
     $(this.viewer.container).append(
       '<div id="physics-fps"> </div>')
 
@@ -285,7 +272,7 @@ class PhysicsExtension extends MultiModelExtensionBase {
 
     return new FPSMeter(
       document.getElementById('physics-fps'), {
-        maxFps:    20, //expected
+        maxFps: 20, // expected
         smoothing: 10,
         show: 'fps',
         decimals: 1,
@@ -299,40 +286,35 @@ class PhysicsExtension extends MultiModelExtensionBase {
       })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Panel docking mode
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setDocking (docked) {
-
     const id = PhysicsExtension.ExtensionId
 
     if (docked) {
-
       await this.react.popRenderExtension(id)
 
       await this.react.pushViewerPanel(this, {
         height: 250,
         width: 350
       })
-
     } else {
-
       await this.react.popViewerPanel(id)
 
       this.react.pushRenderExtension(this)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onScriptLoaded () {
-
     const physicsCore =
       await this.viewer.loadDynamicExtension(
-      'Viewing.Extension.Physics.Core',
+        'Viewing.Extension.Physics.Core',
         this.options)
 
     await physicsCore.loadPhysicModel(
@@ -349,12 +331,11 @@ class PhysicsExtension extends MultiModelExtensionBase {
     this.options.loader.show(false)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelRootLoaded (event) {
-
     super.onModelRootLoaded()
 
     const nav = this.viewer.navigation
@@ -365,12 +346,11 @@ class PhysicsExtension extends MultiModelExtensionBase {
       nav.getCamera())
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onModelCompletedLoad (event) {
-
     const transformerReactOptions = {
       pushRenderExtension: () => {
         return Promise.resolve()
@@ -382,8 +362,8 @@ class PhysicsExtension extends MultiModelExtensionBase {
 
     const transformerOptions = Object.assign({}, {
       react: transformerReactOptions,
-      fullTransform : false,
-      hideControls : true
+      fullTransform: false,
+      hideControls: true
     })
 
     const modelTransformer =
@@ -405,17 +385,15 @@ class PhysicsExtension extends MultiModelExtensionBase {
     this.fps = this.createFPS()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onExtensionLoaded (event) {
-
     const transformExtensionId =
       'Viewing.Extension.Transform'
 
     if (event.extensionId === transformExtensionId) {
-
       const transform = this.viewer.getExtension(
         transformExtensionId)
 
@@ -431,17 +409,15 @@ class PhysicsExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTransformSelection () {
-
     const { physicsCore, selectedBody, unSelectedBody } =
       this.react.getState()
 
     if (selectedBody) {
-
       physicsCore.groundRigidBody(
         selectedBody, true)
 
@@ -449,7 +425,6 @@ class PhysicsExtension extends MultiModelExtensionBase {
     }
 
     if (unSelectedBody) {
-
       physicsCore.groundRigidBody(
         unSelectedBody, false)
 
@@ -457,12 +432,11 @@ class PhysicsExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTransform (data) {
-
     const { physicsCore, selectedBody } =
       this.react.getState()
 
@@ -476,21 +450,23 @@ class PhysicsExtension extends MultiModelExtensionBase {
     physicsCore.activateAllRigidBodies()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setSelectedBody (body) {
-
     const { physicsCore, selectedBody } =
       this.react.getState()
 
     if (!body) {
-
       return this.react.setState({
 
-        Ax: '', Ay: '', Az: '',
-        Vx: '', Vy: '', Vz: '',
+        Ax: '',
+        Ay: '',
+        Az: '',
+        Vx: '',
+        Vy: '',
+        Vz: '',
 
         unSelectedBody: selectedBody,
         selectedBody: null
@@ -501,9 +477,9 @@ class PhysicsExtension extends MultiModelExtensionBase {
 
     this.react.setState({
 
-      Ax: this.toFixedStr(velocity.angular.x * 180/Math.PI),
-      Ay: this.toFixedStr(velocity.angular.y * 180/Math.PI),
-      Az: this.toFixedStr(velocity.angular.z * 180/Math.PI),
+      Ax: this.toFixedStr(velocity.angular.x * 180 / Math.PI),
+      Ay: this.toFixedStr(velocity.angular.y * 180 / Math.PI),
+      Az: this.toFixedStr(velocity.angular.z * 180 / Math.PI),
 
       Vx: this.toFixedStr(velocity.linear.x),
       Vy: this.toFixedStr(velocity.linear.y),
@@ -514,16 +490,14 @@ class PhysicsExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSelection (event) {
-
     const { physicsCore } = this.react.getState()
 
     if (!event.selections.length) {
-
       return this.setSelectedBody(null)
     }
 
@@ -535,12 +509,11 @@ class PhysicsExtension extends MultiModelExtensionBase {
     this.setSelectedBody(body)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onEnablePhysics (run) {
-
     const { physicsCore } = this.react.getState()
 
     physicsCore.runAnimation(run)
@@ -550,16 +523,15 @@ class PhysicsExtension extends MultiModelExtensionBase {
       : this.eventTool.deactivate()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onReset () {
-
-    const { physicsCore, selectedBody} =
+    const { physicsCore, selectedBody } =
       this.react.getState()
 
-    physicsCore.reset ()
+    physicsCore.reset()
 
     this.setSelectedBody(
       selectedBody)
@@ -569,36 +541,33 @@ class PhysicsExtension extends MultiModelExtensionBase {
     nav.fitBounds(true, this.bounds)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSimulationStep () {
-
     const { modelTransformer, selectedBody } =
       this.react.getState()
 
     if (selectedBody) {
-
       this.setSelectedBody(
         selectedBody)
 
       const transform =
-        modelTransformer.getFragmentTransform (
+        modelTransformer.getFragmentTransform(
           selectedBody.initialState.fragIds[0])
 
-      modelTransformer.setTransformState (transform)
+      modelTransformer.setTransformState(transform)
     }
 
     this.fps.tick()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onGravitySliderChanged (props) {
-
     const { value, dragging, offset } = props
 
     const { physicsCore } = this.react.getState()
@@ -607,52 +576,55 @@ class PhysicsExtension extends MultiModelExtensionBase {
 
     return (
       <Tooltip
-        prefixCls="rc-slider-tooltip"
+        prefixCls='rc-slider-tooltip'
         visible={dragging}
         overlay={value}
-        placement="top">
-        <Slider.Handle className="rc-slider-handle"
-          offset={offset}/>
+        placement='top'
+      >
+        <Slider.Handle
+          className='rc-slider-handle'
+          offset={offset}
+        />
       </Tooltip>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTimeSkewSliderChanged (props) {
-
     const { value, dragging, offset } = props
 
     const { physicsCore } = this.react.getState()
 
-    physicsCore.setTimeSkew(value/500)
+    physicsCore.setTimeSkew(value / 500)
 
     return (
       <Tooltip
-        prefixCls="rc-slider-tooltip"
+        prefixCls='rc-slider-tooltip'
         visible={dragging}
         overlay={value}
-        placement="top">
-        <Slider.Handle className="rc-slider-handle"
-          offset={offset}/>
+        placement='top'
+      >
+        <Slider.Handle
+          className='rc-slider-handle'
+          offset={offset}
+        />
       </Tooltip>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onKeyDownNumeric (e) {
-
-    //backspace, ENTER, ->, <-, delete, '.', '-', ',',
+    // backspace, ENTER, ->, <-, delete, '.', '-', ',',
     const allowed = [8, 13, 37, 39, 46, 188, 189, 190]
 
     if (allowed.indexOf(e.keyCode) > -1 ||
       (e.keyCode > 47 && e.keyCode < 58)) {
-
       return
     }
 
@@ -660,34 +632,30 @@ class PhysicsExtension extends MultiModelExtensionBase {
     e.preventDefault()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   toFloat (value) {
-
     const floatValue = parseFloat(value)
 
     return isNaN(floatValue) ? 0 : floatValue
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   toFixedStr (float, digits = 2) {
-
     return float.toFixed(digits).toString()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setVelocityByKey (key, value, velocity) {
-
     switch (key) {
-
       case 'Vx':
         velocity.linear.x = this.toFloat(value)
         break
@@ -700,25 +668,24 @@ class PhysicsExtension extends MultiModelExtensionBase {
 
       case 'Ax':
         velocity.angular.x =
-          this.toFloat(value) * Math.PI/180
+          this.toFloat(value) * Math.PI / 180
         break
       case 'Ay':
         velocity.angular.y =
-          this.toFloat(value) * Math.PI/180
+          this.toFloat(value) * Math.PI / 180
         break
       case 'Az':
         velocity.angular.z =
-          this.toFloat(value) * Math.PI/180
+          this.toFloat(value) * Math.PI / 180
         break
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onInputChanged (e, key) {
-
     const state = this.react.getState()
 
     const value = e.target.value
@@ -739,12 +706,11 @@ class PhysicsExtension extends MultiModelExtensionBase {
     this.react.setState(state)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   clearVelocity (keys) {
-
     const state = this.react.getState()
 
     const velocity =
@@ -752,7 +718,6 @@ class PhysicsExtension extends MultiModelExtensionBase {
         state.selectedBody)
 
     keys.forEach((key) => {
-
       state[key] = this.toFixedStr(0)
 
       this.setVelocityByKey(
@@ -766,53 +731,53 @@ class PhysicsExtension extends MultiModelExtensionBase {
     this.react.setState(state)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // React method - render panel title
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle (docked) {
-
     const spanClass = docked
       ? 'fa fa-chain-broken'
       : 'fa fa-chain'
 
     return (
-      <div className="title">
+      <div className='title'>
         <label>
           Physics
         </label>
-        <div className="physics-controls">
-          <button onClick={() => this.setDocking(docked)}
-            title="Toggle docking mode">
-            <span className={spanClass}/>
+        <div className='physics-controls'>
+          <button
+            onClick={() => this.setDocking(docked)}
+            title='Toggle docking mode'
+          >
+            <span className={spanClass} />
           </button>
         </div>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderVelocity () {
-
     const state = this.react.getState()
 
     const disabled = !state.selectedBody
 
     return (
-      <div className="velocity">
+      <div className='velocity'>
 
-        <div className="row">
+        <div className='row'>
 
-          <Label text={'Angular:'}/>
+          <Label text='Angular:' />
 
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Ax')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-vel"
-            data-placeholder="Ax"
+            className='input-vel'
+            data-placeholder='Ax'
             disabled={disabled}
             html={state.Ax}
           />
@@ -820,8 +785,8 @@ class PhysicsExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Ay')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-vel"
-            data-placeholder="Ay"
+            className='input-vel'
+            data-placeholder='Ay'
             disabled={disabled}
             html={state.Ay}
           />
@@ -829,29 +794,31 @@ class PhysicsExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Az')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-vel"
-            data-placeholder="Az"
+            className='input-vel'
+            data-placeholder='Az'
             html={state.Az}
           />
 
-          <button className={state.rotate ? 'active':''}
-            onClick={() => this.clearVelocity(['Ax','Ay','Az'])}
+          <button
+            className={state.rotate ? 'active' : ''}
+            onClick={() => this.clearVelocity(['Ax', 'Ay', 'Az'])}
             disabled={disabled}
-            title="Clear">
-            <span className="fa fa-times"/>
+            title='Clear'
+          >
+            <span className='fa fa-times' />
           </button>
 
         </div>
 
-        <div className="row">
+        <div className='row'>
 
-          <Label text={'Linear:'}/>
+          <Label text='Linear:' />
 
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Vx')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-vel"
-            data-placeholder="Vx"
+            className='input-vel'
+            data-placeholder='Vx'
             disabled={disabled}
             html={state.Vx}
           />
@@ -859,8 +826,8 @@ class PhysicsExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Vy')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-vel"
-            data-placeholder="Vy"
+            className='input-vel'
+            data-placeholder='Vy'
             disabled={disabled}
             html={state.Vy}
           />
@@ -868,17 +835,19 @@ class PhysicsExtension extends MultiModelExtensionBase {
           <ContentEditable
             onChange={(e) => this.onInputChanged(e, 'Vz')}
             onKeyDown={(e) => this.onKeyDownNumeric(e)}
-            className="input-vel"
-            data-placeholder="Vz"
+            className='input-vel'
+            data-placeholder='Vz'
             disabled={disabled}
             html={state.Vz}
           />
 
-          <button className={state.translate ? 'active':''}
-            onClick={() => this.clearVelocity(['Vx','Vy','Vz'])}
+          <button
+            className={state.translate ? 'active' : ''}
+            onClick={() => this.clearVelocity(['Vx', 'Vy', 'Vz'])}
             disabled={disabled}
-            title="Clear">
-            <span className="fa fa-times"/>
+            title='Clear'
+          >
+            <span className='fa fa-times' />
           </button>
 
         </div>
@@ -887,12 +856,11 @@ class PhysicsExtension extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // React method - render panel controls
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderControls () {
-
     const {
       activateControls,
       physicsCore,
@@ -900,125 +868,127 @@ class PhysicsExtension extends MultiModelExtensionBase {
     } = this.react.getState()
 
     return (
-      <div style={{overflow: 'scroll', height: '100%'}}>
-        <ReactLoader show={showLoader}/>
+      <div style={{ overflow: 'scroll', height: '100%' }}>
+        <ReactLoader show={showLoader} />
         {
           activateControls &&
-          <ScriptLoader onLoaded={this.onScriptLoaded}
-            url={['/resources/libs/ammo/ammo.js']}
-          />
+            <ScriptLoader
+              onLoaded={this.onScriptLoaded}
+              url={['/resources/libs/ammo/ammo.js']}
+            />
         }
 
         {
           physicsCore &&
-          <div className="controls">
-            <div className="control-element">
-              <label>
-                Simulation controls:
-              </label>
-              <div>
-                <Switch
-                  onChange={this.onEnablePhysics}
-                  checked={false}
-                />
+            <div className='controls'>
+              <div className='control-element'>
                 <label>
-                  Run
+                Simulation controls:
                 </label>
-                <button className="reset"
-                  onClick={this.onReset}>
-                  <span className="fa fa-refresh"/>
+                <div>
+                  <Switch
+                    onChange={this.onEnablePhysics}
+                    checked={false}
+                  />
                   <label>
-                    Reset
+                  Run
                   </label>
-                </button>
+                  <button
+                    className='reset'
+                    onClick={this.onReset}
+                  >
+                    <span className='fa fa-refresh' />
+                    <label>
+                    Reset
+                    </label>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <br/><hr/>
+              <br /><hr />
 
-            <div className="control-element">
-              <label>
+              <div className='control-element'>
+                <label>
                 Gravity:
-              </label>
+                </label>
 
-              <Slider
-                handle={(props) => this.onGravitySliderChanged(props)}
-                defaultValue={physicsCore.gravity}
-                step={0.01}
-                min={-9.8}
-                max={0.0}
-              />
-            </div>
+                <Slider
+                  handle={(props) => this.onGravitySliderChanged(props)}
+                  defaultValue={physicsCore.gravity}
+                  step={0.01}
+                  min={-9.8}
+                  max={0.0}
+                />
+              </div>
 
-            <br/><hr/>
+              <br /><hr />
 
-            <div className="control-element">
-              <label>
-                Time Skew: <br/> (Runs simulation slower > faster)
-              </label>
+              <div className='control-element'>
+                <label>
+                Time Skew: <br /> (Runs simulation slower > faster)
+                </label>
 
-              <Slider
-                handle={(props) => this.onTimeSkewSliderChanged(props)}
-                defaultValue={physicsCore.timeSkew * 500}
-                max={1000}
-                step={1}
-                min={1}
-              />
-            </div>
+                <Slider
+                  handle={(props) => this.onTimeSkewSliderChanged(props)}
+                  defaultValue={physicsCore.timeSkew * 500}
+                  max={1000}
+                  step={1}
+                  min={1}
+                />
+              </div>
 
-            <br/><hr/>
+              <br /><hr />
 
-            <div className="control-element">
+              <div className='control-element'>
 
-              <label>
+                <label>
                 Component velocity:
-              </label>
+                </label>
 
-              { this.renderVelocity() }
-            </div>
+                {this.renderVelocity()}
+              </div>
 
-            <br/><hr/>
+              <br /><hr />
 
-            <div className="control-element" style={{height:'120px'}}>
+              <div className='control-element' style={{ height: '120px' }}>
 
-              <label>
+                <label>
                 Component transform:
-              </label>
+                </label>
 
-              { this.renderTransformer() }
+                {this.renderTransformer()}
+              </div>
+
             </div>
-
-          </div>
         }
 
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // React method - render transformer extension UI
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTransformer () {
-
-    const {modelTransformer} = this.react.getState()
+    const { modelTransformer } = this.react.getState()
 
     return modelTransformer
-      ? modelTransformer.render({showTitle: false})
+      ? modelTransformer.render({ showTitle: false })
       : false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // React method - render extension UI
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
     return (
       <WidgetContainer
         renderTitle={() => this.renderTitle(opts.docked)}
         showTitle={opts.showTitle}
-        className={this.className}>
+        className={this.className}
+      >
         {this.renderControls()}
       </WidgetContainer>
     )

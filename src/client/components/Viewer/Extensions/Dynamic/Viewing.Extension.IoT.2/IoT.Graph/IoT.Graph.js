@@ -1,14 +1,12 @@
-import  {SmoothieChart,TimeSeries} from './smoothie'
+import { SmoothieChart, TimeSeries } from './smoothie'
 import React from 'react'
 
 export default class IoTGraph extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor () {
-
     super()
 
     this.state = {
@@ -16,12 +14,11 @@ export default class IoTGraph extends React.Component {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentDidMount () {
-
     this.thresholdSeries = new TimeSeries()
 
     this.dataSeries = new TimeSeries()
@@ -54,40 +51,35 @@ export default class IoTGraph extends React.Component {
     this.updateGraph(this.props)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillUnmount () {
-
     clearInterval(this.updateId)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillReceiveProps (props) {
-
     if (props.guid !== this.props.guid) {
-
       this.updateGraph(props)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   updateGraph (props) {
-
     clearTimeout(this.updateId)
 
     this.thresholdSeries.clear()
     this.dataSeries.clear()
 
     const update = () => {
-
       const t = new Date().getTime()
       this.thresholdSeries.append(t, this.props.threshold)
 
@@ -106,13 +98,12 @@ export default class IoTGraph extends React.Component {
     update()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render () {
-
-    const {dimensions, name, rows} = this.props
+    const { dimensions, name, rows } = this.props
 
     const label = ` ${name}: ${this.state.value.toFixed(2)}`
 
@@ -120,7 +111,7 @@ export default class IoTGraph extends React.Component {
       ? 100 : dimensions.width - 1
 
     const height = isNaN(dimensions.height)
-      ? 100 : Math.floor((dimensions.height - 2)/rows)
+      ? 100 : Math.floor((dimensions.height - 2) / rows)
 
     const style = {
       height
@@ -128,14 +119,15 @@ export default class IoTGraph extends React.Component {
 
     return (
       <div style={style}>
-        <div className="graph-title">
+        <div className='graph-title'>
           <label>
-            { label }
+            {label}
           </label>
         </div>
-        <canvas ref={ (div) => this.canvas = div }
-          width={width} height={height-30}
-          className="graph"
+        <canvas
+          ref={(div) => this.canvas = div}
+          width={width} height={height - 30}
+          className='graph'
         /> 
       </div>
     )

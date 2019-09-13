@@ -1,13 +1,13 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.ViewableSelector
 // by Philippe Leefsma, November 2017
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import './Viewing.Extension.ViewableSelector.scss'
 import WidgetContainer from 'WidgetContainer'
 import ReactTooltip from 'react-tooltip'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import Toolkit from 'Viewer.Toolkit'
 import ReactDOM from 'react-dom'
 import Image from 'Image'
@@ -15,49 +15,43 @@ import Label from 'Label'
 import React from 'react'
 
 class ViewableSelectorExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.react = options.react
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'viewable-selector'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.ViewableSelector'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     this.react.setState({
 
       activeItem: null,
       items: []
 
-    }).then (async() => {
-
+    }).then(async () => {
       const urn = this.options.model.urn
 
       this.viewerDocument =
@@ -68,7 +62,6 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
           this.viewerDocument)
 
       if (items.length > 1) {
-
         this.createButton()
 
         await this.react.setState({
@@ -77,8 +70,7 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
         })
 
         if (this.options.showPanel) {
-
-          this.showPanel (true)
+          this.showPanel(true)
         }
       }
     })
@@ -88,12 +80,11 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     this.react.popViewerPanel(this)
 
     console.log('Viewing.Extension.ViewableSelector unloaded')
@@ -101,16 +92,14 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load the selected viewable
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onItemSelected (item) {
-
-    const {activeItem} = this.react.getState()
+    const { activeItem } = this.react.getState()
 
     if (item.guid !== activeItem.guid) {
-
       this.options.loader.show(true)
 
       this.viewer.tearDown()
@@ -121,7 +110,6 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
         this.viewerDocument.getViewablePath(item)
 
       this.viewer.loadModel(path, {}, () => {
-
         this.options.loader.show(false)
       })
 
@@ -131,12 +119,11 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Create a button to display the panel
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createButton () {
-
     this.button = document.createElement('button')
 
     this.button.title = 'This model has multiple views ...'
@@ -146,7 +133,6 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
     this.button.innerHTML = 'Views'
 
     this.button.onclick = () => {
-
       this.showPanel(true)
     }
 
@@ -159,15 +145,13 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
     this.viewer.container.appendChild(this.button)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Show/Hide panel
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   showPanel (show) {
-
     if (show) {
-
-      const {items} = this.react.getState()
+      const { items } = this.react.getState()
 
       this.button.classList.add('active')
 
@@ -175,7 +159,7 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
 
       const height = Math.min(
         container.offsetHeight - 110,
-        (items.length + 1)  * 78 + 55)
+        (items.length + 1) * 78 + 55)
 
       this.react.pushViewerPanel(this, {
         maxHeight: height,
@@ -186,99 +170,101 @@ class ViewableSelectorExtension extends MultiModelExtensionBase {
         top: 30,
         height
       })
-
     } else {
-
       this.react.popViewerPanel(this.id).then(() => {
-
         this.button.classList.remove('active')
       })
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Render React panel content
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderContent () {
-
-    const {activeItem, items} = this.react.getState()
+    const { activeItem, items } = this.react.getState()
 
     const urn = this.options.model.urn
 
     const apiUrl = this.options.apiUrl
 
     const domItems = items.map((item) => {
-
       const active = (item.guid === activeItem.guid)
-        ? ' active' :''
+        ? ' active' : ''
 
       const query = `size=400&guid=${item.guid}`
 
       const src = `${apiUrl}/thumbnails/${urn}?${query}`
 
       return (
-        <div key={item.guid} className={"item" + active}
-          onClick={() => this.onItemSelected(item)}>
-          <div className="image-container"
+        <div
+          key={item.guid} className={'item' + active}
+          onClick={() => this.onItemSelected(item)}
+        >
+          <div
+            className='image-container'
             data-for={`thumbnail-${item.guid}`}
-            data-tip>
-            <Image src={src}/>
+            data-tip
+          >
+            <Image src={src} />
           </div>
-          <ReactTooltip id={`thumbnail-${item.guid}`}
-            className="tooltip-thumbnail"
+          <ReactTooltip
+            id={`thumbnail-${item.guid}`}
+            className='tooltip-thumbnail'
             delayShow={700}
-            effect="solid"
-            place="right">
+            effect='solid'
+            place='right'
+          >
             <div>
-              <img src={src} height="200"/>
+              <img src={src} height='200' />
             </div>
           </ReactTooltip>
-          <Label text={item.name}/>
+          <Label text={item.name} />
         </div>
       )
     })
 
     return (
-      <div className="items">
+      <div className='items'>
         {domItems}
-        <div style={{height: '80px'}}/>
+        <div style={{ height: '80px' }} />
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Render title
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle () {
-
     return (
-      <div className="title">
+      <div className='title'>
         <label>
           Select Viewable
         </label>
-        <div className="viewable-selector-controls">
-          <button onClick={() => this.showPanel(false)}
-            title="Toggle panel">
-            <span className="fa fa-times"/>
+        <div className='viewable-selector-controls'>
+          <button
+            onClick={() => this.showPanel(false)}
+            title='Toggle panel'
+          >
+            <span className='fa fa-times' />
           </button>
         </div>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Render main
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
     return (
       <WidgetContainer
         renderTitle={() => this.renderTitle(opts.docked)}
         showTitle={opts.showTitle}
-        className={this.className}>
+        className={this.className}
+      >
         {this.renderContent()}
       </WidgetContainer>
     )

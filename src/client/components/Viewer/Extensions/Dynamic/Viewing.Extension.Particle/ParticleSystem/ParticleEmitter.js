@@ -2,24 +2,20 @@ import BaseObject from './BaseObject'
 import Vector from './Vector'
 
 export default class ParticleEmitter extends BaseObject {
-
   constructor (id) {
-
     super(id, 0)
 
-    this._spread       = 2 * Math.PI / 180
+    this._spread = 2 * Math.PI / 180
     this._emissionRate = 500
-    this._velocity     = 10
-    this._charge       = 1
+    this._velocity = 10
+    this._charge = 1
   }
 
   emitNumber (dt) {
-
     return Math.floor(this._emissionRate * dt)
   }
 
   emitParticle (particle) {
-
     var angle1 = this._spread * (2 * Math.random() - 1)
     var angle2 = this._spread * (2 * Math.random() - 1)
 
@@ -40,42 +36,34 @@ export default class ParticleEmitter extends BaseObject {
   }
 
   setEmissionRate (emissionRate) {
-
     this._emissionRate = emissionRate
   }
 
   getEmissionRate () {
-
     return this._emissionRate
   }
 
   setVelocity (velocity) {
-
     this._velocity = velocity
   }
 
   getVelocity () {
-
     return this._velocity
   }
 
   setSpread (spread) {
-
     this._spread = spread
   }
 
   getSpread () {
-
     return this._spread
   }
 
   setCharge (charge) {
-
     this._charge = charge
   }
 
   getCharge () {
-
     return this._charge
   }
 }

@@ -1,5 +1,5 @@
 //
-//export default class TestExtension
+// export default class TestExtension
 //  extends Autodesk.Viewing.Extension {
 //
 //  constructor (viewer, options) {
@@ -18,27 +18,23 @@
 //
 //    return true
 //  }
-//}
+// }
 //
-//Autodesk.Viewing.theExtensionManager.registerExtension(
+// Autodesk.Viewing.theExtensionManager.registerExtension(
 //  'Viewing.Extension.Test', TestExtension)
 //
-
 
 import { Font, Geometry, TextGeometry } from 'threejs-full-es6'
 import FontJson from './helvetiker_bold.typeface.json'
 import EventTool from 'Viewer.EventTool'
 
-
 export default class TextExtension
   extends Autodesk.Viewing.Extension {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Adds a color material to the viewer
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
     super()
 
     this.onClick = this.onClick.bind(this)
@@ -49,7 +45,7 @@ export default class TextExtension
 
     this.eventTool = new EventTool(this.viewer)
 
-    this.eventTool.on (
+    this.eventTool.on(
       'singleclick',
       this.onClick)
 
@@ -57,21 +53,18 @@ export default class TextExtension
   }
 
   load () {
-
     return true
   }
 
   unload () {
-
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Adds a color material to the viewer
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createColorMaterial (color) {
-
     const material = new THREE.MeshPhongMaterial({
       specular: new THREE.Color(color),
       side: THREE.DoubleSide,
@@ -89,19 +82,18 @@ export default class TextExtension
     return material
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Wraps TextGeometry object and adds a new mesh to
   // the scene
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createText (params) {
-
     const textGeometry = new TextGeometry(params.text,
       Object.assign({}, {
         font: new Font(FontJson),
         params
       }))
 
-    const geometry = new THREE.BufferGeometry
+    const geometry = new THREE.BufferGeometry()
 
     geometry.fromGeometry(textGeometry)
 
@@ -109,7 +101,7 @@ export default class TextExtension
       params.color)
 
     const text = new THREE.Mesh(
-      geometry , material)
+      geometry, material)
 
     text.position.set(
       params.position.x,
@@ -125,12 +117,11 @@ export default class TextExtension
     return text
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Creates Raycaster object from the pointer
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   pointerToRaycaster (domElement, camera, pointer) {
-
     const pointerVector = new THREE.Vector3()
     const pointerDir = new THREE.Vector3()
     const ray = new THREE.Raycaster()
@@ -141,7 +132,6 @@ export default class TextExtension
     const y = -((pointer.clientY - rect.top) / rect.height) * 2 + 1
 
     if (camera.isPerspective) {
-
       pointerVector.set(x, y, 0.5)
 
       pointerVector.unproject(camera)
@@ -149,9 +139,7 @@ export default class TextExtension
       ray.set(camera.position,
         pointerVector.sub(
           camera.position).normalize())
-
     } else {
-
       pointerVector.set(x, y, -1)
 
       pointerVector.unproject(camera)
@@ -166,12 +154,11 @@ export default class TextExtension
     return ray
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Click handler
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onClick (event) {
-
     const pointer = event.pointers
       ? event.pointers[0]
       : event

@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 // Configurator Extension
 // By Philippe Leefsma, February 2016
 //
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 import ExtensionBase from 'Viewer.ExtensionBase'
 import EventTool from 'Viewer.EventTool'
 import Toolkit from 'Viewer.Toolkit'
@@ -13,17 +13,17 @@ import HotSpotCommand from 'HotSpot.Command'
 import CATCommand from './CAT.Command'
 
 const initialState = {
-  "viewport":{
-    "pivotPoint":[-1472.400390625,-10.18829345703125,-1500.0821533203125],
-    "target":[-303.1868588883351,1907.2056309117083,-571.8250369698071],
-    "up":[-0.18312680430671008,-0.42980211681298697,0.8841576295703655],
-    "eye":[1091.6921628418772,5181.013408573601,1308.5288670390182],
-    "distanceToOrbit":6423.3258979784805,
-    "aspectRatio":1.9645293315143246,
-    "projection":"perspective",
-    "worldUpVector":[0,0,1],
-    "isOrthographic":false,
-    "fieldOfView":45
+  viewport: {
+    pivotPoint: [-1472.400390625, -10.18829345703125, -1500.0821533203125],
+    target: [-303.1868588883351, 1907.2056309117083, -571.8250369698071],
+    up: [-0.18312680430671008, -0.42980211681298697, 0.8841576295703655],
+    eye: [1091.6921628418772, 5181.013408573601, 1308.5288670390182],
+    distanceToOrbit: 6423.3258979784805,
+    aspectRatio: 1.9645293315143246,
+    projection: 'perspective',
+    worldUpVector: [0, 0, 1],
+    isOrthographic: false,
+    fieldOfView: 45
   }
 }
 
@@ -80,8 +80,8 @@ const hotspots = [
     id: 1,
     dbId: 97,
     occlusion: true,
-    strokeColor: "#FF0000",
-    fillColor: "#FF8888",
+    strokeColor: '#FF0000',
+    fillColor: '#FF8888',
     worldPoint: {
       x: -707.970923901142,
       y: 612.61181640625,
@@ -97,8 +97,8 @@ const hotspots = [
     id: 2,
     dbId: 19,
     occlusion: true,
-    strokeColor: "#FF0000",
-    fillColor: "#FF8888",
+    strokeColor: '#FF0000',
+    fillColor: '#FF8888',
     worldPoint: {
       x: -976.0632600732763,
       y: 429.9181734249337,
@@ -114,8 +114,8 @@ const hotspots = [
     id: 3,
     dbId: 94,
     occlusion: true,
-    strokeColor: "#FF0000",
-    fillColor: "#FF8888",
+    strokeColor: '#FF0000',
+    fillColor: '#FF8888',
     worldPoint: {
       x: -2635.9625096214204,
       y: 623.5501629995997,
@@ -131,8 +131,8 @@ const hotspots = [
     id: 4,
     dbId: 832,
     occlusion: true,
-    strokeColor: "#FF0000",
-    fillColor: "#FF8888",
+    strokeColor: '#FF0000',
+    fillColor: '#FF8888',
     worldPoint: {
       x: -1401.475080459008,
       y: -729.0204308324123,
@@ -148,8 +148,8 @@ const hotspots = [
     id: 5,
     dbId: 228,
     occlusion: true,
-    strokeColor: "#FF0000",
-    fillColor: "#FF8888",
+    strokeColor: '#FF0000',
+    fillColor: '#FF8888',
     worldPoint: {
       x: -2688.480848483067,
       y: -1471.2827251586225,
@@ -164,26 +164,24 @@ const hotspots = [
 ]
 
 class CATExtension extends ExtensionBase {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.onGeometryLoaded = this.onGeometryLoaded.bind(this)
 
     this.onSelection = this.onSelection.bind(this)
 
-    this.hotSpotCommand = new HotSpotCommand (viewer, {
+    this.hotSpotCommand = new HotSpotCommand(viewer, {
       parentControl: options.parentControl,
       animate: true,
       hotspots
     })
 
-    this.operatorCommand = new OperatorCommand (viewer, {
+    this.operatorCommand = new OperatorCommand(viewer, {
       parentControl: options.parentControl
     })
 
@@ -197,14 +195,13 @@ class CATExtension extends ExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////////////
-  load() {
-
+  /// //////////////////////////////////////////////////////////////
+  load () {
     this.viewer.loadDynamicExtension('Viewing.Extension.UISettings', {
-      toolbar:{
+      toolbar: {
         removedControls: [
           '#navTools'
         ],
@@ -227,14 +224,13 @@ class CATExtension extends ExtensionBase {
     this.eventTool.activate()
 
     this.eventTool.on('singleclick', (event) => {
-
       this.pointer = event
 
       const element = document.elementFromPoint(
         this.pointer.canvasX,
         this.pointer.canvasY)
 
-      //console.log(element)
+      // console.log(element)
     })
 
     this.viewer.setProgressiveRendering(false)
@@ -246,21 +242,19 @@ class CATExtension extends ExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   static get ExtensionId () {
-
     return 'Viewing.Extension.CAT'
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////////////
-  unload() {
-
+  /// //////////////////////////////////////////////////////////////
+  unload () {
     this.viewer.removeEventListener(
       Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT,
       this.onSelection)
@@ -272,12 +266,11 @@ class CATExtension extends ExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onGeometryLoaded (event) {
-
     const mustHide = [
       143, 145, 147, 153, 155, 157, 160, 162,
       164, 169, 167, 171, 100, 104, 107, 109,
@@ -313,62 +306,58 @@ class CATExtension extends ExtensionBase {
     this.hotSpotCommand.activate()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   async onSelection (event) {
-
     if (event.selections && event.selections.length) {
-
       const selection = event.selections[0]
 
       const dbIds = selection.dbIdArray
 
       console.log(dbIds)
 
-      //const data = this._viewer.clientToWorld(
+      // const data = this._viewer.clientToWorld(
       //  this.pointer.canvasX,
       //  this.pointer.canvasY,
       //  true)
       //
-      //console.log(data.point)
+      // console.log(data.point)
       //
-      //new HotSpot(this._viewer, data.point)
+      // new HotSpot(this._viewer, data.point)
 
-      //console.log(JSON.stringify(this._viewer.getState()))
+      // console.log(JSON.stringify(this._viewer.getState()))
 
-      //var instanceTree = model.getData().instanceTree;
+      // var instanceTree = model.getData().instanceTree;
       //
-      //var rootId = instanceTree.getRootId()
+      // var rootId = instanceTree.getRootId()
       //
-      //const bbox = await Toolkit.getWorldBoundingBox(
+      // const bbox = await Toolkit.getWorldBoundingBox(
       //  this._viewer.model, rootId)
       //
-      //Toolkit.drawBox(this._viewer, bbox.min, bbox.max)
+      // Toolkit.drawBox(this._viewer, bbox.min, bbox.max)
 
-      //const center = new THREE.Vector3(
+      // const center = new THREE.Vector3(
       //  (bbox.max.x + bbox.min.x) * 0.5,
       //  (bbox.max.y + bbox.min.y) * 0.5,
       //  (bbox.max.z + bbox.min.z) * 0.5)
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getState (viewerState) {
-
-    this.configuratorCommand.getState (viewerState)
+    this.configuratorCommand.getState(viewerState)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   restoreState (viewerState, immediate) {
-
     this.configuratorCommand.restoreState(
       viewerState,
       immediate)

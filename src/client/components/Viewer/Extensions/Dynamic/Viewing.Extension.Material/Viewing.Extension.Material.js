@@ -1,13 +1,13 @@
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 // Material Viewer Extension
 // By Philippe Leefsma, Autodesk Inc, October 2017
 //
-/////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import WidgetContainer from 'WidgetContainer'
 import { ChromePicker } from 'react-color'
 import EventTool from 'Viewer.EventTool'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import Toolkit from 'Viewer.Toolkit'
 import ReactDOM from 'react-dom'
 import Label from 'Label'
@@ -18,22 +18,18 @@ import steel from './textures/steel.jpg'
 import wood from './textures/wood.jpg'
 
 class MaterialExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.onColorPicked = this.onColorPicked.bind(this)
     this.onTexturePick = this.onTexturePick.bind(this)
     this.onColorPick = this.onColorPick.bind(this)
     this.renderTitle = this.renderTitle.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
-
-
 
     this.react = options.react
 
@@ -42,15 +38,14 @@ class MaterialExtension extends MultiModelExtensionBase {
     this.materials = {}
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     this.react.setState({
 
-      texture: {name: 'wood' , img: wood},
+      texture: { name: 'wood', img: wood },
       disabled: !this.models.length,
       materialClrActive: false,
       themingClrActive: false,
@@ -58,18 +53,16 @@ class MaterialExtension extends MultiModelExtensionBase {
       materialColor: '#D02D2D',
       themingColor: '#41C638',
       textures: [
-        {name: 'brick', img: brick},
-        {name: 'steel', img: steel},
-        {name: 'wood' , img: wood}
+        { name: 'brick', img: brick },
+        { name: 'steel', img: steel },
+        { name: 'wood', img: wood }
       ]
 
-    }).then (() => {
-
+    }).then(() => {
       this.react.pushRenderExtension(this)
     })
 
     if (this.viewer.model) {
-
       this.eventTool = new EventTool(this.viewer)
 
       this.eventTool.on('keydown', this.onKeyDown)
@@ -78,7 +71,6 @@ class MaterialExtension extends MultiModelExtensionBase {
     this.viewer.loadDynamicExtension(
       'Viewing.Extension.ContextMenu', {
         buildMenu: (menu, dbId) => {
-
           menu.push({
             title: 'Clear All Material Overrides',
             target: () => {
@@ -95,45 +87,40 @@ class MaterialExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'material'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   static get ExtensionId () {
-
     return 'Viewing.Extension.Material'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log('Viewing.Extension.Material unloaded')
 
-    super.unload ()
+    super.unload()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelRootLoaded () {
-
     if (!this.eventTool) {
-
       this.eventTool = new EventTool(this.viewer)
 
       this.eventTool.on('keydown', this.onKeyDown)
@@ -144,16 +131,14 @@ class MaterialExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   startSelection (active) {
-
-    const {disabled} = this.react.getState()
+    const { disabled } = this.react.getState()
 
     if (!disabled) {
-
       this.eventTool.activate()
 
       const state = Object.assign({
@@ -168,12 +153,11 @@ class MaterialExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  stopSelection() {
-
+  /// //////////////////////////////////////////////////////
+  stopSelection () {
     this.eventTool.deactivate()
 
     this.react.setState({
@@ -182,14 +166,12 @@ class MaterialExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onSelection (event) {
-
     if (this.eventTool.active && event.selections.length) {
-
       const {
         materialClrActive,
         themingClrActive,
@@ -202,24 +184,21 @@ class MaterialExtension extends MultiModelExtensionBase {
 
       const model = selection.model
 
-      this.saveDefaultMaterial (model, dbIds)
+      this.saveDefaultMaterial(model, dbIds)
 
       const fragIds =
         await Toolkit.getFragIds(
           model, dbIds)
 
       if (materialClrActive) {
-
         this.setColorMaterial(model, fragIds)
       }
 
       if (themingClrActive) {
-
         this.setThemingColor(model, dbIds)
       }
 
       if (texActive) {
-
         this.setTextureMaterial(model, fragIds)
       }
 
@@ -229,19 +208,15 @@ class MaterialExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   saveDefaultMaterial (model, dbIds) {
-
     dbIds.forEach((dbId) => {
-
       if (!this.overrides[model.guid + dbId]) {
-
         Toolkit.getFragIds(model, dbId).then(
           (fragIds) => {
-
             const renderProxy =
               this.viewer.impl.getRenderProxy(
                 model, fragIds[0])
@@ -256,21 +231,16 @@ class MaterialExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getMaterial (colorOrStr) {
-
     if (!this.materials[colorOrStr]) {
-
       if (typeof colorOrStr === 'string') {
-
         this.materials[colorOrStr] =
           this.createTexMaterial(colorOrStr)
-
       } else {
-
         this.materials[colorOrStr] =
           this.createColorMaterial(colorOrStr)
       }
@@ -279,12 +249,11 @@ class MaterialExtension extends MultiModelExtensionBase {
     return this.materials[colorOrStr]
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createColorMaterial (color) {
-
     const material = new THREE.MeshPhongMaterial({
       specular: new THREE.Color(color),
       side: THREE.DoubleSide,
@@ -302,18 +271,17 @@ class MaterialExtension extends MultiModelExtensionBase {
     return material
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createTexMaterial (texture) {
-
     const tex = THREE.ImageUtils.loadTexture(texture)
 
-    tex.wrapS  = THREE.RepeatWrapping
+    tex.wrapS = THREE.RepeatWrapping
     tex.wrapT = THREE.RepeatWrapping
 
-    tex.repeat.set (0.1, 0.1)
+    tex.repeat.set(0.1, 0.1)
 
     const material = new THREE.MeshBasicMaterial({
       specular: new THREE.Color(0x111111),
@@ -334,13 +302,12 @@ class MaterialExtension extends MultiModelExtensionBase {
     return material
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setColorMaterial (model, fragIds) {
-
-    const {materialColor} = this.react.getState()
+    const { materialColor } = this.react.getState()
 
     const colorHexStr = materialColor.replace('#', '0x')
 
@@ -349,19 +316,17 @@ class MaterialExtension extends MultiModelExtensionBase {
     const material = this.getMaterial(colorInt)
 
     fragIds.forEach((fragId) => {
-
       model.getFragmentList().setMaterial(
         fragId, material)
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setThemingColor (model, dbIds) {
-
-    const {themingColor} = this.react.getState()
+    const { themingColor } = this.react.getState()
 
     const colorHexStr = themingColor.replace('#', '0x')
 
@@ -370,45 +335,39 @@ class MaterialExtension extends MultiModelExtensionBase {
     const clr = new THREE.Color(colorInt)
 
     dbIds.forEach((dbId) => {
-
       model.setThemingColor(dbId,
         new THREE.Vector4(
-        clr.r, clr.g, clr.b, clr.a))
+          clr.r, clr.g, clr.b, clr.a))
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setTextureMaterial (model, fragIds) {
-
-    const {texture} = this.react.getState()
+    const { texture } = this.react.getState()
 
     const material = this.getMaterial(texture.img)
 
     fragIds.forEach((fragId) => {
-
       model.getFragmentList().setMaterial(
         fragId, material)
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async clearOverrides () {
-
-    for (let key in this.overrides) {
-
-      const {model, dbId, material} = this.overrides[key]
+    for (const key in this.overrides) {
+      const { model, dbId, material } = this.overrides[key]
 
       const fragIds = await Toolkit.getFragIds(
         model, dbId)
 
       fragIds.forEach((fragId) => {
-
         model.getFragmentList().setMaterial(
           fragId, material)
       })
@@ -419,40 +378,35 @@ class MaterialExtension extends MultiModelExtensionBase {
     this.viewer.impl.sceneUpdated(true)
 
     this.models.forEach((model) => {
-
       model.clearThemingColors()
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onKeyDown (event, keyCode) {
-
     if (keyCode === 27) {
-
       this.stopSelection()
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onColorPicked (field, color) {
-
     this.react.setState({
       [field]: color.hex
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onColorPick (field, e) {
-
     const state = this.react.getState()
 
     const color = state[field]
@@ -462,36 +416,34 @@ class MaterialExtension extends MultiModelExtensionBase {
       title: 'Select Color ...',
       showCancel: false,
       content:
-        <div>
-          <ChromePicker
-            onChangeComplete={(c) => this.onColorPicked(field, c)}
-            color={color}
-          />
-        </div>,
+  <div>
+    <ChromePicker
+      onChangeComplete={(c) => this.onColorPicked(field, c)}
+      color={color}
+    />
+  </div>,
       open: true
     })
 
     e.stopPropagation()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTexturePick (e) {
-
-    const {textures} = this.react.getState()
+    const { textures } = this.react.getState()
 
     const items = textures.map((texture) => {
-
       const style = {
         content: `url(${texture.img})`
       }
 
       return (
-        <div key={texture.name} className="tex-item"
+        <div
+          key={texture.name} className='tex-item'
           onClick={() => {
-
             this.dialogSvc.setState({
               open: false
             })
@@ -499,9 +451,10 @@ class MaterialExtension extends MultiModelExtensionBase {
             this.react.setState({
               texture
             })
-        }}>
-          <div className="img" style={style}/>
-          { texture.name }
+          }}
+        >
+          <div className='img' style={style} />
+          {texture.name}
         </div>
       )
     })
@@ -512,71 +465,67 @@ class MaterialExtension extends MultiModelExtensionBase {
       showCancel: false,
       showOK: false,
       content:
-        <div>
-          {items}
-        </div>,
+  <div>
+    {items}
+  </div>,
       open: true
     })
 
     e.stopPropagation()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setDocking (docked) {
-
     const id = MaterialExtension.ExtensionId
 
     if (docked) {
-
       await this.react.popRenderExtension(id)
 
       this.react.pushViewerPanel(this, {
         height: 250,
         width: 350
       })
-
     } else {
-
       await this.react.popViewerPanel(id)
 
       this.react.pushRenderExtension(this)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle (docked) {
-
     const spanClass = docked
       ? 'fa fa-chain-broken'
       : 'fa fa-chain'
 
     return (
-      <div className="title">
+      <div className='title'>
         <label>
           Material
         </label>
-        <div className="material-controls">
-          <button onClick={() => this.setDocking(docked)}
-            title="Toggle docking mode">
-            <span className={spanClass}/>
+        <div className='material-controls'>
+          <button
+            onClick={() => this.setDocking(docked)}
+            title='Toggle docking mode'
+          >
+            <span className={spanClass} />
           </button>
         </div>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderContent () {
-
     const {
       materialClrActive,
       themingClrActive,
@@ -600,31 +549,40 @@ class MaterialExtension extends MultiModelExtensionBase {
     }
 
     return (
-      <div className="content">
-        <div className={`start-selection ${themingClrActive ? 'active':''}`}
+      <div className='content'>
+        <div
+          className={`start-selection ${themingClrActive ? 'active' : ''}`}
           onClick={() => this.startSelection('themingClrActive')}
-          disabled={disabled}>
-          <div onClick={(e) => this.onColorPick('themingColor', e)}
+          disabled={disabled}
+        >
+          <div
+            onClick={(e) => this.onColorPick('themingColor', e)}
             style={themingPicker}
-            className="picker"
+            className='picker'
           />
           Theming Color
         </div>
-        <div className={`start-selection ${materialClrActive ? 'active':''}`}
+        <div
+          className={`start-selection ${materialClrActive ? 'active' : ''}`}
           onClick={() => this.startSelection('materialClrActive')}
-          disabled={disabled}>
-          <div onClick={(e) => this.onColorPick('materialColor', e)}
+          disabled={disabled}
+        >
+          <div
+            onClick={(e) => this.onColorPick('materialColor', e)}
             style={materialPicker}
-            className="picker"
+            className='picker'
           />
           Material Color
         </div>
-        <div className={`start-selection ${texActive ? 'active':''}`}
+        <div
+          className={`start-selection ${texActive ? 'active' : ''}`}
           onClick={() => this.startSelection('texActive')}
-          disabled={disabled}>
-          <div onClick={this.onTexturePick}
+          disabled={disabled}
+        >
+          <div
+            onClick={this.onTexturePick}
             style={texPickerStytle}
-            className="picker"
+            className='picker'
           />
           Texture
         </div>
@@ -632,26 +590,26 @@ class MaterialExtension extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
     return (
       <WidgetContainer
         renderTitle={() => this.renderTitle(opts.docked)}
         showTitle={opts.showTitle}
-        className={this.className}>
+        className={this.className}
+      >
 
-        { this.renderContent () }
+        {this.renderContent()}
 
       </WidgetContainer>
     )
   }
 }
 
-Autodesk.Viewing.theExtensionManager.registerExtension (
+Autodesk.Viewing.theExtensionManager.registerExtension(
   MaterialExtension.ExtensionId,
   MaterialExtension)
 

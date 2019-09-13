@@ -3,12 +3,10 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-export default function LineSegments(geometry, material ) {
+export default function LineSegments (geometry, material) {
+  THREE.Line.call(this, geometry, material)
 
-  THREE.Line.call( this, geometry, material );
-
-  this.type = 'LineSegments';
-
+  this.type = 'LineSegments'
 }
 
 LineSegments.prototype = Object.assign(Object.create(THREE.Line.prototype), {

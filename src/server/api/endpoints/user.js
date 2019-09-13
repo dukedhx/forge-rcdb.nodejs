@@ -2,22 +2,19 @@ import ServiceManager from '../services/SvcManager'
 import express from 'express'
 import config from 'c0nfig'
 
-export default function() {
-
-  /////////////////////////////////////////////////////////
-  //router
+export default function () {
+  /// //////////////////////////////////////////////////////
+  // router
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   const router = express.Router()
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Get user active models
   //
-  /////////////////////////////////////////////////////////
-  router.get('/:db/models', async(req, res) => {
-
+  /// //////////////////////////////////////////////////////
+  router.get('/:db/models', async (req, res) => {
     try {
-
       const db = req.params.db
 
       const userSvc = ServiceManager.getService(
@@ -27,7 +24,6 @@ export default function() {
         req.session)
 
       if (!user) {
-
         res.status(401)
         return res.json('Unauthorized')
       }
@@ -38,9 +34,7 @@ export default function() {
           user.userId)
 
       res.json(models)
-
     } catch (error) {
-
       res.status(error.statusCode || 500)
       res.json(error)
     }

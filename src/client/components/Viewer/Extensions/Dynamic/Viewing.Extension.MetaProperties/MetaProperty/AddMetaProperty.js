@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
 // Written by Philippe Leefsma 2016 - ADN/Developer Technical Services
 //
@@ -14,7 +14,7 @@
 // MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
 // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 // UNINTERRUPTED OR ERROR FREE.
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 import ContentEditable from 'react-contenteditable'
 import Dropzone from 'react-dropzone'
 import ReactDOM from 'react-dom'
@@ -22,18 +22,16 @@ import React from 'react'
 import {
   DropdownButton,
   MenuItem
-  } from 'react-bootstrap'
+} from 'react-bootstrap'
 
 export default class CreateMetaProperty
   extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.onDrop = this.onDrop.bind(this)
 
@@ -42,23 +40,20 @@ export default class CreateMetaProperty
     }, props)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentDidMount () {
-
     this.updateOK()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   assignState (state) {
-
     return new Promise((resolve) => {
-
       const newState = Object.assign(
         {}, this.state, state)
 
@@ -68,7 +63,6 @@ export default class CreateMetaProperty
       })
 
       switch (newState.metaType) {
-
         case 'Double':
         case 'Text':
         case 'Int':
@@ -83,7 +77,7 @@ export default class CreateMetaProperty
         case 'Link':
 
           return this.props.onChanged({
-            link: newState.link ? newState.link.trim():null,
+            link: newState.link ? newState.link.trim() : null,
             displayCategory: newState.displayCategory,
             displayValue: newState.displayValue,
             displayName: newState.displayName,
@@ -107,22 +101,18 @@ export default class CreateMetaProperty
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onKeyDown (e, type) {
-
-    switch(type) {
-
+    switch (type) {
       case 'Double': {
-
-        //backspace, ENTER, ->, <-, delete, '.', '-', ',',
+        // backspace, ENTER, ->, <-, delete, '.', '-', ',',
         const allowed = [8, 13, 37, 39, 46, 188, 189, 190]
 
         if (allowed.indexOf(e.keyCode) > -1 ||
           (e.keyCode > 47 && e.keyCode < 58)) {
-
           return
         }
 
@@ -132,13 +122,11 @@ export default class CreateMetaProperty
       }
 
       case 'Int': {
-
-        //backspace, ENTER, ->, <-, delete, '-'
+        // backspace, ENTER, ->, <-, delete, '-'
         const allowed = [8, 13, 37, 39, 46, 189]
 
         if (allowed.indexOf(e.keyCode) > -1 ||
           (e.keyCode > 47 && e.keyCode < 58)) {
-
           return
         }
 
@@ -148,9 +136,7 @@ export default class CreateMetaProperty
       }
 
       case 'Text': {
-
         if (e.keyCode === 13) {
-
           e.stopPropagation()
           e.preventDefault()
         }
@@ -160,29 +146,26 @@ export default class CreateMetaProperty
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onInputChanged (e, key) {
-
     const newState = Object.assign({}, this.state)
 
-    newState[key] = !!e.target.value
+    newState[key] = e.target.value
       ? e.target.value.replace(/&nbsp;/g, '')
       : e.target.value
 
     this.assignState(newState)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onDrop (files) {
-
     if (this.state.file) {
-
       window.URL.revokeObjectURL(this.state.file.preview)
     }
 
@@ -195,14 +178,12 @@ export default class CreateMetaProperty
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   updateOK () {
-
     switch (this.state.metaType) {
-
       case 'Double':
       case 'Text':
       case 'Int':
@@ -212,7 +193,7 @@ export default class CreateMetaProperty
           !this.state.displayValue ||
           !this.state.displayName
 
-        this.props.disableOK (disableOK)
+        this.props.disableOK(disableOK)
 
         break
       }
@@ -225,7 +206,7 @@ export default class CreateMetaProperty
           !this.state.displayName ||
           !this.state.link
 
-        this.props.disableOK (disableOK)
+        this.props.disableOK(disableOK)
 
         break
       }
@@ -238,21 +219,19 @@ export default class CreateMetaProperty
           !this.state.displayName ||
           !this.state.filename
 
-        this.props.disableOK (disableOK)
+        this.props.disableOK(disableOK)
 
         break
       }
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderContent () {
-
     switch (this.state.metaType) {
-
       case 'Double':
       case 'Text':
       case 'Int':
@@ -260,30 +239,30 @@ export default class CreateMetaProperty
           <ContentEditable
             onKeyDown={(e) => this.onKeyDown(e, this.state.metaType)}
             onChange={(e) => this.onInputChanged(e, 'displayValue')}
-            data-placeholder="Property value ..."
+            data-placeholder='Property value ...'
             html={this.state.displayValue}
-            className="input meta-value"
+            className='input meta-value'
           />
         )
 
       case 'Link':
         return (
           <div>
-            <div className="row">
+            <div className='row'>
               <ContentEditable
                 onChange={(e) => this.onInputChanged(e, 'displayValue')}
-                data-placeholder="Property value ..."
+                data-placeholder='Property value ...'
                 onKeyDown={(e) => this.onKeyDown(e)}
                 html={this.state.displayValue}
-                className="input meta-value"
+                className='input meta-value'
               />
             </div>
-            <div className="row">
+            <div className='row'>
               <ContentEditable
                 onChange={(e) => this.onInputChanged(e, 'link')}
                 onKeyDown={(e) => this.onKeyDown(e)}
-                className="input meta-value"
-                data-placeholder="Link ..."
+                className='input meta-value'
+                data-placeholder='Link ...'
                 html={this.state.link}
               />
             </div>
@@ -293,31 +272,33 @@ export default class CreateMetaProperty
       case 'File':
         return (
           <div>
-            <div className="row">
+            <div className='row'>
               <ContentEditable
                 onChange={(e) => this.onInputChanged(e, 'displayValue')}
-                data-placeholder="Property value ..."
+                data-placeholder='Property value ...'
                 onKeyDown={(e) => this.onKeyDown(e)}
                 html={this.state.displayValue}
-                className="input meta-value"
+                className='input meta-value'
               />
             </div>
-            <div className="row">
-              <Dropzone className="drop-target"
+            <div className='row'>
+              <Dropzone
+                className='drop-target'
                 onDrop={this.onDrop}
-                multiple={false} >
+                multiple={false}
+              >
                 <p>
                   Drop a file here or click to browse ...
                 </p>
                 <ul>
-                {
-                  this.state.filename &&
-                  <li>
-                    <b>{this.state.filename}</b>
-                    <br/>
-                    {this.state.filesize} bytes
-                  </li>
-                }
+                  {
+                    this.state.filename &&
+                      <li>
+                        <b>{this.state.filename}</b>
+                        <br />
+                        {this.state.filesize} bytes
+                      </li>
+                  }
                 </ul>
               </Dropzone>
             </div>
@@ -326,88 +307,98 @@ export default class CreateMetaProperty
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
+  /// //////////////////////////////////////////////////////
+  render () {
     return (
-      <div className="add-meta-property">
+      <div className='add-meta-property'>
 
-        <div className="row">
+        <div className='row'>
 
           <DropdownButton
-            title={"Type: " +  this.state.metaType}
-            className="type-dropdown"
-            key="type-dropdown"
-            id="type-dropdown">
-            <MenuItem eventKey={1} key={1} onClick={() => {
+            title={'Type: ' + this.state.metaType}
+            className='type-dropdown'
+            key='type-dropdown'
+            id='type-dropdown'
+          >
+            <MenuItem
+              eventKey={1} key={1} onClick={() => {
                 this.assignState({
                   displayValue: '',
                   metaType: 'Text'
                 })
-            }}>
+              }}
+            >
               Text
             </MenuItem>
-            <MenuItem eventKey={2} key={2} onClick={() => {
-              this.assignState({
-                displayValue: '',
-                metaType: 'Double'
-              })
-            }}>
+            <MenuItem
+              eventKey={2} key={2} onClick={() => {
+                this.assignState({
+                  displayValue: '',
+                  metaType: 'Double'
+                })
+              }}
+            >
               Double
             </MenuItem>
-            <MenuItem eventKey={3} key={3} onClick={() => {
-              this.assignState({
-                displayValue: '',
-                metaType: 'Int'
-              })
-            }}>
+            <MenuItem
+              eventKey={3} key={3} onClick={() => {
+                this.assignState({
+                  displayValue: '',
+                  metaType: 'Int'
+                })
+              }}
+            >
               Int
             </MenuItem>
-            <MenuItem eventKey={4} key={4} onClick={() => {
-              this.assignState({
-                displayValue: '',
-                metaType: 'Link'
-              })
-            }}>
+            <MenuItem
+              eventKey={4} key={4} onClick={() => {
+                this.assignState({
+                  displayValue: '',
+                  metaType: 'Link'
+                })
+              }}
+            >
               Link
             </MenuItem>
-            <MenuItem eventKey={5} key={5} onClick={() => {
-              this.assignState({
-                displayValue: '',
-                metaType: 'File'
-              })
-            }}>
+            <MenuItem
+              eventKey={5} key={5} onClick={() => {
+                this.assignState({
+                  displayValue: '',
+                  metaType: 'File'
+                })
+              }}
+            >
               File
             </MenuItem>
           </DropdownButton>
 
-            <ContentEditable
-              onChange={(e) => this.onInputChanged(e, 'displayCategory')}
-              onKeyDown={(e) => this.onKeyDown(e)}
-              data-placeholder="Property category ..."
-              disabled={this.state.disableCategory}
-              html={this.state.displayCategory}
-              className="input meta-category"
-
-            />
-        </div>
-
-        <div className="row">
           <ContentEditable
-            onChange={(e) => this.onInputChanged(e, 'displayName')}
+            onChange={(e) => this.onInputChanged(e, 'displayCategory')}
             onKeyDown={(e) => this.onKeyDown(e)}
-            data-placeholder="Property name ..."
-            disabled={this.state.disableName}
-            html={this.state.displayName}
-            className="input meta-name"
+            data-placeholder='Property category ...'
+            disabled={this.state.disableCategory}
+            html={this.state.displayCategory}
+            className='input meta-category'
+
           />
         </div>
 
-        <div className="row">
-          { this.renderContent () }
+        <div className='row'>
+          <ContentEditable
+            onChange={(e) => this.onInputChanged(e, 'displayName')}
+            onKeyDown={(e) => this.onKeyDown(e)}
+            data-placeholder='Property name ...'
+            disabled={this.state.disableName}
+            html={this.state.displayName}
+            className='input meta-name'
+          />
+        </div>
+
+        <div className='row'>
+          {this.renderContent()}
         </div>
 
       </div>

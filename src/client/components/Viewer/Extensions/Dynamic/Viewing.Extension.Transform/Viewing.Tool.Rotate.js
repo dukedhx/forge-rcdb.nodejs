@@ -1,13 +1,11 @@
 import EventsEmitter from 'EventsEmitter'
 
 export default class RotateTool extends EventsEmitter {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer) {
-
     super()
 
     this.keys = {}
@@ -21,48 +19,42 @@ export default class RotateTool extends EventsEmitter {
     this.viewer.toolController.registerTool(this)
 
     this.onAggregateSelectionChangedHandler = (e) => {
-
       this.onAggregateSelectionChanged(e)
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getNames () {
-
     return ['Viewing.Tool.Rotate']
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getName () {
-
     return 'Viewing.Tool.Rotate'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setFullTransform (fullTransform) {
-
     this.fullTransform = fullTransform
 
     this.clearSelection()
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   // activate tool
   //
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   activate () {
-
     if (!this.active) {
-
       this.active = true
 
       this.viewer.toolController.activateTool(
@@ -76,21 +68,18 @@ export default class RotateTool extends EventsEmitter {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // deactivate tool
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   deactivate () {
-
     if (this.active) {
-
       this.active = false
 
       this.viewer.toolController.deactivateTool(
         this.getName())
 
       if (this.rotateControl) {
-
         this.rotateControl.remove()
         this.rotateControl = null
       }
@@ -103,16 +92,14 @@ export default class RotateTool extends EventsEmitter {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Component Selection Handler
   // (use Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT instead of
   //  Autodesk.Viewing.SELECTION_CHANGED_EVENT - deprecated )
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   onAggregateSelectionChanged (event) {
-
     if (this.rotateControl && this.rotateControl.engaged) {
-
       this.rotateControl.engaged = false
 
       this.viewer.select(this.selection.dbIdArray)
@@ -121,20 +108,17 @@ export default class RotateTool extends EventsEmitter {
     }
 
     if (event.selections.length) {
-
       var selection = event.selections[0]
 
       this.selection = selection
 
       if (this.fullTransform) {
-
         this.selection.fragIdsArray = []
 
-        var fragCount = selection.model.getFragmentList().
-          fragments.fragId2dbId.length
+        var fragCount = selection.model.getFragmentList()
+          .fragments.fragId2dbId.length
 
         for (var fragId = 0; fragId < fragCount; ++fragId) {
-
           this.selection.fragIdsArray.push(fragId)
         }
 
@@ -152,23 +136,19 @@ export default class RotateTool extends EventsEmitter {
       this.viewer.fitToView(this.selection.dbIdArray)
 
       this.emit('selection', selection)
-
     } else {
-
       this.clearSelection()
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Selection cleared
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   clearSelection () {
-
     this.selection = null
 
     if (this.rotateControl) {
-
       this.rotateControl.remove()
 
       this.rotateControl = null
@@ -179,12 +159,11 @@ export default class RotateTool extends EventsEmitter {
     this.emit('selection', null)
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Draw rotate control
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   drawControl () {
-
     var bBox = this.getWorldBoundingBox(
       this.selection.fragIdsArray,
       this.selection.model.getFragmentList())
@@ -195,12 +174,11 @@ export default class RotateTool extends EventsEmitter {
       (bBox.min.z + bBox.max.z) / 2)
 
     var size = Math.max(
-        bBox.max.x - bBox.min.x,
-        bBox.max.y - bBox.min.y,
-        bBox.max.z - bBox.min.z) * 0.8
+      bBox.max.x - bBox.min.x,
+      bBox.max.y - bBox.min.y,
+      bBox.max.z - bBox.min.z) * 0.8
 
     if (this.rotateControl) {
-
       this.rotateControl.remove()
     }
 
@@ -208,7 +186,6 @@ export default class RotateTool extends EventsEmitter {
       this.viewer, this.center, size)
 
     this.rotateControl.on('rotate', (data) => {
-
       this.rotateFragments(
         this.selection.model,
         this.selection.fragIdsArray,
@@ -220,22 +197,18 @@ export default class RotateTool extends EventsEmitter {
     })
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   handleButtonDown (event, button) {
-
     if (this.rotateControl) {
-
       if (this.rotateControl.onPointerDown(event)) {
-
         return true
       }
     }
 
     if (button === 0 && this.keys.Control) {
-
       this.isDragging = true
 
       this.mousePos = {
@@ -249,40 +222,33 @@ export default class RotateTool extends EventsEmitter {
     return false
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   handleButtonUp (event, button) {
-
     if (this.rotateControl) {
-
       this.rotateControl.onPointerUp(event)
     }
 
     if (button === 0) {
-
       this.isDragging = false
     }
 
     return false
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   handleMouseMove (event) {
-
     if (this.rotateControl) {
-
       this.rotateControl.onPointerHover(event)
     }
 
     if (this.isDragging) {
-
       if (this.selection) {
-
         var offset = {
           x: this.mousePos.x - event.clientX,
           y: event.clientY - this.mousePos.y
@@ -339,95 +305,87 @@ export default class RotateTool extends EventsEmitter {
     return false
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   handleKeyDown (event, keyCode) {
-
     this.keys[event.key] = true
 
-    if (keyCode === 27) { //ESC
-
+    if (keyCode === 27) { // ESC
       this.deactivate()
     }
 
     return false
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   handleKeyUp (event, keyCode) {
-
     this.keys[event.key] = false
 
     return false
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Rotate selected fragments
   //
-  ///////////////////////////////////////////////////////////////////////////
-    rotateFragments (model, fragIdsArray, axis, angle, center) {
+  /// ////////////////////////////////////////////////////////////////////////
+  rotateFragments (model, fragIdsArray, axis, angle, center) {
+    var quaternion = new THREE.Quaternion()
 
-      var quaternion = new THREE.Quaternion()
+    quaternion.setFromAxisAngle(axis, angle)
 
-      quaternion.setFromAxisAngle(axis, angle)
+    fragIdsArray.forEach((fragId, idx) => {
+      var fragProxy = this.viewer.impl.getFragmentProxy(
+        model, fragId)
 
-      fragIdsArray.forEach((fragId, idx) => {
+      fragProxy.getAnimTransform()
 
-        var fragProxy = this.viewer.impl.getFragmentProxy(
-          model, fragId)
+      var position = new THREE.Vector3(
+        fragProxy.position.x - center.x,
+        fragProxy.position.y - center.y,
+        fragProxy.position.z - center.z)
 
-        fragProxy.getAnimTransform()
+      position.applyQuaternion(quaternion)
 
-        var position = new THREE.Vector3(
-          fragProxy.position.x - center.x,
-          fragProxy.position.y - center.y,
-          fragProxy.position.z - center.z)
+      position.add(center)
 
-        position.applyQuaternion(quaternion)
+      fragProxy.position = position
 
-        position.add(center)
+      fragProxy.quaternion.multiplyQuaternions(
+        quaternion, fragProxy.quaternion)
 
-        fragProxy.position = position
+      if (idx === 0) {
+        var euler = new THREE.Euler()
 
-        fragProxy.quaternion.multiplyQuaternions(
-          quaternion, fragProxy.quaternion)
+        euler.setFromQuaternion(
+          fragProxy.quaternion, 0)
 
-        if (idx === 0) {
+        this.emit('rotate', {
+          dbIds: this.selection.dbIdArray,
+          fragIds: fragIdsArray,
+          rotation: euler,
+          model
+        })
+      }
 
-          var euler = new THREE.Euler()
+      fragProxy.updateAnimTransform()
+    })
+  }
 
-          euler.setFromQuaternion(
-            fragProxy.quaternion, 0)
-
-          this.emit('rotate', {
-            dbIds: this.selection.dbIdArray,
-            fragIds: fragIdsArray,
-            rotation: euler,
-            model
-          })
-        }
-
-        fragProxy.updateAnimTransform()
-      })
-    }
-
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // returns bounding box as it appears in the viewer
   // (transformations could be applied)
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   getWorldBoundingBox (fragIds, fragList) {
-
     var fragbBox = new THREE.Box3()
     var nodebBox = new THREE.Box3()
 
     fragIds.forEach((fragId) => {
-
       fragList.getWorldBounds(fragId, fragbBox)
       nodebBox.union(fragbBox)
     })
@@ -436,14 +394,12 @@ export default class RotateTool extends EventsEmitter {
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////////
 // RotateControl Class
 //
-///////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////////
 class RotateControl extends EventsEmitter {
-
   constructor (viewer, center, size) {
-
     super()
 
     this.engaged = false
@@ -474,7 +430,6 @@ class RotateControl extends EventsEmitter {
     // World UP = Y
 
     if (this.camera.worldup.y) {
-
       this.gizmos.push(this.createGizmo(
         center,
         new THREE.Euler(0, Math.PI / 2, 0),
@@ -498,9 +453,7 @@ class RotateControl extends EventsEmitter {
         size * 0.8, 0x0000FF,
         Math.PI,
         new THREE.Vector3(0, 0, 1)))
-
     } else {
-
       // World UP = Z
 
       this.gizmos.push(this.createGizmo(
@@ -548,12 +501,11 @@ class RotateControl extends EventsEmitter {
     viewer.impl.sceneUpdated(true)
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Draw a line
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   createLine (start, end, material) {
-
     var geometry = new THREE.Geometry()
 
     geometry.vertices.push(new THREE.Vector3(
@@ -570,12 +522,11 @@ class RotateControl extends EventsEmitter {
     return line
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Draw a cone
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   createCone (start, dir, length, material) {
-
     dir.normalize()
 
     var end = {
@@ -618,12 +569,11 @@ class RotateControl extends EventsEmitter {
     return cone
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Draw one axis
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   createAxis (start, dir, size, color) {
-
     var end = {
       x: start.x + dir.x * size,
       y: start.y + dir.y * size,
@@ -645,12 +595,11 @@ class RotateControl extends EventsEmitter {
       end, dir, size * 0.1, material)
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Draw a rotate gizmo
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   createGizmo (center, euler, size, radius, color, range, axis) {
-
     var material = new GizmoMaterial({
       color: color
     })
@@ -707,12 +656,11 @@ class RotateControl extends EventsEmitter {
     return torusGizmo
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Draw a box
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   createBox (w, h, d) {
-
     var material = new GizmoMaterial({
       color: 0x000000
     })
@@ -730,12 +678,11 @@ class RotateControl extends EventsEmitter {
     return box
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Draw a sphere
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   createSphere (radius) {
-
     var material = new GizmoMaterial({
       color: 0xFFFF00
     })
@@ -754,12 +701,11 @@ class RotateControl extends EventsEmitter {
     return sphere
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   // Creates Raycatser object from the pointer
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   pointerToRaycaster (pointer) {
-
     var pointerVector = new THREE.Vector3()
     var pointerDir = new THREE.Vector3()
     var ray = new THREE.Raycaster()
@@ -770,7 +716,6 @@ class RotateControl extends EventsEmitter {
     var y = -((pointer.clientY - rect.top) / rect.height) * 2 + 1
 
     if (this.camera.isPerspective) {
-
       pointerVector.set(x, y, 0.5)
 
       pointerVector.unproject(this.camera)
@@ -778,9 +723,7 @@ class RotateControl extends EventsEmitter {
       ray.set(this.camera.position,
         pointerVector.sub(
           this.camera.position).normalize())
-
     } else {
-
       pointerVector.set(x, y, -1)
 
       pointerVector.unproject(this.camera)
@@ -795,25 +738,21 @@ class RotateControl extends EventsEmitter {
     return ray
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   onPointerDown (event) {
-
-    var pointer = event.pointers ? event.pointers[ 0 ] : event
+    var pointer = event.pointers ? event.pointers[0] : event
 
     if (pointer.button === 0) {
-
       var ray = this.pointerToRaycaster(pointer)
 
       var intersectResults = ray.intersectObjects(
         this.gizmos, true)
 
       if (intersectResults.length) {
-
         this.gizmos.forEach((gizmo) => {
-
           gizmo.visible = false
         })
 
@@ -835,9 +774,7 @@ class RotateControl extends EventsEmitter {
         this.angleLine.visible = true
 
         this.picker.visible = true
-
       } else {
-
         this.picker.visible = false
       }
 
@@ -849,23 +786,20 @@ class RotateControl extends EventsEmitter {
     return this.picker.visible
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   onPointerHover (event) {
-
-    var pointer = event.pointers ? event.pointers[ 0 ] : event
+    var pointer = event.pointers ? event.pointers[0] : event
 
     if (this.engaged) {
-
       var ray = this.pointerToRaycaster(pointer)
 
       var intersectResults = ray.intersectObjects(
         [this.selectedGizmo.plane], true)
 
       if (intersectResults.length) {
-
         var intersectPoint = intersectResults[0].point
 
         var dir = intersectPoint.sub(
@@ -900,9 +834,7 @@ class RotateControl extends EventsEmitter {
       this.angleLine.visible = true
 
       this.angleLine.geometry.verticesNeedUpdate = true
-
     } else {
-
       this.angleLine.visible = false
 
       var ray = this.pointerToRaycaster(pointer)
@@ -911,16 +843,13 @@ class RotateControl extends EventsEmitter {
         this.gizmos, true)
 
       if (intersectResults.length) {
-
         this.picker.position.set(
-          intersectResults[ 0 ].point.x,
-          intersectResults[ 0 ].point.y,
-          intersectResults[ 0 ].point.z)
+          intersectResults[0].point.x,
+          intersectResults[0].point.y,
+          intersectResults[0].point.z)
 
         this.picker.visible = true
-
       } else {
-
         this.picker.visible = false
       }
     }
@@ -928,18 +857,16 @@ class RotateControl extends EventsEmitter {
     this.viewer.impl.sceneUpdated(true)
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   onPointerUp (event) {
-
     this.angleLine.visible = false
 
     this.picker.visible = false
 
     this.gizmos.forEach((gizmo) => {
-
       gizmo.visible = true
       gizmo.subGizmo.visible = false
     })
@@ -951,12 +878,11 @@ class RotateControl extends EventsEmitter {
     }, 100)
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
-  normalize(screenPoint) {
-
+  /// ////////////////////////////////////////////////////////////////////////
+  normalize (screenPoint) {
     var viewport = this.viewer.navigation.getScreenViewport()
 
     var n = {
@@ -967,12 +893,11 @@ class RotateControl extends EventsEmitter {
     return n
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   projectOntoPlane (worldPoint, normal) {
-
     var dist = normal.dot(worldPoint)
 
     return new THREE.Vector3(
@@ -981,25 +906,22 @@ class RotateControl extends EventsEmitter {
       worldPoint.z - dist * normal.z)
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   remove () {
-
     this.viewer.impl.removeOverlayScene(
       this.overlayScene)
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////////
 // Highlightable Gizmo Material
 //
-///////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////////
 class GizmoMaterial extends THREE.MeshBasicMaterial {
-
   constructor (parameters) {
-
     super()
 
     this.setValues(parameters)
@@ -1012,19 +934,15 @@ class GizmoMaterial extends THREE.MeshBasicMaterial {
     this.depthTest = false
   }
 
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////////////
   highlight (highlighted) {
-
     if (highlighted) {
-
       this.color.setRGB(1, 230 / 255, 3 / 255)
       this.opacity = 1
-
     } else {
-
       this.color.copy(this.colorInit)
       this.opacity = this.opacityInit
     }

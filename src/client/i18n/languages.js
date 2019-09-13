@@ -3,5 +3,5 @@ export const DEFAULT_LOCALE = ((navigator.languages && navigator.languages[0]) |
 export const SUPPORT_LANG = {
   en: 'en',
   'en-us': 'en',
-  'zh-cn': 'zh',
+  'zh-cn': 'zh'
 }

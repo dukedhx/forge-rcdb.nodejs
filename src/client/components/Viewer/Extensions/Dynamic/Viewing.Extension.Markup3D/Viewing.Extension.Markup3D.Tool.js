@@ -3,13 +3,11 @@ import './Viewing.Extension.Markup3D.scss'
 import EventsEmitter from 'EventsEmitter'
 
 export default class Markup3DTool extends EventsEmitter {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer, markupCollection, options = {}) {
-
     super()
 
     this.markupCollection = markupCollection
@@ -30,28 +28,26 @@ export default class Markup3DTool extends EventsEmitter {
     this.create = false
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Tool names
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getNames () {
-
     return ['Viewing.Extension.Markup3D.Tool']
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Tool name
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getName () {
-
     return 'Viewing.Extension.Markup3D.Tool'
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   activate () {
 
   }
@@ -60,26 +56,23 @@ export default class Markup3DTool extends EventsEmitter {
 
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   startCreate () {
-
     if (!this.create) {
-
       this.create = true
 
       this.currentMarkup = null
 
       this.eventHandlers = [{
-          event: Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT,
-          handler: this.onSelectionChangedHandler,
-          removeOnDeactivate: true
+        event: Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT,
+        handler: this.onSelectionChangedHandler,
+        removeOnDeactivate: true
       }]
 
       this.eventHandlers.forEach((entry) => {
-
         this.viewer.addEventListener(
           entry.event,
           entry.handler)
@@ -89,22 +82,18 @@ export default class Markup3DTool extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   stopCreate () {
-
     if (this.create) {
-
       this.create = false
 
       this.currentMarkup = null
 
       this.eventHandlers.forEach((entry) => {
-
         if (entry.removeOnDeactivate) {
-
           this.viewer.removeEventListener(
             entry.event,
             entry.handler)
@@ -117,12 +106,11 @@ export default class Markup3DTool extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   handleSingleClick (event, button) {
-
     this.screenPoint = {
       x: event.clientX,
       y: event.clientY
@@ -133,29 +121,27 @@ export default class Markup3DTool extends EventsEmitter {
       y: event.canvasY
     }
 
-    //var viewport = this.viewer.navigation.getScreenViewport()
+    // var viewport = this.viewer.navigation.getScreenViewport()
     //
-    //var n = {
+    // var n = {
     //  x: (event.clientX - viewport.left) / viewport.width,
     //  y: (event.clientY - viewport.top) / viewport.height
-    //}
+    // }
     //
-    //var worldPoint = this.viewer.utilities.getHitPoint(
+    // var worldPoint = this.viewer.utilities.getHitPoint(
     //  n.x, n.y)
 
-    //console.log(worldPoint)
+    // console.log(worldPoint)
 
     return false
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   handleMouseMove (event) {
-
     if (this.currentMarkup) {
-
       this.currentMarkup.setLeaderEndPoint({
         x: event.clientX,
         y: event.clientY
@@ -165,18 +151,15 @@ export default class Markup3DTool extends EventsEmitter {
     return false
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   handleKeyDown (event, keyCode) {
-
-    if (keyCode === 27) { //ESC
-
-      //cancel markup creation
+    if (keyCode === 27) { // ESC
+      // cancel markup creation
       if (this.currentMarkup &&
         !this.markupCollection[this.currentMarkup.id]) {
-
         this.currentMarkup.off()
 
         this.currentMarkup.endDrag()
@@ -184,9 +167,7 @@ export default class Markup3DTool extends EventsEmitter {
         this.currentMarkup.remove()
 
         this.currentMarkup = null
-
       } else {
-
         this.stopCreate()
       }
     }
@@ -194,18 +175,15 @@ export default class Markup3DTool extends EventsEmitter {
     return false
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // SELECTION_CHANGED_EVENT Handler
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onSelectionChanged (event) {
-
     if (event.selections.length) {
-
       this.viewer.select([])
 
-      if (this.currentMarkup)
-        return
+      if (this.currentMarkup) { return }
 
       const selection = event.selections[0]
 
@@ -213,7 +191,6 @@ export default class Markup3DTool extends EventsEmitter {
         this.screenPoint)
 
       if (worldPoint) {
-
         var markup = new Markup3D(
           this.viewer,
           this.screenPoint,
@@ -222,24 +199,21 @@ export default class Markup3DTool extends EventsEmitter {
           null, this.options)
 
         markup.labelMarker.on('mouseover', () => {
-
           this.emit('markupLabel.mouseover', markup)
         })
 
         markup.labelMarker.on('mouseout', () => {
-
           this.emit('markupLabel.mouseout', markup)
         })
 
         markup.on('created', () => {
-
           this.emit('markupCreated', markup)
         })
 
         markup.setVisible(true)
 
         markup.on('drag.start', (markup) => {
-          this.onStartDragHandler (markup)
+          this.onStartDragHandler(markup)
         })
 
         markup.on('drag.end',
@@ -250,32 +224,27 @@ export default class Markup3DTool extends EventsEmitter {
         this.currentMarkup = markup
 
         this.emit('pinSelected')
-
       } else {
-
         console.log('Invalid screenpoint ...')
         console.log(this.screenPoint)
       }
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onStartDrag (markup) {
-
     this.currentMarkup = markup
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onEndDrag (markup) {
-
     if (!this.markupCollection[markup.id]) {
-
       this.markupCollection[markup.id] = markup
     }
 
@@ -284,23 +253,20 @@ export default class Markup3DTool extends EventsEmitter {
     }, 100)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Inject markups data into state
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getState (viewerState) {
-
     viewerState.Markup3D = {
 
       MarkupCollection: []
     }
 
     for (var id in this.markupCollection) {
-
       var markup = this.markupCollection[id]
 
       if (markup.bindToState) {
-
         viewerState.Markup3D.MarkupCollection.push(
           markup.save()
         )
@@ -308,18 +274,15 @@ export default class Markup3DTool extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Restore markup data from state
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   restoreState (viewerState, immediate) {
-
     for (var id in this.markupCollection) {
-
       var markup = this.markupCollection[id]
 
       if (markup.bindToState) {
-
         markup.remove()
 
         delete this.markupCollection[id]
@@ -327,14 +290,12 @@ export default class Markup3DTool extends EventsEmitter {
     }
 
     if (viewerState.Markup3D) {
-
       viewerState.Markup3D.MarkupCollection.forEach((state) => {
-
         var markup = Markup3D.load(
           this.viewer, state, this.options)
 
         markup.on('drag.start', (markup) => {
-          this.onStartDragHandler (markup)
+          this.onStartDragHandler(markup)
         })
 
         markup.on('drag.end',
@@ -345,17 +306,16 @@ export default class Markup3DTool extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   screenToWorld (screenPoint) {
-
     var viewport = this.viewer.navigation.getScreenViewport()
 
     var n = {
       x: (screenPoint.x - viewport.left) / viewport.width,
-      y: (screenPoint.y - viewport.top ) / viewport.height
+      y: (screenPoint.y - viewport.top) / viewport.height
     }
 
     return this.viewer.utilities.getHitPoint(n.x, n.y)

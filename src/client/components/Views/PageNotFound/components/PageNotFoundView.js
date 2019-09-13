@@ -3,13 +3,11 @@ import './PageNotFoundView.scss'
 import React from 'react'
 
 class PageNotFoundView extends React.Component {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillMount () {
-
     this.props.setNavbarState({
       links: {
         settings: false
@@ -17,33 +15,32 @@ class PageNotFoundView extends React.Component {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
+  /// //////////////////////////////////////////////////////
+  render () {
     return (
-      <div className="page-not-found">
-        <img className='forge-hero'/>
-        <div className="container">
+      <div className='page-not-found'>
+        <img className='forge-hero' />
+        <div className='container'>
           <label>
             The link you are looking for is invalid or has changed...
             We apologize for the inconvenience.
-            <br/>
-            <br/>
+            <br />
+            <br />
             Try one of the following routing link:
-            <br/>
-            <br/>
-            <Link to={'/'}>
+            <br />
+            <br />
+            <Link to='/'>
               Home
             </Link>
               &nbsp;|&nbsp;
-            <Link to={'/configurator'}>
+            <Link to='/configurator'>
               Demos
             </Link>
               &nbsp;|&nbsp;
-            <Link to={'/gallery'}>
+            <Link to='/gallery'>
               Gallery
             </Link>
           </label>
@@ -54,59 +51,3 @@ class PageNotFoundView extends React.Component {
 }
 
 export default PageNotFoundView
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

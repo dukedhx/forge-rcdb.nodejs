@@ -1,8 +1,8 @@
 // async support
-import "core-js"
-import "regenerator-runtime/runtime"
+import 'core-js'
+import 'regenerator-runtime/runtime'
 
-//Server stuff
+// Server stuff
 import RateLimit from 'express-rate-limit'
 import cookieParser from 'cookie-parser'
 import gzip from 'express-static-gzip'
@@ -15,7 +15,7 @@ import debug from 'debug'
 import util from 'util'
 import path from 'path'
 
-//Endpoints
+// Endpoints
 import DerivativesAPI3Legged from './api/endpoints/derivatives3Legged'
 import DerivativesAPI2Legged from './api/endpoints/derivatives2Legged'
 import ARVRToolkitAPI from './api/endpoints/ar-vr-toolkit'
@@ -30,7 +30,7 @@ import MetaAPI from './api/endpoints/meta'
 import UserAPI from './api/endpoints/user'
 import DMAPI from './api/endpoints/dm'
 
-//Services
+// Services
 import ARVRToolkitSvc from './api/services/AR-VR-ToolkitSvc'
 import DerivativesSvc from './api/services/DerivativesSvc'
 import ServiceManager from './api/services/SvcManager'
@@ -45,18 +45,16 @@ import UserSvc from './api/services/UserSvc'
 import OssSvc from './api/services/OssSvc'
 import DMSvc from './api/services/DMSvc'
 
-//Config (NODE_ENV dependant)
-import config from'c0nfig'
+// Config (NODE_ENV dependant)
+import config from 'c0nfig'
 
-
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // App initialization
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 const app = express()
 
-if(process.env.NODE_ENV === 'development') {
-
+if (process.env.NODE_ENV === 'development') {
   app.use(session({
     secret: 'forge-rcdb',
     cookie: {
@@ -68,7 +66,6 @@ if(process.env.NODE_ENV === 'development') {
   }))
 
   const allowCrossDomain = (req, res, next) => {
-
     res.header('Access-Control-Allow-Methods',
       'GET,PUT,POST,DELETE')
 
@@ -86,9 +83,7 @@ if(process.env.NODE_ENV === 'development') {
   app.use(helmet({
     frameguard: false
   }))
-
 } else {
-
   const dbConfig = config.database
 
   const MongoStore = store(session)
@@ -103,13 +98,13 @@ if(process.env.NODE_ENV === 'development') {
     saveUninitialized: true,
 
     store: new MongoStore({
-      url: dbConfig.connectionString?dbConfig.connectionString:util.format('mongodb://%s:%s@%s:%d/%s',
+      url: dbConfig.connectionString ? dbConfig.connectionString : util.format('mongodb://%s:%s@%s:%d/%s',
         dbConfig.user,
         dbConfig.pass,
         dbConfig.dbhost,
         dbConfig.port,
         dbConfig.dbName),
-      autoRemove: 'native',  // Default
+      autoRemove: 'native', // Default
       autoRemoveInterval: 10 // In minutes. Default
     })
   }))
@@ -130,10 +125,10 @@ app.use(bodyParser.json())
 app.set('trust proxy', 1)
 app.use(cookieParser())
 
-///////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////
 // Services setup
 //
-///////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////
 const derivativesSvc = new DerivativesSvc()
 
 const lmvProxySvc = new LMVProxySvc({
@@ -162,28 +157,28 @@ ServiceManager.registerService(forgeSvc)
 ServiceManager.registerService(ossSvc)
 ServiceManager.registerService(dmSvc)
 
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // API Routes setup
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 app.use('/api/derivatives/3legged', DerivativesAPI3Legged())
 app.use('/api/derivatives/2legged', DerivativesAPI2Legged())
 app.use('/api/ar-vr-toolkit', ARVRToolkitAPI())
 app.use('/api/materials', MaterialAPI())
-app.use('/api/extract',   ExtractAPI())
-app.use('/api/socket',    SocketAPI())
-app.use('/api/config',    ConfigAPI())
-app.use('/api/models',    ModelAPI())
-app.use('/api/forge',     ForgeAPI())
-app.use('/api/hooks',     HooksAPI())
-app.use('/api/meta',      MetaAPI())
-app.use('/api/user',      UserAPI())
-app.use('/api/dm',        DMAPI())
+app.use('/api/extract', ExtractAPI())
+app.use('/api/socket', SocketAPI())
+app.use('/api/config', ConfigAPI())
+app.use('/api/models', ModelAPI())
+app.use('/api/forge', ForgeAPI())
+app.use('/api/hooks', HooksAPI())
+app.use('/api/meta', MetaAPI())
+app.use('/api/user', UserAPI())
+app.use('/api/dm', DMAPI())
 
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // Viewer GET Proxy
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 const proxy2legged = lmvProxySvc.generateProxy(
   'lmv-proxy-2legged',
   () => forgeSvc.get2LeggedToken())
@@ -196,18 +191,18 @@ const proxy3legged = lmvProxySvc.generateProxy(
 
 app.get('/lmv-proxy-3legged/*', proxy3legged)
 
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // This rewrites all routes requests to the root /index.html file
 // (ignoring file requests). If you want to implement universal
 // rendering, you'll want to remove this middleware
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 app.use(require('connect-history-api-fallback')())
 
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // Static routes
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // if (process.env.HOT_RELOADING) {
 //
 //   // dynamically require webpack dependencies
@@ -234,39 +229,34 @@ app.use(require('connect-history-api-fallback')())
 //
 // } else {
 
+app.use('/resources', express.static(__dirname + '/../../resources'))
 
-    app.use('/resources', express.static(__dirname + '/../../resources'))
+app.use(gzip(path.resolve(process.cwd(), './dist'), {
+  enableBrotli: true
+}))
 
-  app.use(gzip(path.resolve(process.cwd(), './dist'), {
-    enableBrotli: true
-  }))
+app.get('*', gzip(path.resolve(process.cwd(), './dist'), {
+  enableBrotli: true
+}))
+// }
 
-  app.get('*', gzip(path.resolve(process.cwd(), './dist'), {
-    enableBrotli: true
-  }))
-//}
-
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 const runServer = (app) => {
-
   try {
-
     process.on('exit', () => {
 
     })
 
     process.on('uncaughtException', (err) => {
-
       console.log('uncaughtException')
       console.log(err)
       console.error(err.stack)
     })
 
     process.on('unhandledRejection', (reason, p) => {
-
       console.log('Unhandled Rejection at: Promise ', p,
         ' reason: ', reason)
     })
@@ -276,7 +266,6 @@ const runServer = (app) => {
     const dbSvc = new MongoDbSvc(dbConfig)
 
     dbSvc.connect().then(() => {
-
       console.log(
         'Connected to MongoDB Database: ' +
         dbConfig.dbName)
@@ -284,14 +273,13 @@ const runServer = (app) => {
       ServiceManager.registerService(dbSvc)
 
       for (const key in dbConfig.models) {
-
         const modelCfg = Object.assign({},
           dbConfig.models[key], {
             dbName: dbConfig.dbName,
             name: key
           })
 
-        const modelSvc = new ModelSvc (modelCfg)
+        const modelSvc = new ModelSvc(modelCfg)
 
         ServiceManager.registerService(modelSvc)
       }
@@ -303,14 +291,13 @@ const runServer = (app) => {
           dbName: dbConfig.dbName
         })
 
-      const userSvc = new UserSvc (userCfg)
+      const userSvc = new UserSvc(userCfg)
 
       ServiceManager.registerService(userSvc)
     })
 
     const server = app.listen(
       process.env.PORT || 3000, () => {
-
         const socketSvc = new SocketSvc({
           session,
           server
@@ -323,16 +310,14 @@ const runServer = (app) => {
         console.log('Server listening on PORT: ' + port)
         console.log('ENV: ' + process.env.NODE_ENV)
       })
-
   } catch (ex) {
-
     console.log('Failed to run server... ')
     console.log(ex)
   }
 }
 
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 //
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 runServer(app)

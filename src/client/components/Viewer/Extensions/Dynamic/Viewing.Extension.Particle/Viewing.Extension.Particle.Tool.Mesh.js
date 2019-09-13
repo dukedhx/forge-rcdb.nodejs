@@ -36,13 +36,11 @@ const fragmentShader = `
 `
 
 export default class ParticleToolMesh extends EventsEmitter {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
-  constructor (viewer, particleSystem, options = {}){
-
+  /// //////////////////////////////////////////////////////////////
+  constructor (viewer, particleSystem, options = {}) {
     super()
 
     this.viewer = viewer
@@ -59,7 +57,7 @@ export default class ParticleToolMesh extends EventsEmitter {
       this.createRandomMaterials(
         this.nbParticleTypes)
 
-    this.activateShaders (true)
+    this.activateShaders(true)
 
     this.options = options
 
@@ -68,32 +66,28 @@ export default class ParticleToolMesh extends EventsEmitter {
     this.active = false
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Tool names
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getNames () {
-
-    return ["Viewing.Particle.Tool.Mesh"]
+    return ['Viewing.Particle.Tool.Mesh']
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Tool name
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getName () {
-
-    return "Viewing.Particle.Tool.Mesh"
+    return 'Viewing.Particle.Tool.Mesh'
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Activate Tool
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   activate () {
-
     if (!this.active) {
-
       console.log(this.getName() + ' activated')
 
       this.stopwatch.getElapsedMs()
@@ -107,14 +101,12 @@ export default class ParticleToolMesh extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Deactivate tool
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   deactivate () {
-
     if (this.active) {
-
       console.log(this.getName() + ' deactivated')
 
       this.active = false
@@ -128,24 +120,22 @@ export default class ParticleToolMesh extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   setMaxParticles (maxParticles) {
 
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   clearParticles () {
-
     this.particleSystem.initParticleLoop()
 
     while (true) {
-
       var particle = this.particleSystem.nextParticle()
 
       if (!particle.ptr) {
@@ -158,16 +148,14 @@ export default class ParticleToolMesh extends EventsEmitter {
     this.viewer.impl.invalidate(true)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Creates a bunch of materials with random colors
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   createRandomMaterials (nb) {
-
     var materials = []
 
     for (var i = 0; i < nb; ++i) {
-
       var clr = Math.random() * 16777215
 
       materials.push(this.createMaterial({
@@ -182,42 +170,38 @@ export default class ParticleToolMesh extends EventsEmitter {
     return materials
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   destroyParticle (particle) {
-
     this.viewer.impl.scene.remove(
       particle.mesh)
 
     particle.mesh = null
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   filterParticle (particle) {
-
     var result = false
 
-    this.bounds.forEach((bound)=>{
-
-      switch(bound.type){
-
+    this.bounds.forEach((bound) => {
+      switch (bound.type) {
         case 'sphere':
 
-          if(bound.max){
-            if(!particle.getPosition().withinSphere(
-                bound.center, bound.max)) {
+          if (bound.max) {
+            if (!particle.getPosition().withinSphere(
+              bound.center, bound.max)) {
               result = true
             }
           }
 
-          if(bound.min){
-            if(particle.getPosition().withinSphere(
-                bound.center, bound.min)) {
+          if (bound.min) {
+            if (particle.getPosition().withinSphere(
+              bound.center, bound.min)) {
               result = true
             }
           }
@@ -226,8 +210,8 @@ export default class ParticleToolMesh extends EventsEmitter {
 
         case 'box':
 
-          if(!particle.getPosition().withinBox(
-              bound.center, bound.size)) {
+          if (!particle.getPosition().withinBox(
+            bound.center, bound.size)) {
             result = true
           }
 
@@ -238,16 +222,15 @@ export default class ParticleToolMesh extends EventsEmitter {
     return result
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Update loop without shaders
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   update () {
-
     this.particleSystem.step(
       this.stopwatch.getElapsedMs() * 0.001)
 
-    this.updateChunk ()
+    this.updateChunk()
 
     // invalidate (needsClear, needsRender, overlayDirty)
     this.viewer.impl.invalidate(true, false, false)
@@ -255,37 +238,29 @@ export default class ParticleToolMesh extends EventsEmitter {
     this.emit('fps.tick')
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   updateChunk () {
-
     this.particleSystem.initParticleLoop()
 
     let particle
 
-    let tick = () => {
-
+    const tick = () => {
       var start = new Date().getTime()
 
       while (true) {
-
         particle = this.particleSystem.nextParticle()
 
         if (!particle.ptr) {
-
           break
-
         } else if ((new Date().getTime() - start) > 50) {
-
           // Yield execution to rendering logic
           setTimeout(tick, 25)
 
           break
-
         } else {
-
           this.updateParticle(particle)
         }
       }
@@ -294,31 +269,26 @@ export default class ParticleToolMesh extends EventsEmitter {
     setTimeout(tick, 25)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   updateParticleShadersOff (particle) {
-
     if (!particle.mesh) {
-
       var type = this.randomInt(0, this.nbParticleTypes)
 
       particle.mesh = this.createMesh(
         particle.getRadius(),
         this.particleMaterials[type])
 
-        this.viewer.impl.scene.add(particle.mesh)
+      this.viewer.impl.scene.add(particle.mesh)
     }
 
     particle.mesh.visible = !particle.getRecycled()
 
     if (this.filterParticle(particle)) {
-
       particle.setLifeTime(-1)
-
     } else if (particle.mesh.visible) {
-
       var pos = particle.getPosition()
 
       particle.mesh.position.x = pos.getX()
@@ -327,19 +297,17 @@ export default class ParticleToolMesh extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   updateParticleShadersOn (particle) {
-
     if (!particle.mesh) {
-
       particle.shader = {
         uniforms: {
           offset: {
             type: 'v3',
-            value: new THREE.Vector3(0,0,0)
+            value: new THREE.Vector3(0, 0, 0)
           },
           color: {
             type: 'v4',
@@ -366,11 +334,8 @@ export default class ParticleToolMesh extends EventsEmitter {
     particle.mesh.visible = !particle.getRecycled()
 
     if (this.filterParticle(particle)) {
-
       particle.setLifeTime(-1)
-
     } else if (particle.mesh.visible) {
-
       var pos = particle.getPosition()
 
       var offset = particle.shader.uniforms.offset.value
@@ -381,25 +346,23 @@ export default class ParticleToolMesh extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   activateShaders (activate) {
-
-    this.updateParticle = (activate ?
-      this.updateParticleShadersOn :
-      this.updateParticleShadersOff)
+    this.updateParticle = (activate
+      ? this.updateParticleShadersOn
+      : this.updateParticleShadersOff)
 
     this.clearParticles()
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   createMaterial (props) {
-
     var material = new THREE.MeshPhongMaterial(props)
 
     this.viewer.impl.matman().addMaterial(
@@ -410,12 +373,11 @@ export default class ParticleToolMesh extends EventsEmitter {
     return material
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   createMesh (size, material) {
-
     var geometry = new THREE.SphereGeometry(
       size, 4, 4)
 
@@ -426,13 +388,11 @@ export default class ParticleToolMesh extends EventsEmitter {
     return mesh
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Random int in [min, max[
   //
-  /////////////////////////////////////////////////////////////////
-  randomInt(min, max) {
-
+  /// //////////////////////////////////////////////////////////////
+  randomInt (min, max) {
     return Math.floor(Math.random() * (max - min)) + min
   }
 }
-

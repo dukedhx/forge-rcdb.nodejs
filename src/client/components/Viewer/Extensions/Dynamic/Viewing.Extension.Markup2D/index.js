@@ -14,4 +14,3 @@ import './Viewing.Extension.Markup2D.scss'
 import './Viewing.Extension.Markup2D'
 
 export default 'Viewing.Extension.Markup2D'
-

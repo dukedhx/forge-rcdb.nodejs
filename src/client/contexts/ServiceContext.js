@@ -8,8 +8,7 @@ import DialogSvc from 'DialogSvc'
 import EventSvc from 'EventSvc'
 import ForgeSvc from 'ForgeSvc'
 import UserSvc from 'UserSvc'
-import {client as config} from 'c0nfig'
-
+import { client as config } from 'c0nfig'
 
 const storageSvc = new StorageSvc({
   storageKey: 'Autodesk.Forge-RCDB.Storage',
@@ -22,11 +21,11 @@ const socketSvc = new SocketSvc({
 })
 
 const extractorSvc = new ExtractorSvc({
-  apiUrl: `/api/extract`
+  apiUrl: '/api/extract'
 })
 
 const modelSvc = new ModelSvc({
-  apiUrl: `/api/models`
+  apiUrl: '/api/models'
 })
 
 const notifySvc = new NotifySvc()
@@ -36,13 +35,13 @@ const dialogSvc = new DialogSvc()
 const eventSvc = new EventSvc()
 
 const forgeSvc = new ForgeSvc({
-  apiUrl: `/api/forge`
+  apiUrl: '/api/forge'
 })
 
 const userSvc = new UserSvc({
-  apiUrl: `/api/user`
+  apiUrl: '/api/user'
 })
 
-const Services = {socketSvc, storageSvc, extractorSvc, modelSvc, notifySvc, dialogSvc, eventSvc, forgeSvc, userSvc}
+const Services = { socketSvc, storageSvc, extractorSvc, modelSvc, notifySvc, dialogSvc, eventSvc, forgeSvc, userSvc }
 const ServiceContext = React.createContext(Services)
-export {ServiceContext, Services}
+export { ServiceContext, Services }

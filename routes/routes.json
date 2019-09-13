@@ -1,0 +1,15 @@
+{
+  "/api/models/rcdb/:id\\?_=:sb":"/rcdb.models/:id",
+  "/api/models/rcdb?*":"/rcdb.models",
+  "/api/models/rcdb":"/rcdb.models",
+  "/api/config/configurator/:id/sequences?*":"/configurator.models/:id",
+  "/api/models/configurator/:id\\?_=:sb":"/configurator.models/:id",
+  "/api/models/configurator/:id":"/configurator.models/:id",
+  "/api/models/configurator?*":"/configurator.models",
+  "/api/models/configurator":"/configurator.models",
+  "/api/materials/modelmaterials?*":"/sb233",
+  "/api/materials/rcdb*":"/rcdb.materials",
+  "/api/forge/clientId*":"/clientId",
+  "/socket.io/*":"/sb"
+
+}

@@ -1,9 +1,6 @@
 
-
 export default class ViewerSkybox {
-
   constructor (viewer, options) {
-
     const faceMaterials = options.imageList.map((url) => {
       return new THREE.MeshBasicMaterial({
         map: THREE.ImageUtils.loadTexture(url),
@@ -14,7 +11,7 @@ export default class ViewerSkybox {
     const skyMaterial = new THREE.MeshFaceMaterial(
       faceMaterials)
 
-    const geometry = new THREE.CubeGeometry(
+    const geometry = new THREE.BoxGeometry(
       options.size.x,
       options.size.y,
       options.size.z,
@@ -27,5 +24,3 @@ export default class ViewerSkybox {
     viewer.impl.scene.add(skybox)
   }
 }
-
-

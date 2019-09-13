@@ -1,14 +1,12 @@
-import THREELib from "three-js"
+import THREELib from 'three-js'
 const THREEJS = THREELib()
 
 export default class SoftBody {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   processGeometry (buffGeometry) {
-
     const geometry =
       new THREEJS.Geometry().fromBufferGeometry(
         buffGeometry)
@@ -18,29 +16,27 @@ export default class SoftBody {
     const indexedBufferGeom =
       this.createIndexedBufferGeometryFromGeometry(geometry)
 
-    this.mapIndices (buffGeometry, indexedBufferGeom)
+    this.mapIndices(buffGeometry, indexedBufferGeom)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createIndexedBufferGeometryFromGeometry (geometry) {
-
     var numVertices = geometry.vertices.length
 
     var numFaces = geometry.faces.length
 
     var bufferGeom = new THREEJS.BufferGeometry()
 
-    var vertices = new Float32Array (numVertices * 3)
+    var vertices = new Float32Array(numVertices * 3)
 
     var indices = new (numFaces * 3 > 65535
       ? Uint32Array
       : Uint16Array)(numFaces * 3)
 
-    for (var i = 0; i < numVertices; i++ ) {
-
+    for (var i = 0; i < numVertices; i++) {
       var p = geometry.vertices[i]
 
       var i3 = i * 3
@@ -51,7 +47,6 @@ export default class SoftBody {
     }
 
     for (var i = 0; i < numFaces; i++) {
-
       var f = geometry.faces[i]
 
       var i3 = i * 3
@@ -62,7 +57,7 @@ export default class SoftBody {
     }
 
     bufferGeom.setIndex(
-      new THREEJS.BufferAttribute(indices, 1 ))
+      new THREEJS.BufferAttribute(indices, 1))
 
     bufferGeom.addAttribute(
       'position',
@@ -71,74 +66,68 @@ export default class SoftBody {
     return bufferGeom
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  isEqual( x1, y1, z1, x2, y2, z2 ) {
-
+  /// //////////////////////////////////////////////////////
+  isEqual (x1, y1, z1, x2, y2, z2) {
     const delta = 0.000001
 
-    return(
+    return (
       Math.abs(x2 - x1) < delta &&
       Math.abs(y2 - y1) < delta &&
       Math.abs(z2 - z1) < delta
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   mapIndices (buffGeometry, indexedBufferGeom) {
-
     var idxVertices = indexedBufferGeom.attributes.position.array
     var vertices = buffGeometry.attributes.position.array
     var indices = indexedBufferGeom.index.array
 
-    var numIdxVertices = idxVertices.length/3
-    var numVertices = vertices.length/3
+    var numIdxVertices = idxVertices.length / 3
+    var numVertices = vertices.length / 3
 
     buffGeometry.ammoVertices = idxVertices
     buffGeometry.ammoIndexAssociation = []
     buffGeometry.ammoIndices = indices
 
-    for ( var i = 0; i < numIdxVertices; i++ ) {
-
+    for (var i = 0; i < numIdxVertices; i++) {
       var association = []
 
       buffGeometry.ammoIndexAssociation.push(association)
 
-      var i3 = i * 3;
+      var i3 = i * 3
 
-      for ( var j = 0; j < numVertices; j++ ) {
-
+      for (var j = 0; j < numVertices; j++) {
         var j3 = j * 3
 
         if (this.isEqual(
-            idxVertices[ i3 ],
-            idxVertices[ i3 + 1 ],
-            idxVertices[ i3 + 2 ],
-            vertices[ j3 ],
-            vertices[ j3 + 1 ],
-            vertices[ j3 + 2 ])) {
-
+          idxVertices[i3],
+          idxVertices[i3 + 1],
+          idxVertices[i3 + 2],
+          vertices[j3],
+          vertices[j3 + 1],
+          vertices[j3 + 2])) {
           association.push(j3)
         }
       }
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  constructor (geometry ,
-               worldInfo,
-               softBodyHelpers,
-               params) {
-
-    this.processGeometry (geometry)
+  /// //////////////////////////////////////////////////////
+  constructor (geometry,
+    worldInfo,
+    softBodyHelpers,
+    params) {
+    this.processGeometry(geometry)
 
     this.mesh = new THREE.Mesh(
       geometry, new THREE.MeshPhongMaterial({
@@ -149,10 +138,10 @@ export default class SoftBody {
     this.mesh.receiveShadow = true
     this.mesh.castShadow = true
 
-    //textureLoader.load( "../textures/colors.png", function( texture ) {
+    // textureLoader.load( "../textures/colors.png", function( texture ) {
     //  volume.material.map = texture;
     //  volume.material.needsUpdate = true;
-    //} );
+    // } );
 
     this.body = softBodyHelpers.CreateFromTriMesh(
       worldInfo,

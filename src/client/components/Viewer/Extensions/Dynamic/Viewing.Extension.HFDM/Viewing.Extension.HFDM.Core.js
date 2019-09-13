@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.HFDM
 // by Philippe Leefsma, June 2017
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import EntityClassFactory from './HFDM/HFDM.Entity.ClassFactory'
 import HandlerManager from './HFDM/Handlers/Handler.Manager'
@@ -17,14 +17,12 @@ import Camera from './HFDM/Types/Viewer.Camera'
 import CameraHandler from './HFDM/Handlers/Handler.Camera'
 
 class HFDMCoreExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.entityManager =
       new this.options.HFDMAppFramework.EntityManager()
@@ -45,21 +43,19 @@ class HFDMCoreExtension extends MultiModelExtensionBase {
     this.registerType(Camera, 'LMV')
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.HFDM.Core'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     console.log('Viewing.Extension.HFDM.Core loaded')
 
     this.initializeHFDM()
@@ -67,28 +63,26 @@ class HFDMCoreExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log('Viewing.Extension.HFDM.Core unloaded')
 
-    super.unload ()
+    super.unload()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   registerType (Type, name) {
-
     this.hfdmFactory.register(Type.template)
 
-    const {BaseEntity} = this.options.HFDMAppFramework
+    const { BaseEntity } = this.options.HFDMAppFramework
 
     const EntityClass = EntityClassFactory(
       BaseEntity, this.handlerManager)
@@ -97,28 +91,25 @@ class HFDMCoreExtension extends MultiModelExtensionBase {
       name, Type.typeId, EntityClass)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createTypeInstance (Type) {
-
     return this.hfdmFactory.create(Type.typeId)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  async initializeHFDM() {
-
+  /// //////////////////////////////////////////////////////
+  async initializeHFDM () {
     try {
-
       this.workspace = this.hfdm.createWorkspace()
 
       this.workspace.on('modified', (changeSet) => {
 
-        //console.log(changeSet)
+        // console.log(changeSet)
       })
 
       console.log('Connecting to HFDM ...')
@@ -144,9 +135,8 @@ class HFDMCoreExtension extends MultiModelExtensionBase {
         this.workspace.getActiveBranch().getGuid()
 
       this.options.getToken((err, token) => {
-
         const inspectorURL =
-          `http://ecs-master-opt.ecs.ads.autodesk.com:3501/HFDMInspector.html?` +
+          'http://ecs-master-opt.ecs.ads.autodesk.com:3501/HFDMInspector.html?' +
           `branchGuid=${branchGUID}&` +
           `token=${token}`
 
@@ -154,7 +144,6 @@ class HFDMCoreExtension extends MultiModelExtensionBase {
       })
 
       if (!this.options.branchUrn) {
-
         const branchUrn = this.workspace.getActiveUrn()
 
         // share workspace for write to everybody *
@@ -167,9 +156,7 @@ class HFDMCoreExtension extends MultiModelExtensionBase {
         this.emit('colaborateURL', colaborateURL)
 
         this.initializeAsHost()
-
       } else {
-
         const colaborateURL = window.location.href
 
         this.emit('colaborateURL', colaborateURL)
@@ -178,21 +165,18 @@ class HFDMCoreExtension extends MultiModelExtensionBase {
       }
 
       this.CameraHandler.activate()
-
     } catch (ex) {
-
       console.log(ex)
     }
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   initializeAsHost () {
-
     const position =
       this.viewer.navigation.getPosition()
 
@@ -226,12 +210,11 @@ class HFDMCoreExtension extends MultiModelExtensionBase {
     this.workspace.commit()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setVectorProperty (parentProperty, name, v) {
-
     const vectorProperty = parentProperty.get(name)
 
     vectorProperty.get('x').value = v.x
@@ -239,10 +222,10 @@ class HFDMCoreExtension extends MultiModelExtensionBase {
     vectorProperty.get('z').value = v.z
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   initializeAsParticipant () {
 
   }
@@ -253,7 +236,3 @@ Autodesk.Viewing.theExtensionManager.registerExtension(
   HFDMCoreExtension)
 
 export default HFDMCoreExtension.ExtensionId
-
-
-
-

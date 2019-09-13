@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 // Viewing.Extension.Markup3D
 // by Philippe Leefsma, April 2016
 //
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 import Snap from 'imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js'
 import Markup3DTool from './Viewing.Extension.Markup3D.Tool'
 import ExtensionBase from 'Viewer.ExtensionBase'
@@ -10,14 +10,12 @@ import ViewerTooltip from 'Viewer.Tooltip'
 import ViewerToolkit from 'Viewer.Toolkit'
 
 class Markup3DExtension extends ExtensionBase {
-
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.markupCollection = {}
 
@@ -48,40 +46,32 @@ class Markup3DExtension extends ExtensionBase {
       (e) => this.onVisibility(e)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   static get ExtensionId () {
-
     return 'Viewing.Extension.Markup3D'
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   load () {
-
-
     console.log('Viewing.Extension.Markup3D loaded')
 
     return true
   }
 
-  onToolbarCreated(){
-
+  onToolbarCreated () {
     this._control = ViewerToolkit.createButton(
       'toolbar-markup3D',
       'glyphicon glyphicon-check',
       'Markup 3D', () => {
-
         if (this.markup3DTool.create) {
-
           this.markup3DTool.stopCreate()
-
         } else {
-
           this.markup3DTool.startCreate()
         }
       })
@@ -89,7 +79,6 @@ class Markup3DExtension extends ExtensionBase {
     this.parentControl = this._options.parentControl
 
     if (typeof this.parentControl === 'string') {
-
       var viewerToolbar = this._viewer.getToolbar(true)
 
       this.parentControl = viewerToolbar.getControl(
@@ -97,7 +86,6 @@ class Markup3DExtension extends ExtensionBase {
     }
 
     if (!this.parentControl) {
-
       var viewerToolbar = this._viewer.getToolbar(true)
 
       this.parentControl = new Autodesk.Viewing.UI.ControlGroup(
@@ -110,14 +98,12 @@ class Markup3DExtension extends ExtensionBase {
       this._control)
 
     this.markup3DTool.on('startCreate', () => {
-
       this.tooltip.activate()
 
       this._control.container.classList.add('active')
     })
 
     this.markup3DTool.on('pinSelected', () => {
-
       this.tooltip.deactivate()
     })
 
@@ -126,32 +112,24 @@ class Markup3DExtension extends ExtensionBase {
     })
 
     this.markup3DTool.on('stopCreate', () => {
-
       this.tooltip.deactivate()
 
       this._control.container.classList.remove('active')
     })
 
     this.markup3DTool.on('markupLabel.mouseover', (markup) => {
-
       this.tooltip.deactivate()
     })
 
     this.markup3DTool.on('markupLabel.mouseout', (markup) => {
-
       if (this.markup3DTool.create) {
-
         const markup = this.markup3DTool.currentMarkup
 
         if (markup) {
-
-          if(markup.created && !markup.dragging) {
-
+          if (markup.created && !markup.dragging) {
             this.tooltip.activate()
           }
-
         } else {
-
           this.tooltip.activate()
         }
       }
@@ -177,24 +155,19 @@ class Markup3DExtension extends ExtensionBase {
     ]
 
     this.eventHandlers.forEach((entry) => {
-
       this._viewer.addEventListener(
         entry.event,
         entry.handler)
     })
-
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   unload () {
-
     this.eventHandlers.forEach((entry) => {
-
-      if(entry.removeOnDeactivate) {
-
+      if (entry.removeOnDeactivate) {
         this._viewer.removeEventListener(
           entry.event,
           entry.handler)
@@ -212,7 +185,7 @@ class Markup3DExtension extends ExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //  From viewer.getState:
   //  Allow extensions to inject their state data
@@ -221,13 +194,12 @@ class Markup3DExtension extends ExtensionBase {
   //    viewer.loadedExtensions[extensionName].getState(
   //      viewerState);
   //  }
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   getState (viewerState) {
-
     this.markup3DTool.getState(viewerState)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //    From viewer.restoreState:
   //    Allow extensions to restore their data
@@ -236,41 +208,35 @@ class Markup3DExtension extends ExtensionBase {
   //      viewer.loadedExtensions[extensionName].restoreState(
   //        viewerState, immediate);
   //    }
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   restoreState (viewerState, immediate) {
-
     this.markup3DTool.restoreState(
       viewerState, immediate)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // EXPLODE_CHANGE_EVENT Handler
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onExplode (event) {
-
     for (var id in this.markupCollection) {
-
       var markup = this.markupCollection[id]
 
       markup.updateFragmentTransform()
     }
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   // ISOLATE_EVENT Handler
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   onVisibility (event) {
-
     for (var id in this.markupCollection) {
-
       var markup = this.markupCollection[id]
 
       markup.updateVisibilty(event)
     }
   }
-
 }
 
 Autodesk.Viewing.theExtensionManager.registerExtension(

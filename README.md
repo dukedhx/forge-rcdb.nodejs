@@ -1,3 +1,13 @@
+[![Node.js](https://img.shields.io/badge/Node.js-6.7.0-blue.svg)](https://nodejs.org/)
+[![npm](https://img.shields.io/badge/npm-3.10.7-green.svg)](https://www.npmjs.com/)
+![Platforms](https://img.shields.io/badge/platform-windows%20%7C%20osx%20%7C%20linux-lightgray.svg)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://opensource.org/licenses/MIT)
+
+[![Viewer](https://img.shields.io/badge/Viewer-v7-green.svg)](http://forge.autodesk.com/)
+[![React](https://img.shields.io/badge/React-v16-blue.svg)](http://reactjs.org)
+[![Redux](https://img.shields.io/badge/Redux-v4-blue.svg)](http://redux.js.org/)
+[![Standard](https://img.shields.io/badge/Standard-Style-green.svg)](https://github.com/standard/standard)
+[![Build](https://travis-ci.org/dukedhx/forge-rcdb.nodejs.svg?branch=master)](https://travis-ci.org/dukedhx/forge-rcdb.nodejs)
 
 ## Description
 
@@ -27,38 +37,46 @@ To run these samples, you need your own Forge API credentials:
 
    * `git clone <ProjectURL> --single-branch`
 
-### Environment Setup
-
-   //TODO: fill out ./config jsons
-
 ### MongoDB database
 
-   //TODO: database configuration using scripts in `resources`
+   Install [MongoDB](https://www.mongodb.com/), start an instance locally and create a database - we recommend to follow the tutorial [here](https://docs.mongodb.com/manual/tutorial/getting-started/) for detailed instructions.
 
+   Import the four data collections using the JSON files [here](./resources/db) to your database, we recommend to use [MongoDB Compass](https://www.mongodb.com/products/compass) or [Robo3T](https://robomongo.org/) as client tools for this task. See [here](https://docs.mongodb.com/compass/master/import-export/) and [here](https://stackoverflow.com/questions/23009146/import-a-data-base-file-json-into-robo3t-robomongo) for instructions to import data. *Note: if you use MongoDB Compass to import the data you will need to minify the JSON objects into one lines otherwise the tool wouldn't be able to parse the JSON objects correctly*
+
+   Once you are done, be sure to specify the connection string or in the configuration JSON file or as environment variables - see instructions in the next section for details.
+
+   If you would like run the sample w/o setting up MongoDB, see how to run the Extension Gallery as the backend in `tips and tricks` section later.
+
+### Environment Setup
+
+   Fill out the configuration JSON file [here](./config) that matches your targeted environment mode (development or production).
+
+   For the production mode you can set up the below environment variables and will pick up.
+
+   - `RCDB_CONNECTION_STRING` // Specify the MongoDB connection string here
+   - `RCDB_DBHOST` //Specify the MongoDB host name, leave empty if using connection string
+   - `RCDB_DBNAME` //Specify the MongoDB database name, leave empty if using connection string
+   - `RCDB_USER`  //Specify the MongoDB user name, leave empty if using connection string
+   - `RCDB_PASS`  //Specify the MongoDB password, leave empty if using connection string
+   - `RCDB_PORT`  //Specify the MongoDB host port, leave empty if using connection string
 
 ### Client and Server
 
    In **development**, the client is dynamically built by the
-   [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware), so just run:
+   [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware) and both the backend and client needs to run in parallel in separate sessions:
 
-    * `npm install`    *(downloads project dependencies locally)*
-
-    * `npm run dev` or `node -r @babel/register ./src/server/index.js`     *(builds/runs server on the fly with or w/o monitoring code changes)*
-
-    * `npm run serve`    *(builds/runs client on the fly and monitors code changes)*
-
-    * open [http://localhost:8080](http://localhost:8080) in your favorite browser
+   - `npm install`    *(downloads project dependencies locally)*
+   - `npm run dev` or `node -r @babel/register ./src/server/index.js`     *(builds/runs server on the fly with or w/o monitoring code changes)*
+   - Start a new CLI session and run `npm run serve`    *(builds/runs client on the fly and monitors code changes)*
+   - navigate to [http://localhost:8080](http://localhost:8080)
 
 
    In **production**, the client requires a build step, so run:
 
-    * `npm install` *(not required if you already run at previous step)*
-
-    * `npm run build` *(builds client)*
-
-    * `npm start` *(run the server)*
-
-    * open [http://localhost:3000](http://localhost:3000) in your favorite browser
+   - `npm install` *(not required if you already run at previous step)*
+   - `npm run build` *(builds client)*
+   - `npm start` *(run the server)*
+   - navigate to [http://localhost:3000](http://localhost:3000)
 
 ### References
 
@@ -118,6 +136,14 @@ You should be ready to deploy to heroku, providing the same Forge credentials us
 
 
 ## Tips and Tricks
+
+> How to run the sample without the trouble of setting up MongoDB?
+
+Run the Gallery app from the [Extension Library project](https://github.com/Autodesk-Forge/library-javascript-viewer-extensions), then start up a new CLI session and just run `npm run serve` to start the client app alone.
+
+> Why am I getting the error "Unexpected end of input JSON" when importing the data with MongoDB Compass?
+
+You will need to minify the JSON objects into one lines otherwise the tool wouldn't be able to parse the JSON objects correctly. Alternatively use `Robo3T` to import the data instead.
 
 > What should I do if I get the error `Module build failed: Error: Node Sass does not yet support your current environment: OS X 64-bit with Unsupported runtime (64)` when I tried to build the front end?
 

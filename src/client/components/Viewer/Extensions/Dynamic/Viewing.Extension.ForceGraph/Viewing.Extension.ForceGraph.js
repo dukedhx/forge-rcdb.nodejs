@@ -1,13 +1,13 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.ForceGraph
 // by Philippe Leefsma, May 2017
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
 import ExtensionBase from 'Viewer.ExtensionBase'
 import WidgetContainer from 'WidgetContainer'
-import {ReactLoader as Loader} from 'Loader'
+import { ReactLoader as Loader } from 'Loader'
 import './Viewing.Extension.ForceGraph.scss'
 import Toolkit from 'Viewer.Toolkit'
 import ForceGraph from 'ForceGraph'
@@ -15,14 +15,12 @@ import React from 'react'
 import d3 from 'd3'
 
 class ForceGraphExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.onStopResize = this.onStopResize.bind(this)
 
@@ -33,30 +31,27 @@ class ForceGraphExtension extends MultiModelExtensionBase {
     this.react = options.react
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'force-graph'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
-  static get ExtensionId() {
-
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
     return 'Viewing.Extension.ForceGraph'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     window.addEventListener(
       'resize', this.onStopResize)
 
@@ -68,15 +63,13 @@ class ForceGraphExtension extends MultiModelExtensionBase {
       root: null,
       items: []
 
-    }).then (() => {
-
+    }).then(() => {
       this.react.pushRenderExtension(this)
 
       const model = this.viewer.activeModel
 
       if (model) {
-
-        this.loadGraph (model)
+        this.loadGraph(model)
       }
     })
 
@@ -104,28 +97,26 @@ class ForceGraphExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log('Viewing.Extension.ForceGraph unloaded')
 
     window.removeEventListener(
       'resize', this.onStopResize)
 
-    super.unload ()
+    super.unload()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async loadGraph (model) {
-
     await this.react.setState({
       showLoader: true
     })
@@ -147,44 +138,40 @@ class ForceGraphExtension extends MultiModelExtensionBase {
       items: graphProperties
     })
 
-    this.setActiveProperty (
+    this.setActiveProperty(
       graphProperties[this.options.defaultIndex || 0])
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelActivated (event) {
-
     if (event.source !== 'model.loaded') {
-
       this.loadGraph(event.model)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onGeometryLoaded (event) {
-
     this.loadGraph(event.model)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setActiveProperty (propName, disable) {
-
     await this.react.setState({
       activeProperty: disable ? propName : '',
       disabled: disable,
       showLoader: true
     })
 
-    const root = await this.buildDataTree (propName)
+    const root = await this.buildDataTree(propName)
 
     await this.react.setState({
       activeProperty: propName,
@@ -195,41 +182,32 @@ class ForceGraphExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // Builds a custom data tree formatted for the force graph
   // based on viewer input property
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   async buildDataTree (propName) {
-
     const model = this.viewer.activeModel
 
     const root = await Toolkit.buildModelTree(model)
 
     const taskFunc = (node, parent) => {
-
-      return new Promise(async(resolve, reject) => {
-
+      return new Promise(async (resolve, reject) => {
         try {
-
           node.parent = parent
 
           const prop = await Toolkit.getProperty(
             model, node.dbId, propName)
 
           if (isNaN(prop.displayValue)) {
-
             node.size = 0
-
           } else {
-
             node.size = prop.displayValue
           }
 
           return resolve()
-
         } catch (ex) {
-
           node.size = 0
 
           return resolve()
@@ -245,31 +223,27 @@ class ForceGraphExtension extends MultiModelExtensionBase {
     return root
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   // Normalize data tree: sets size between [0, 1]
   // based on computed max over all nodes
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   normalize (root) {
-
-    var min =  Number.MAX_VALUE
+    var min = Number.MAX_VALUE
     var max = -Number.MAX_VALUE
 
     const computeMinMaxRec = (node) => {
-
       min = Math.min(min, node.size)
       max = Math.max(max, node.size)
 
-      if(node.children){
-
-        node.children.forEach((child)=>{
-
+      if (node.children) {
+        node.children.forEach((child) => {
           computeMinMaxRec(child)
         })
       }
     }
 
-    computeMinMaxRec (root)
+    computeMinMaxRec(root)
 
     if (max === 0) {
       return
@@ -279,16 +253,13 @@ class ForceGraphExtension extends MultiModelExtensionBase {
     var sum = 0
 
     const normalizeRec = (node) => {
-
       node.size /= max
 
       sum += node.size
       ++count
 
       if (node.children) {
-
-        node.children.forEach((child)=>{
-
+        node.children.forEach((child) => {
           normalizeRec(child)
         })
       }
@@ -296,15 +267,14 @@ class ForceGraphExtension extends MultiModelExtensionBase {
 
     normalizeRec(root)
 
-    root.average = sum/count
+    root.average = sum / count
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onStopResize () {
-
     const state = this.react.getState()
 
     $('#force-graph-dropdown').parent().find('ul').css({
@@ -318,59 +288,61 @@ class ForceGraphExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle () {
-
     const state = this.react.getState()
 
     const menuItems = state.items.map((item, idx) => {
       return (
-        <MenuItem eventKey={idx} key={idx} onClick={() => {
-
-          this.setActiveProperty (item, true)
-        }}>
-          { item }
+        <MenuItem
+          eventKey={idx} key={idx} onClick={() => {
+            this.setActiveProperty(item, true)
+          }}
+        >
+          {item}
         </MenuItem>
       )
     })
 
     return (
-      <div className="title controls">
+      <div className='title controls'>
         <label>
           Force Graph
         </label>
 
         <DropdownButton
-          title={"Property: " + state.activeProperty }
+          title={'Property: ' + state.activeProperty}
           disabled={state.disabled}
-          key="force-graph-dropdown"
-          id="force-graph-dropdown">
-         { menuItems }
+          key='force-graph-dropdown'
+          id='force-graph-dropdown'
+        >
+          {menuItems}
         </DropdownButton>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render (opts = {showTitle: true}) {
-
+  /// //////////////////////////////////////////////////////
+  render (opts = { showTitle: true }) {
     const state = this.react.getState()
 
     return (
-      <WidgetContainer renderTitle={this.renderTitle}
+      <WidgetContainer
+        renderTitle={this.renderTitle}
         showTitle={opts.showTitle}
-        className={this.className}>
+        className={this.className}
+      >
 
-        <Loader show={state.showLoader}/>
+        <Loader show={state.showLoader} />
 
-        <ForceGraph onNodeClicked={(node) => {
-
+        <ForceGraph
+          onNodeClicked={(node) => {
             Toolkit.isolateFull(
               this.viewer, node.dbId,
               this.viewer.activeModel)

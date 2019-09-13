@@ -754,7 +754,8 @@ class ViewerConfigurator extends BaseComponent {
 
             const localOptions = {
               placementTransform: this.buildTransform(
-                modelInfo.transform)
+                modelInfo.transform),
+                [modelInfo.globalOffset?'globalOffset':undefined]:modelInfo.globalOffset
             }
             viewer.loadModel(modelInfo.path, localOptions, (model) => {
 
@@ -793,7 +794,8 @@ class ViewerConfigurator extends BaseComponent {
               sharedPropertyDbPath:
                 this.viewerDocument.getPropertyDbPath(),
               placementTransform: this.buildTransform(
-                modelInfo.transform)
+                modelInfo.transform),
+                [modelInfo.globalOffset?'globalOffset':undefined]:modelInfo.globalOffset
             }
 
             viewer.loadModel(path, loadOptions, (model) => {

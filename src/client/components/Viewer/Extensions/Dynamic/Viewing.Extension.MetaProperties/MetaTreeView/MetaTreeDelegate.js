@@ -4,14 +4,12 @@ import { TreeDelegate } from 'TreeView'
 import sortBy from 'lodash/sortBy'
 
 export default class MetaTreeDelegate extends TreeDelegate {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (menuContainer) {
-
-    super ()
+    super()
 
     this.contextMenu = new ContextMenu({
       container: menuContainer
@@ -19,28 +17,24 @@ export default class MetaTreeDelegate extends TreeDelegate {
 
     this.contextMenu.on(
       'context.property.delete', (node) => {
-
-        this.onDeleteProperty (node)
+        this.onDeleteProperty(node)
       })
 
     this.contextMenu.on(
       'context.property.edit', (node) => {
-
-        this.onEditProperty (node)
+        this.onEditProperty(node)
       })
 
     this.on('node.dblClick', (node) => {
-
-      this.onEditProperty (node)
+      this.onEditProperty(node)
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onEditProperty (node) {
-
     const isModelOverride = !node.props.metaType
 
     const newMetaProperty = await this.emit(
@@ -49,18 +43,16 @@ export default class MetaTreeDelegate extends TreeDelegate {
       isModelOverride)
 
     if (newMetaProperty) {
-
       this.emit('node.update',
         newMetaProperty)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onDeleteProperty (node) {
-
     const isModelOverride = !node.props.metaType
 
     const deleted = await this.emit(
@@ -68,18 +60,16 @@ export default class MetaTreeDelegate extends TreeDelegate {
       node.toMetaProperty(), isModelOverride)
 
     if (deleted) {
-
       this.emit('node.destroy',
         node.id)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createRootNode (data) {
-
     this.rootNode = new MetaTreeNode({
       displayName: data.displayName,
       externalId: data.externalId,
@@ -96,27 +86,24 @@ export default class MetaTreeDelegate extends TreeDelegate {
     return this.rootNode
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   destroy () {
-
     this.rootNode.destroy()
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   createTreeNode (node, parentDomElement) {
-
     const container = document.createElement('div')
 
     parentDomElement.appendChild(container)
 
     node.type.split('.').forEach((cls) => {
-
       parentDomElement.classList.add(cls)
     })
 
@@ -126,12 +113,11 @@ export default class MetaTreeDelegate extends TreeDelegate {
     node.mount(container)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   nodeClickSelector (event) {
-
     const className = event.target.className
 
     return (
@@ -139,43 +125,37 @@ export default class MetaTreeDelegate extends TreeDelegate {
     )
   }
 
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   //
   //
-  ///////////////////////////////////////////////////////////////////
+  /// ////////////////////////////////////////////////////////////////
   onTreeNodeRightClick (tree, node, event) {
-
     if (node.type === 'property') {
-
       this.contextMenu.show(event, node)
     }
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   forEachChild (node, addChild) {
-
     node.addChild = addChild
   }
 
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////
   mapPropsByCategory (properties) {
-
     const propsMap = {}
 
     properties.forEach((prop) => {
-
-      const category = !!prop.displayCategory
+      const category = prop.displayCategory
         ? prop.displayCategory
         : 'Other'
 
       if (category.indexOf('__') !== 0) {
-
         propsMap[category] = propsMap[category] || []
 
         propsMap[category].push(prop)
@@ -184,8 +164,7 @@ export default class MetaTreeDelegate extends TreeDelegate {
 
     // sort props by displayName in each category
 
-    for (let category in propsMap) {
-
+    for (const category in propsMap) {
       propsMap[category] = sortBy(
         propsMap[category], (prop) => {
           return prop.displayName

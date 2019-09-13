@@ -3,16 +3,14 @@ import EventsEmitter from 'EventsEmitter'
 import Toolkit from 'Viewer.Toolkit'
 import cursors from './cursors'
 
-var _CROSS_MAX_WIDTH = 20;
+var _CROSS_MAX_WIDTH = 20
 
 export default class SelectionWindowTool extends EventsEmitter {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer) {
-
     super()
 
     this.onResize = this.onResize.bind(this)
@@ -30,37 +28,31 @@ export default class SelectionWindowTool extends EventsEmitter {
     this.viewer = viewer
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getNames () {
-
-    return ["selectionWindowTool"]
+    return ['selectionWindowTool']
   }
 
   getName () {
-
-    return "selectionWindowTool"
+    return 'selectionWindowTool'
   }
 
   getPriority () {
-
     return 1000
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onResize () {
-
     const overlay =
-      this.viewer.impl.overlayScenes[
-        'selectionWindowOverlay']
+      this.viewer.impl.overlayScenes.selectionWindowOverlay
 
     if (overlay) {
-
       const canvas = this.viewer.canvas
 
       const camera = new THREE.OrthographicCamera(
@@ -74,37 +66,32 @@ export default class SelectionWindowTool extends EventsEmitter {
     this.rectGroup = null
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setModel (model) {
-
     if (this.isActive) {
-
       this.model = model
 
       this.selectSet.setModel(model)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   setPartialSelect (partialSelect) {
-
     this.partialSelect = partialSelect
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   activate () {
-
     if (!this.isActive) {
-
       this.viewer.clearSelection()
 
       this.model =
@@ -116,7 +103,7 @@ export default class SelectionWindowTool extends EventsEmitter {
       this.materialLine = new THREE.LineBasicMaterial({
         color: new THREE.Color(0x0000FF),
         linewidth: 0.5,
-        opacity: .6
+        opacity: 0.6
       })
 
       this.mouseStart = new THREE.Vector3(0, 0, -10)
@@ -146,15 +133,13 @@ export default class SelectionWindowTool extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   deactivate () {
-
     if (this.isActive) {
-
-      this.viewer.impl.removeOverlayScene (
+      this.viewer.impl.removeOverlayScene(
         'selectionWindowOverlay')
 
       this.mouseStart.set(0, 0, -10)
@@ -175,51 +160,45 @@ export default class SelectionWindowTool extends EventsEmitter {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getCursor () {
-
-    const tool = this.viewer.toolController.getTool("dolly")
+    const tool = this.viewer.toolController.getTool('dolly')
 
     const mode = tool.getTriggeredMode()
 
     switch (mode) {
-
-      case "dolly":
+      case 'dolly':
         return cursors.dolly
 
-      case "pan":
+      case 'pan':
         return cursors.pan
     }
 
     return cursors.window
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   handleGesture (event) {
-
     return true
   }
 
   handleSingleClick (event, button) {
-
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   handleButtonDown (event, button) {
-
-    //left button down
-    if(button === 0) {
-
+    // left button down
+    if (button === 0) {
       this.startDrag(event)
       return true
     }
@@ -227,14 +206,12 @@ export default class SelectionWindowTool extends EventsEmitter {
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   handleMouseMove (event) {
-
     if (this.lineGeom && this.isDragging) {
-
       this.pointerEnd = event.pointers
         ? event.pointers[0]
         : event
@@ -248,14 +225,12 @@ export default class SelectionWindowTool extends EventsEmitter {
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   handleButtonUp (event, button) {
-
     if (button === 0) {
-
       this.endDrag()
       return true
     }
@@ -263,28 +238,24 @@ export default class SelectionWindowTool extends EventsEmitter {
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   handleKeyDown (event, keyCode) {
-
     if (keyCode === 27) {
-
       this.deactivate()
     }
 
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   startDrag (event) {
-
     if (this.isDragging === false) {
-
       this.pointerStart = event.pointers
         ? event.pointers[0]
         : event
@@ -299,7 +270,6 @@ export default class SelectionWindowTool extends EventsEmitter {
       this.mouseEnd.y = event.canvasY
 
       if (this.rectGroup === null) {
-
         this.lineGeom = new THREE.Geometry()
 
         // rectangle of zoom window
@@ -344,9 +314,7 @@ export default class SelectionWindowTool extends EventsEmitter {
         this.rectGroup.add(line_mesh)
         this.rectGroup.add(line_cross_x)
         this.rectGroup.add(line_cross_y)
-
       } else {
-
         this.lineGeom.vertices[0] = this.mouseStart.clone()
         this.lineGeom.vertices[1] = this.mouseStart.clone()
         this.lineGeom.vertices[2] = this.mouseStart.clone()
@@ -364,38 +332,33 @@ export default class SelectionWindowTool extends EventsEmitter {
       }
 
       this.viewer.impl.addOverlay(
-        "selectionWindowOverlay",
+        'selectionWindowOverlay',
         this.rectGroup)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   endDrag () {
-
     if (this.isDragging === true) {
-
       this.viewer.impl.removeOverlay(
-        "selectionWindowOverlay",
+        'selectionWindowOverlay',
         this.rectGroup)
 
       this.isDragging = false
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   update () {
-
-    if (!this.isActive)
-      return;
+    if (!this.isActive) { return }
 
     if (this.lineGeom && this.isDragging) {
-
       // draw rectangle
       this.lineGeom.vertices[1].x = this.mouseStart.x
       this.lineGeom.vertices[1].y = this.mouseEnd.y
@@ -405,19 +368,19 @@ export default class SelectionWindowTool extends EventsEmitter {
       this.lineGeom.vertices[4] = this.lineGeom.vertices[0]
 
       // draw cross
-      var width = Math.abs(this.mouseEnd .x - this.mouseStart.x);
-      var height = Math.abs(this.mouseEnd .y - this.mouseStart.y);
-      var length = width>height ? height : width;
+      var width = Math.abs(this.mouseEnd.x - this.mouseStart.x)
+      var height = Math.abs(this.mouseEnd.y - this.mouseStart.y)
+      var length = width > height ? height : width
 
-      if(length > _CROSS_MAX_WIDTH) {
-        length = _CROSS_MAX_WIDTH;
+      if (length > _CROSS_MAX_WIDTH) {
+        length = _CROSS_MAX_WIDTH
       }
 
-      var half_length = length * 0.5;
+      var half_length = length * 0.5
 
       var cross_center = [
-        (this.mouseEnd .x + this.mouseStart.x) * 0.5,
-        (this.mouseEnd .y + this.mouseStart.y) * 0.5
+        (this.mouseEnd.x + this.mouseStart.x) * 0.5,
+        (this.mouseEnd.y + this.mouseStart.y) * 0.5
       ]
 
       this.crossGeomX.vertices[0].x = cross_center[0] - half_length
@@ -436,21 +399,18 @@ export default class SelectionWindowTool extends EventsEmitter {
 
       // only redraw overlay
       this.viewer.impl.invalidate(false, false, true)
-
     } else {
-
       return this.select()
     }
 
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   select () {
-
     const rectMinX = this.mouseStart.x
     const rectMinY = this.mouseStart.y
 
@@ -461,7 +421,6 @@ export default class SelectionWindowTool extends EventsEmitter {
     const rectWidth = Math.abs(rectMaxX - rectMinX)
 
     if (rectWidth === 0 || rectHeight === 0) {
-
       return false
     }
 

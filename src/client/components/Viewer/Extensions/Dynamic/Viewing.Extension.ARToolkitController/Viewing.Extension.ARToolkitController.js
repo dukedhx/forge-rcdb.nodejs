@@ -1,9 +1,9 @@
-///////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////
 // ARToolkitController Viewer Extension
 // By Philippe Leefsma, Autodesk Inc, July 2017
 //
-///////////////////////////////////////////////////////////
-import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
+/// ////////////////////////////////////////////////////////
+import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex'
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import ARVRToolkitAPI from './ARVRToolkit.API'
 import DerivativesAPI from './Derivatives.API'
@@ -13,7 +13,7 @@ import { Tabs, Tab } from 'react-bootstrap'
 import ManifestView from './ManifestView'
 import NewSceneView from './NewSceneView'
 import ReactTooltip from 'react-tooltip'
-import {ServiceContext} from 'ServiceContext'
+import { ServiceContext } from 'ServiceContext'
 import ScenesView from './ScenesView'
 import { ReactLoader } from 'Loader'
 import Measure from 'react-measure'
@@ -25,14 +25,12 @@ import Label from 'Label'
 import React from 'react'
 
 class ARToolkitControllerExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
-	// Class constructor
+  /// //////////////////////////////////////////////////////
+  // Class constructor
   //
-  /////////////////////////////////////////////////////////
-	constructor (viewer, options) {
-
-		super (viewer, options)
+  /// //////////////////////////////////////////////////////
+  constructor (viewer, options) {
+    super(viewer, options)
 
     this.onItemNodeCreated = this.onItemNodeCreated.bind(this)
     this.onFilterChanged = this.onFilterChanged.bind(this)
@@ -49,18 +47,16 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
     })
 
     this.react = options.react
-	}
+  }
 
-	/////////////////////////////////////////////////////////
-	// Load callback
+  /// //////////////////////////////////////////////////////
+  // Load callback
   //
-  /////////////////////////////////////////////////////////
-	load () {
-
+  /// //////////////////////////////////////////////////////
+  load () {
     this.options.loader.show(false)
 
     if (!this.viewer.model) {
-
       this.viewer.container.classList.add('empty')
     }
 
@@ -76,8 +72,7 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
       filter: '',
       guid: null
 
-    }).then (async() => {
-
+    }).then(async () => {
       await this.react.pushRenderExtension(this)
 
       const options = {
@@ -99,12 +94,10 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
       this.viewer.loadDynamicExtension(
         'Viewing.Extension.ModelLoader',
         options).then((modelLoader) => {
-
-          this.modelLoader = modelLoader
-        })
+        this.modelLoader = modelLoader
+      })
 
       if (this.options.auth === '3legged') {
-
         const dmExtension =
           await this.viewer.loadDynamicExtension(
             'Viewing.Extension.DataManagement',
@@ -116,12 +109,10 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
         await this.react.setState({
           dmExtension
         })
-
       } else {
-
         const models =
           await this.modelSvc.getModels(
-          this.options.database)
+            this.options.database)
 
         this.react.setState({
           models
@@ -131,77 +122,67 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
 
     console.log('Viewing.Extension.ARToolkitController loaded')
 
-		return true
-	}
+    return true
+  }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'ar-vr-toolkit'
   }
 
-  /////////////////////////////////////////////////////////
-	// Extension Id
+  /// //////////////////////////////////////////////////////
+  // Extension Id
   //
-  /////////////////////////////////////////////////////////
-	static get ExtensionId () {
+  /// //////////////////////////////////////////////////////
+  static get ExtensionId () {
+    return 'Viewing.Extension.ARToolkitController'
+  }
 
-		return 'Viewing.Extension.ARToolkitController'
-	}
-
-  /////////////////////////////////////////////////////////
-	// Unload callback
+  /// //////////////////////////////////////////////////////
+  // Unload callback
   //
-  /////////////////////////////////////////////////////////
-	unload () {
-
+  /// //////////////////////////////////////////////////////
+  unload () {
     console.log('Viewing.Extension.ARToolkitController loaded')
 
-    super.unload ()
+    super.unload()
 
-		return true
-	}
+    return true
+  }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setDocking (docked) {
-
     const id = ARToolkitControllerExtension.ExtensionId
 
     if (docked) {
-
       await this.react.popRenderExtension(id)
 
       this.react.pushViewerPanel(this, {
         height: 250,
         width: 350
       })
-
     } else {
-
       await this.react.popViewerPanel(id)
 
       this.react.pushRenderExtension(this)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   showLogin () {
-
     const onClose = (result) => {
-
       this.dialogSvc.off('dialog.close', onClose)
 
       if (result === 'OK') {
-
         this.forgeSvc.login()
         return
       }
@@ -216,25 +197,23 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
       className: 'login-dlg',
       title: 'Forge Login required ...',
       content:
-        <div>
+  <div>
           Press OK to login ...
-        </div>,
+  </div>,
       open: true
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onItemNodeCreated (node) {
-
     node.setControl({
 
       tooltip: 'Load AR/VR Toolkit scenes ...',
       className: 'ar-vr-toolkit icon',
       onClick: () => {
-
         this.selectModel({
           versionId: node.activeVersion.id,
           projectId: node.props.projectId,
@@ -245,12 +224,11 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async selectModel (model) {
-
     await this.react.setState({
       selectedModel: model,
       hierarchy: null,
@@ -261,7 +239,6 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
 
     this.arvrToolkitAPI.getManifest(model.urn).then(
       (manifest) => {
-
         const scenes =
           this.arvrToolkitAPI.getManifestScenes(
             manifest)
@@ -274,15 +251,12 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
 
     this.derivativesAPI.getMetadata(model.urn).then(
       (metadata) => {
-
         if (metadata.data.metadata.length) {
-
-          const {guid} = metadata.data.metadata[0]
+          const { guid } = metadata.data.metadata[0]
 
           this.derivativesAPI.getHierarchy(
             model.urn, guid).then(
             (hierarchy) => {
-
               this.react.setState({
                 hierarchy,
                 guid
@@ -292,45 +266,41 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
       })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onTabSelected (tabKey) {
-
     this.react.setState({
       activeTabKey: tabKey
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onLoadModel (e, dbModel) {
-
-    this.modelLoader.loadModel (dbModel)
+    this.modelLoader.loadModel(dbModel)
 
     e.stopPropagation()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onFilterChanged (e) {
-
     this.react.setState({
       filter: e.target.value.toLowerCase()
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderModels () {
-
     const {
       selectedModel,
       filter,
@@ -344,17 +314,17 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
     })
 
     const modelItems = filteredModels.map((dbModel) => {
-
       const thumbnailUrl = this.modelSvc.getThumbnailUrl(
         this.options.database, dbModel._id, 200)
 
-      const urn = selectedModel? selectedModel.urn : ''
+      const urn = selectedModel ? selectedModel.urn : ''
 
       const active = (urn === dbModel.model.urn)
         ? ' active' : ''
 
       return (
-        <div className={"model-item" + active}
+        <div
+          className={'model-item' + active}
           key={dbModel._id}
           onClick={() => {
             this.selectModel({
@@ -362,19 +332,23 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
               name: dbModel.name,
               id: dbModel._id
             })
-          }}>
-          <Image src={thumbnailUrl}/>
-          <Label text= {dbModel.name}/>
-          <div className="hover-controls">
-            <span className="fa fa-eye"
+          }}
+        >
+          <Image src={thumbnailUrl} />
+          <Label text={dbModel.name} />
+          <div className='hover-controls'>
+            <span
+              className='fa fa-eye'
               data-for={`load-model-${dbModel._id}`}
-              style={{marginRight:'190px'}}
+              style={{ marginRight: '190px' }}
               onClick={(e) => this.onLoadModel(e, dbModel)}
               data-tip
             />
-            <ReactTooltip id={`load-model-${dbModel._id}`}
-              className="tooltip-text"
-              effect="solid">
+            <ReactTooltip
+              id={`load-model-${dbModel._id}`}
+              className='tooltip-text'
+              effect='solid'
+            >
               <div>
                 {`Load ${dbModel.name} in viewer ...`}
               </div>
@@ -386,31 +360,31 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
 
     return (
       <WidgetContainer
-        title="Select model to use with the AR/VR Toolkit"
-        showTitle={true}>
+        title='Select model to use with the AR/VR Toolkit'
+        showTitle
+      >
 
-        <div className="models">
-          <div className="filter">
+        <div className='models'>
+          <div className='filter'>
             <input
               onChange={this.onFilterChanged}
-              placeholder="Filter models..."
-              type="text"
+              placeholder='Filter models...'
+              type='text'
             />
           </div>
-          { modelItems }
+          {modelItems}
         </div>
 
       </WidgetContainer>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderControls () {
-
-    const {activeTabKey, selectedModel, tabsWidth} =
+    const { activeTabKey, selectedModel, tabsWidth } =
       this.react.getState()
 
     const widgetTitle = 'Model: ' +
@@ -420,95 +394,106 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
 
     const style = {
       width:
-        `${Math.floor((tabsWidth-8)/nbTabs-15)}px`
+        `${Math.floor((tabsWidth - 8) / nbTabs - 15)}px`
     }
 
     const tabTitle = (title) => {
-       return (
+      return (
         <label style={style}>
           {title}
         </label>
-       )
+      )
     }
 
     return (
       <WidgetContainer
         className={this.className}
         title={widgetTitle}
-        showTitle={true}>
-        <Measure bounds onResize={(rect) => {
-          this.react.setState({
-            tabsWidth: rect.bounds.width
-          })
-        }}>
-        {
-          ({ measureRef }) =>
-            <div ref={measureRef} className="tabs-container">
-              <Tabs activeKey={activeTabKey}
-                onSelect={this.onTabSelected}
-                id="derivatives-tab"
-                className="tabs">
-                <Tab className="tab-container"
-                  title={tabTitle('Manifest')}
-                  eventKey="manifest"
-                  key="manifest">
-                  {
-                    (activeTabKey === 'manifest') &&
-                    this.renderManifestTab ()
-                  }
-                </Tab>
-                <Tab className="tab-container"
-                  title={tabTitle('Scenes')}
-                  eventKey="scenes"
-                  key="scenes">
-                  {
-                    this.renderScenesTab ()
-                  }
-                </Tab>
-                <Tab className="tab-container"
-                  title={tabTitle('New Scene')}
-                  eventKey="new-scene"
-                  key="new-scene">
-                  {
-                    this.renderNewSceneTab ()
-                  }
-                </Tab>
-                <Tab className="tab-container"
-                  title={tabTitle('Token')}
-                  eventKey="token"
-                  key="token">
-                  {
-                    this.renderTokenTab ()
-                  }
-                </Tab>
-              </Tabs>
-            </div>
+        showTitle
+      >
+        <Measure
+          bounds onResize={(rect) => {
+            this.react.setState({
+              tabsWidth: rect.bounds.width
+            })
+          }}
+        >
+          {
+            ({ measureRef }) =>
+              <div ref={measureRef} className='tabs-container'>
+                <Tabs
+                  activeKey={activeTabKey}
+                  onSelect={this.onTabSelected}
+                  id='derivatives-tab'
+                  className='tabs'
+                >
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Manifest')}
+                    eventKey='manifest'
+                    key='manifest'
+                  >
+                    {
+                      (activeTabKey === 'manifest') &&
+                    this.renderManifestTab()
+                    }
+                  </Tab>
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Scenes')}
+                    eventKey='scenes'
+                    key='scenes'
+                  >
+                    {
+                      this.renderScenesTab()
+                    }
+                  </Tab>
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('New Scene')}
+                    eventKey='new-scene'
+                    key='new-scene'
+                  >
+                    {
+                      this.renderNewSceneTab()
+                    }
+                  </Tab>
+                  <Tab
+                    className='tab-container'
+                    title={tabTitle('Token')}
+                    eventKey='token'
+                    key='token'
+                  >
+                    {
+                      this.renderTokenTab()
+                    }
+                  </Tab>
+                </Tabs>
+              </div>
           }
         </Measure>
       </WidgetContainer>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderManifestTab () {
-
-    const {manifest} = this.react.getState()
+    const { manifest } = this.react.getState()
 
     return (
-      <ManifestView manifest={manifest}/>
+      <ManifestView manifest={manifest} />
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSceneDeleted () {
-
-    const {selectedModel} = this.react.getState()
+    const { selectedModel } = this.react.getState()
 
     this.react.setState({
       manifest: null,
@@ -519,7 +504,6 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
 
     this.arvrToolkitAPI.getManifest(urn).then(
       (manifest) => {
-
         const scenes =
           this.arvrToolkitAPI.getManifestScenes(
             manifest)
@@ -531,13 +515,12 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
       })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onSceneCreated () {
-
-    const {selectedModel} = this.react.getState()
+    const { selectedModel } = this.react.getState()
 
     this.react.setState({
       manifest: null,
@@ -548,7 +531,6 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
 
     this.arvrToolkitAPI.getManifest(urn).then(
       (manifest) => {
-
         const scenes =
           this.arvrToolkitAPI.getManifestScenes(
             manifest)
@@ -560,12 +542,11 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
       })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderScenesTab () {
-
     const {
       selectedModel,
       scenes
@@ -583,12 +564,11 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderNewSceneTab () {
-
     const {
       selectedModel,
       hierarchy,
@@ -600,19 +580,18 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
         arvrToolkitAPI={this.arvrToolkitAPI}
         onSceneCreated={this.onSceneCreated}
         notifySvc={this.notifySvc}
-        hierarchy= {hierarchy}
+        hierarchy={hierarchy}
         model={selectedModel}
         guid={guid}
       />
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTokenTab () {
-
     const {
       selectedModel,
       hierarchy,
@@ -626,12 +605,11 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderContent () {
-
     const {
       selectedModel,
       dmExtension,
@@ -643,63 +621,64 @@ class ARToolkitControllerExtension extends MultiModelExtensionBase {
     const showLoader = showModelSelector && !models.length
 
     return (
-      <div className="content">
-        <ReactLoader show={showLoader}/>
+      <div className='content'>
+        <ReactLoader show={showLoader} />
         <ReflexContainer>
           {
             showModelSelector &&
-            <ReflexElement minSize={39}>
-            { this.renderModels() }
-            </ReflexElement>
+              <ReflexElement minSize={39}>
+                {this.renderModels()}
+              </ReflexElement>
           }
           {
             showModelSelector &&
             selectedModel &&
-            <ReflexSplitter/>
+              <ReflexSplitter />
           }
           {
             dmExtension &&
-            <ReflexElement minSize={39}>
-              <WidgetContainer
-                title="Select item to use with the AR/VR Toolkit"
-                showTitle={true}>
-                { dmExtension.render() }
-              </WidgetContainer>
-            </ReflexElement>
+              <ReflexElement minSize={39}>
+                <WidgetContainer
+                  title='Select item to use with the AR/VR Toolkit'
+                  showTitle
+                >
+                  {dmExtension.render()}
+                </WidgetContainer>
+              </ReflexElement>
           }
           {
             selectedModel &&
             dmExtension &&
-            <ReflexSplitter/>
+              <ReflexSplitter />
           }
           {
             selectedModel &&
-            <ReflexElement minSize={39} flex={0.72}>
-              { this.renderControls () }
-            </ReflexElement>
+              <ReflexElement minSize={39} flex={0.72}>
+                {this.renderControls()}
+              </ReflexElement>
           }
         </ReflexContainer>
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts) {
-
     return (
       <WidgetContainer
         className={this.className}
-        showTitle={false}>
-        { this.renderContent () }
+        showTitle={false}
+      >
+        {this.renderContent()}
       </WidgetContainer>
     )
   }
 }
 
-Autodesk.Viewing.theExtensionManager.registerExtension (
+Autodesk.Viewing.theExtensionManager.registerExtension(
   ARToolkitControllerExtension.ExtensionId,
   ARToolkitControllerExtension)
 

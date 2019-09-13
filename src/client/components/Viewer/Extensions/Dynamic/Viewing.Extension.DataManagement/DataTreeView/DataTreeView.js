@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
 // Written by Philippe Leefsma 2016 - ADN/Developer Technical Services
 //
@@ -14,7 +14,7 @@
 // MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
 // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 // UNINTERRUPTED OR ERROR FREE.
-/////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////
 import ContentEditable from 'react-contenteditable'
 import DataTreeDelegate from './DataTreeDelegate'
 import BaseComponent from 'BaseComponent'
@@ -24,14 +24,12 @@ import './DataTreeView.scss'
 import React from 'react'
 
 export default class DataTreeView extends BaseComponent {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (props) {
-
-    super (props)
+    super(props)
 
     this.onUploadComplete = this.onUploadComplete.bind(this)
     this.onInputChanged = this.onInputChanged.bind(this)
@@ -45,54 +43,41 @@ export default class DataTreeView extends BaseComponent {
     })
 
     this.delegate.on('node.destroy', (nodeId) => {
-
       this.tree.destroyNode(nodeId)
     })
 
     this.delegate.on('item.created', (node) => {
-
       if (this.props.onItemNodeCreated) {
-
         this.props.onItemNodeCreated(node)
       }
     })
 
     this.delegate.on('item.delete', (node) => {
-
       if (this.props.onDeleteItem) {
-
         this.props.onDeleteItem(node)
       }
     })
 
     this.delegate.on('load.viewable', (node) => {
-
       if (this.props.onLoadViewable) {
-
         this.props.onLoadViewable(node)
       }
     })
 
     this.delegate.on('folder.upload', (data) => {
-
       if (this.props.onFolderUpload) {
-
         this.props.onFolderUpload(data)
       }
     })
 
     this.delegate.on('folder.search', (data) => {
-
       if (this.props.onFolderSearch) {
-
         this.props.onFolderSearch(data)
       }
     })
 
     this.delegate.on('folder.create', (data) => {
-
       if (this.props.onCreateFolder) {
-
         this.props.onCreateFolder(data)
       }
     })
@@ -108,12 +93,11 @@ export default class DataTreeView extends BaseComponent {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   loadHub (hub) {
-
     const hubType = hub.attributes.extension.type
 
     const rootNode = this.delegate.createRootNode({
@@ -129,27 +113,25 @@ export default class DataTreeView extends BaseComponent {
       hubType
     })
 
-    this.tree = new TreeView (
+    this.tree = new TreeView(
       this.delegate, rootNode, this.treeContainer, {
         excludeRoot: false
       })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentDidMount () {
-
-    this.loadHub (this.props.hub)
+    this.loadHub(this.props.hub)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   componentWillUnmount () {
-
     this.delegate.destroy()
 
     this.tree.destroy()
@@ -159,21 +141,19 @@ export default class DataTreeView extends BaseComponent {
       this.onUploadComplete)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   shouldComponentUpdate () {
-
     return false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onInputChanged (e) {
-
     await this.assignState({
       filter: e.target.value
     })
@@ -181,14 +161,12 @@ export default class DataTreeView extends BaseComponent {
     this.onFilter()
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onKeyDown (e) {
-
     if (e.keyCode === 13) {
-
       e.stopPropagation()
       e.preventDefault()
 
@@ -196,37 +174,31 @@ export default class DataTreeView extends BaseComponent {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onFilter () {
-
-    const {filter} = this.state
+    const { filter } = this.state
 
     this.delegate.filterNodes(filter)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onUploadComplete (data) {
-
     if (data.hubId === this.props.hub.id) {
-
       const parentNode = this.tree.getNodeById(data.nodeId)
 
       if (data.version.attributes.versionNumber === 1) {
-
         if (parentNode.expanded) {
-
           const node =
             parentNode.insertChildNode(
               data.item)
 
           if (this.props.onItemNodeCreated) {
-
             this.props.onItemNodeCreated(node)
           }
         }
@@ -234,24 +206,25 @@ export default class DataTreeView extends BaseComponent {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  render() {
-
-    const {filter} = this.state
+  /// //////////////////////////////////////////////////////
+  render () {
+    const { filter } = this.state
 
     return (
-      <div className="datatree-container" ref={
-        (div) => this.treeContainer = div
-        }>
-        <div className="filter">
+      <div
+        className='datatree-container' ref={
+          (div) => this.treeContainer = div
+        }
+      >
+        <div className='filter'>
           <ContentEditable
             onChange={this.onInputChanged}
             onKeyDown={this.onKeyDown}
-            data-placeholder="Filter ..."
-            className="input-filter"
+            data-placeholder='Filter ...'
+            className='input-filter'
             html={filter}
           />
         </div>

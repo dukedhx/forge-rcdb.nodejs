@@ -1,6 +1,5 @@
 
 export default class Vector {
-
   constructor (x = 0, y = 0, z = 0) {
     this._x = x
     this._y = y
@@ -12,7 +11,6 @@ export default class Vector {
   getZ () { return this._z }
 
   magnitude () {
-
     return Math.sqrt(
       this._x * this._x +
       this._y * this._y +
@@ -20,7 +18,6 @@ export default class Vector {
   }
 
   asUnitVector () {
-
     var m = this.magnitude()
 
     return new Vector(
@@ -30,7 +27,6 @@ export default class Vector {
   }
 
   scaled (scaleFactor) {
-
     var m = this.magnitude()
 
     return new Vector(
@@ -40,7 +36,6 @@ export default class Vector {
   }
 
   multiply (scaleFactor) {
-
     this._x *= scaleFactor
     this._y *= scaleFactor
     this._z *= scaleFactor
@@ -49,7 +44,6 @@ export default class Vector {
   }
 
   add (vector) {
-
     this._x += vector._x
     this._y += vector._y
     this._z += vector._z
@@ -58,7 +52,6 @@ export default class Vector {
   }
 
   vectorTo (vector) {
-
     return new Vector(
       vector._x - this._x,
       vector._y - this._y,
@@ -67,7 +60,6 @@ export default class Vector {
   }
 
   withinSphere (center, radius) {
-
     var magnitudeSqr =
       (this._x - center._x) * (this._x - center._x) +
       (this._y - center._y) * (this._y - center._y) +
@@ -77,19 +69,16 @@ export default class Vector {
   }
 
   withinBox (center, size) {
-
-    //TODO
+    // TODO
 
     return true
   }
 
   copy () {
-
     return new Vector(this._x, this._y, this._z)
   }
 
   static fromArray (data) {
-
     return new Vector(data[0], data[1], data[2])
   }
 }

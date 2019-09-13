@@ -1,8 +1,8 @@
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 // Viewing.Extension.WallAnalyzer
 // by Philippe Leefsma, May 2017
 //
-/////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////
 import MultiModelExtensionBase from 'Viewer.MultiModelExtensionBase'
 import MeshPropertyPanel from './MeshPropertyPanel'
 import Worker from 'worker-loader!./worker.js'
@@ -15,16 +15,13 @@ import Switch from 'Switch'
 import React from 'react'
 import d3 from 'd3'
 
-
 class WallAnalyzerExtension extends MultiModelExtensionBase {
-
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   constructor (viewer, options) {
-
-    super (viewer, options)
+    super(viewer, options)
 
     this.onLevelWallsClicked = this.onLevelWallsClicked.bind(this)
     this.onLevelFloorClicked = this.onLevelFloorClicked.bind(this)
@@ -47,49 +44,45 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     this.wireframe = false
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
-  get className() {
-
+  /// //////////////////////////////////////////////////////
+  get className () {
     return 'wall-analyzer'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Extension Id
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   static get ExtensionId () {
-
     return 'Viewing.Extension.WallAnalyzer'
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Load callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   load () {
-
     this.react.setState({
 
       loader: true,
       levels: []
 
-    }).then (() => {
-
+    }).then(() => {
       this.react.pushRenderExtension(this)
     })
 
     console.log('Viewing.Extension.WallAnalyzer loaded')
 
-    this.eventTool.on ('mousemove', this.onMouseMove)
+    this.eventTool.on('mousemove', this.onMouseMove)
 
-    this.eventTool.on ('singleclick', this.onClick)
+    this.eventTool.on('singleclick', this.onClick)
 
     this.linesMaterial = this.createLinesMaterial()
 
-    this.viewer.impl.createOverlayScene (
+    this.viewer.impl.createOverlayScene(
       'wallAnalyzer', this.linesMaterial)
 
     this.worker.addEventListener(
@@ -99,34 +92,31 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Unload callback
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   unload () {
-
     console.log('Viewing.Extension.WallAnalyzer unloaded')
 
-    this.viewer.impl.removeOverlayScene ('wallAnalyzer')
+    this.viewer.impl.removeOverlayScene('wallAnalyzer')
 
     if (this.notification) {
-
       this.options.notify.remove(this.notification)
     }
 
     this.eventTool.off()
 
-    super.unload ()
+    super.unload()
 
     return true
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   reset () {
-
     this.options.notify.remove(this.notification)
 
     this.notification = null
@@ -137,12 +127,11 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onWorkerMessage (msg) {
-
     const state = this.react.getState()
 
     const data = msg.data
@@ -154,30 +143,30 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     const levelIdx = data.levelCount - data.level - 1
 
     const level = state.levels[levelIdx] || {
-        strokeColor: this.levelColors[data.level],
-        fillColor: this.levelColors[data.level],
-        name: `Level ${data.level+1}`,
-        walls: {
-          name: `Walls [Level #${data.level+1}]`,
-          active: false,
-          meshes: []
-        },
-        floor: {
-          meshes: data.floorDbIds.map((dbId) => {
-              return Toolkit.buildComponentMesh(
-                this.viewer, this.viewer.model,
-                dbId, null, material)
-          }),
-          name: `Floor [Level #${data.level+1}]`,
-          dbIds: data.floorDbIds,
-          active: false,
-          paths: []
-        },
-        report: {
-          level: `Level ${data.level+1}`,
-          boundingBox: msg.levelBox,
-          walls: []
-        }
+      strokeColor: this.levelColors[data.level],
+      fillColor: this.levelColors[data.level],
+      name: `Level ${data.level + 1}`,
+      walls: {
+        name: `Walls [Level #${data.level + 1}]`,
+        active: false,
+        meshes: []
+      },
+      floor: {
+        meshes: data.floorDbIds.map((dbId) => {
+          return Toolkit.buildComponentMesh(
+            this.viewer, this.viewer.model,
+            dbId, null, material)
+        }),
+        name: `Floor [Level #${data.level + 1}]`,
+        dbIds: data.floorDbIds,
+        active: false,
+        paths: []
+      },
+      report: {
+        level: `Level ${data.level + 1}`,
+        boundingBox: msg.levelBox,
+        walls: []
+      }
     }
 
     state.levels[levelIdx] = level
@@ -185,7 +174,6 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     level.walls.meshes.push(mesh)
 
     const lines = data.pathEdges.map((edge) => {
-
       const geometry = new THREE.Geometry()
 
       edge.start.z += 0.05
@@ -222,9 +210,8 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     Toolkit.getProperties(
       this.viewer.model,
       mesh.dbId).then((properties) => {
-
-        wall.properties = properties
-      })
+      wall.properties = properties
+    })
 
     level.report.walls.push(wall)
 
@@ -233,28 +220,26 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
       (data.levelCount * data.wallCount)
 
     if (progress === 100) {
-
       this.notification.dismissAfter = 2000
       this.notification.status = 'success'
     }
 
     this.notification.message =
-      `Processing Meshes `+
+      'Processing Meshes ' +
       `- Progress: ${progress.toFixed(2)}%`
 
-    //this.options.notify.update(this.notification)
+    // this.options.notify.update(this.notification)
 
     this.react.setState({
       levels: state.levels
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getComponentBoundingBox (dbId) {
-
     const model = this.viewer.model
 
     const fragIds = Toolkit.getLeafFragIds(
@@ -266,21 +251,19 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
       fragIds, fragList)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onToolbarCreated (event) {
-
     this.panel = new MeshPropertyPanel(this.viewer)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelRootLoaded () {
-
     super.onModelRootLoaded()
 
     this.notification = this.options.notify.add({
@@ -295,57 +278,52 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     this.options.loader.show(false)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onModelCompletedLoad (event) {
-
     const model = this.viewer.model
 
-    this.postModelInfo ()
+    this.postModelInfo()
 
     this.getComponentsByParentName(
       'Floors', model).then((floorsIds) => {
+      const nbFloors = floorsIds.length
 
-        const nbFloors = floorsIds.length
+      const colors = d3.scale.linear()
+        .domain([0, nbFloors * 0.33, nbFloors * 0.66, nbFloors])
+        .range(['#FCB843', '#C2149F', '#0CC4BD', '#0270E9'])
 
-        const colors = d3.scale.linear()
-          .domain([0, nbFloors * .33, nbFloors * .66, nbFloors])
-          .range(['#FCB843', '#C2149F', '#0CC4BD', '#0270E9'])
+      this.levelMaterials = []
+      this.levelColors = []
 
-          this.levelMaterials = []
-          this.levelColors = []
+      floorsIds.forEach((dbId, idx) => {
+        const levelMaterial = new THREE.MeshPhongMaterial({
+          side: THREE.DoubleSide,
+          color: colors(idx)
+        })
 
-          floorsIds.forEach((dbId, idx) => {
+        this.viewer.impl.matman().addMaterial(
+          this.guid(),
+          levelMaterial,
+          true)
 
-            const levelMaterial = new THREE.MeshPhongMaterial({
-              side: THREE.DoubleSide,
-              color: colors(idx)
-            })
+        this.levelMaterials.push(levelMaterial)
 
-            this.viewer.impl.matman().addMaterial(
-              this.guid(),
-              levelMaterial,
-              true)
+        this.levelColors.push(colors(idx))
 
-            this.levelMaterials.push(levelMaterial)
-
-            this.levelColors.push(colors(idx))
-
-            this.postComponent (
-              dbId, 'Floors', floorsIds.length)
-          })
+        this.postComponent(
+          dbId, 'Floors', floorsIds.length)
       })
+    })
 
     this.getComponentsByParentName(
       'Walls', model).then((wallIds) => {
-
-        wallIds.forEach((dbId) => {
-
-          return this.postComponent (
-            dbId, 'Walls', wallIds.length)
-        })
+      wallIds.forEach((dbId) => {
+        return this.postComponent(
+          dbId, 'Walls', wallIds.length)
+      })
     })
 
     this.react.setState({
@@ -353,12 +331,11 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async postModelInfo () {
-
     const model = this.viewer.model
 
     const instanceTree = model.getData().instanceTree
@@ -382,12 +359,11 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     this.worker.postMessage(msg)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   postComponent (dbId, category, count) {
-
     const geometry = this.getComponentGeometry(dbId)
 
     const msg = {
@@ -401,7 +377,6 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     }
 
     geometry.meshes.forEach((mesh, idx) => {
-
       msg['positions' + idx] = mesh.positions
       msg['indices' + idx] = mesh.indices
       msg['stride' + idx] = mesh.stride
@@ -410,16 +385,14 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     this.worker.postMessage(msg)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   buildMesh (data, material) {
-
     const geometry = new THREE.Geometry()
 
     data.vertices.forEach((vertex) => {
-
       geometry.vertices.push(
         new THREE.Vector3(
           vertex.x,
@@ -428,7 +401,6 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     })
 
     data.faces.forEach((face) => {
-
       geometry.faces.push(
         new THREE.Face3(
           face.a,
@@ -438,7 +410,7 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
 
     geometry.computeFaceNormals()
 
-    //geometry.computeVertexNormals()
+    // geometry.computeVertexNormals()
 
     const matrixWorld = new THREE.Matrix4()
 
@@ -454,12 +426,11 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     return mesh
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getComponentsByParentName (name, model) {
-
     const instanceTree = model.getData().instanceTree
 
     const rootId = instanceTree.getRootId()
@@ -468,11 +439,9 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
 
     instanceTree.enumNodeChildren(rootId,
       (childId) => {
-
         const nodeName = instanceTree.getNodeName(childId)
 
         if (nodeName.indexOf(name) > -1) {
-
           parentId = childId
         }
       })
@@ -482,19 +451,17 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
       : []
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getComponentGeometry (dbId) {
-
     const fragIds = Toolkit.getLeafFragIds(
       this.viewer.model, dbId)
 
     let matrixWorld = null
 
     const meshes = fragIds.map((fragId) => {
-
       const renderProxy = this.viewer.impl.getRenderProxy(
         this.viewer.model,
         fragId)
@@ -527,12 +494,11 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   createLinesMaterial (color = 0xFF0000, opacity = 1.0) {
-
     return new THREE.LineBasicMaterial({
       color: new THREE.Color(color),
       transparent: true,
@@ -543,18 +509,16 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     })
   }
 
-  /////////////////////////////////////////////////////////
-  //returns bounding box as it appears in the viewer
+  /// //////////////////////////////////////////////////////
+  // returns bounding box as it appears in the viewer
   // (transformations could be applied)
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   getModifiedWorldBoundingBox (fragIds, fragList) {
-
     const fragbBox = new THREE.Box3()
     const nodebBox = new THREE.Box3()
 
-    fragIds.forEach(function(fragId) {
-
+    fragIds.forEach(function (fragId) {
       fragList.getWorldBounds(fragId, fragbBox)
 
       nodebBox.union(fragbBox)
@@ -563,35 +527,31 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     return nodebBox
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   hexToRgbA (hex, alpha) {
-
-    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
       var c = hex.substring(1).split('')
 
       if (c.length == 3) {
-
         c = [c[0], c[0], c[1], c[1], c[2], c[2]]
       }
 
       c = '0x' + c.join('')
 
-      return `rgba(${(c>>16)&255},${(c>>8)&255},${c&255},${alpha})`
+      return `rgba(${(c >> 16) & 255},${(c >> 8) & 255},${c & 255},${alpha})`
     }
 
     throw new Error('Bad Hex Number: ' + hex)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   // Creates Raycaster object from the pointer
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   pointerToRaycaster (domElement, camera, pointer) {
-
     const pointerVector = new THREE.Vector3()
     const pointerDir = new THREE.Vector3()
     const ray = new THREE.Raycaster()
@@ -602,7 +562,6 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     const y = -((pointer.clientY - rect.top) / rect.height) * 2 + 1
 
     if (camera.isPerspective) {
-
       pointerVector.set(x, y, 0.5)
 
       pointerVector.unproject(camera)
@@ -610,9 +569,7 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
       ray.set(camera.position,
         pointerVector.sub(
           camera.position).normalize())
-
     } else {
-
       pointerVector.set(x, y, -1)
 
       pointerVector.unproject(camera)
@@ -627,12 +584,11 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     return ray
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onMouseMove (event) {
-
     const pointer = event.pointers
       ? event.pointers[0]
       : event
@@ -645,27 +601,24 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     const intersectResults = rayCaster.intersectObjects(
       this.intersectMeshes, true)
 
-    //console.log(intersectResults)
+    // console.log(intersectResults)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async onSelection (event) {
-
     if (event.selections.length) {
-
       const dbId = event.selections[0].dbIdArray[0]
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onClick (event) {
-
     const pointer = event.pointers
       ? event.pointers[0]
       : event
@@ -679,7 +632,6 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
       this.intersectMeshes, true)
 
     if (intersectResults.length) {
-
       const mesh = intersectResults[0].object
 
       this.panel.setVisible(false)
@@ -690,12 +642,11 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onLevelWallsClicked (level) {
-
     const state = this.react.getState()
 
     level.walls.active = !level.walls.active
@@ -707,27 +658,21 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     const meshes = level.walls.meshes
 
     meshes.forEach((mesh) => {
-
       if (level.walls.active) {
-
         this.viewer.impl.scene.add(mesh)
         this.intersectMeshes.push(mesh)
-
       } else {
-
         this.viewer.impl.scene.remove(mesh)
       }
     })
 
     if (!level.walls.active) {
-
       const meshIds = meshes.map((mesh) => {
         return mesh.id
       })
 
       this.intersectMeshes =
         this.intersectMeshes.filter((mesh) => {
-
           return !meshIds.includes(mesh.id)
         })
     }
@@ -741,39 +686,33 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     })
 
     if ((nbActiveWalls.length + nbActiveFloors.length)) {
-
       Toolkit.hide(this.viewer, this.rootId)
       this.eventTool.activate()
-
     } else {
-
       Toolkit.show(this.viewer, this.rootId)
       this.eventTool.deactivate()
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   drawLine (line) {
-
     this.viewer.impl.addOverlay(
       'wallAnalyzer', line)
   }
 
   clearLine (line) {
-
     this.viewer.impl.removeOverlay(
       'wallAnalyzer', line)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onLevelFloorClicked (level) {
-
     const state = this.react.getState()
 
     level.floor.active = !level.floor.active
@@ -785,11 +724,8 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     const meshes = level.floor.meshes
 
     if (level.floor.active) {
-
       level.floor.paths.forEach((path) => {
-
         path.lines.forEach((line) => {
-
           this.drawLine(line)
         })
       })
@@ -798,13 +734,9 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
         this.viewer.impl.scene.add(mesh)
         this.intersectMeshes.push(mesh)
       })
-
     } else {
-
       level.floor.paths.forEach((path) => {
-
         path.lines.forEach((line) => {
-
           this.clearLine(line)
         })
       })
@@ -819,15 +751,13 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
 
       this.intersectMeshes =
         this.intersectMeshes.filter((mesh) => {
-
           return !meshIds.includes(mesh.id)
         })
     }
 
-    const viewerState = this.viewer.getState({viewport: true})
+    const viewerState = this.viewer.getState({ viewport: true })
 
     this.viewer.restoreState(viewerState)
-
 
     const nbActiveWalls = state.levels.filter((level) => {
       return level.walls.active
@@ -838,84 +768,73 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     })
 
     if ((nbActiveWalls.length + nbActiveFloors.length)) {
-
       Toolkit.hide(this.viewer, this.rootId)
       this.eventTool.activate()
-
     } else {
-
       Toolkit.show(this.viewer, this.rootId)
       this.eventTool.deactivate()
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onEnableWireFrame (checked) {
-
     this.wireframe = checked
 
     this.levelMaterials.forEach((material) => {
-
       material.wireframe = checked
     })
 
     this.viewer.impl.sceneUpdated(true)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   async setDocking (docked) {
-
     const id = WallAnalyzerExtension.ExtensionId
 
     if (docked) {
-
       await this.react.popRenderExtension(id)
 
       this.react.pushViewerPanel(this, {
         height: 250,
         width: 350
       })
-
     } else {
-
       await this.react.popViewerPanel(id)
 
       this.react.pushRenderExtension(this)
     }
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   onLevelReportClicked (e, report) {
-
     e.stopPropagation()
 
-    const data = "data:text/json;charset=utf-8," +
+    const data = 'data:text/json;charset=utf-8,' +
       encodeURIComponent(JSON.stringify(report, null, 2))
 
     const a = document.createElement('a')
-    a.setAttribute("download", `${report.level}.json`)
-    a.setAttribute("href", data)
+    a.setAttribute('download', `${report.level}.json`)
+    a.setAttribute('href', data)
 
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderContent () {
-
     const state = this.react.getState()
 
     let hasActiveItem = false
@@ -923,7 +842,6 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     const levels = state.levels
 
     const items = levels.map((level) => {
-
       hasActiveItem =
         hasActiveItem ||
         level.walls.active ||
@@ -941,28 +859,33 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
       return (
         <div key={level.walls.name} className='list-item'>
 
-          <div className="item-color" style={style}>
-          </div>
+          <div className='item-color' style={style} />
 
           <label>
             {level.name}
           </label>
 
-          <div onClick={(e) => {
-            this.onLevelReportClicked(e, level.report)
-          }}
-            className="level-report">
-            <span className="fa fa-cloud-download"/>
+          <div
+            onClick={(e) => {
+              this.onLevelReportClicked(e, level.report)
+            }}
+            className='level-report'
+          >
+            <span className='fa fa-cloud-download' />
               report.json
           </div>
 
-          <div onClick={() => this.onLevelFloorClicked(level)}
-              className={"level-floor" + floorActive}>
+          <div
+            onClick={() => this.onLevelFloorClicked(level)}
+            className={'level-floor' + floorActive}
+          >
             Floor
           </div>
 
-          <div onClick={() => this.onLevelWallsClicked(level)}
-            className={"level-walls" + wallsActive}>
+          <div
+            onClick={() => this.onLevelWallsClicked(level)}
+            className={'level-walls' + wallsActive}
+          >
             Walls
           </div>
 
@@ -971,43 +894,44 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
     })
 
     return (
-      <div className="content">
+      <div className='content'>
 
-        <ReactLoader show={state.loader}/>
+        <ReactLoader show={state.loader} />
 
-        <div className="row">
+        <div className='row'>
           Select an item to isolate walls or floor on this level:
         </div>
 
-        <div className="item-list-container">
-            {items}
+        <div className='item-list-container'>
+          {items}
         </div>
 
         {
           hasActiveItem &&
-          <div className="row">
+            <div className='row'>
             Enable wireframe:
-          </div>
+            </div>
         }
 
         {
           hasActiveItem &&
-          <div className="row">
-            <Switch className="control-element"
-              onChange={this.onEnableWireFrame}
-              checked={this.wireframe}/>
-          </div>
+            <div className='row'>
+              <Switch
+                className='control-element'
+                onChange={this.onEnableWireFrame}
+                checked={this.wireframe}
+              />
+            </div>
         }
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   renderTitle (titleOpts = {}) {
-
     const docked = titleOpts.docked
 
     const spanClass = docked
@@ -1015,36 +939,38 @@ class WallAnalyzerExtension extends MultiModelExtensionBase {
       : 'fa fa-chain'
 
     return (
-      <div className="title">
+      <div className='title'>
         <label>
           Wall Analyzer
         </label>
         {
           titleOpts.showDocking &&
-          <div className="wall-analyzer-controls">
-            <button onClick={() => this.setDocking(docked)}
-              title="Toggle docking mode">
-              <span className={spanClass}/>
-            </button>
-          </div>
+            <div className='wall-analyzer-controls'>
+              <button
+                onClick={() => this.setDocking(docked)}
+                title='Toggle docking mode'
+              >
+                <span className={spanClass} />
+              </button>
+            </div>
         }
       </div>
     )
   }
 
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////
   render (opts = {}) {
-
     return (
       <WidgetContainer
         renderTitle={() => this.renderTitle(opts.docked)}
         showTitle={opts.showTitle}
-        className={this.className}>
+        className={this.className}
+      >
 
-        { this.renderContent () }
+        {this.renderContent()}
 
       </WidgetContainer>
     )

@@ -3,29 +3,25 @@ import EventsEmitter from 'EventsEmitter'
 import ContextMenu from 'ContextMenu'
 
 export default class DataContextMenu extends
-  EventsEmitter.Composer (Autodesk.Viewing.UI.ObjectContextMenu) {
-
-  /////////////////////////////////////////////////////////////////
+  EventsEmitter.Composer(Autodesk.Viewing.UI.ObjectContextMenu) {
+  /// //////////////////////////////////////////////////////////////
   // Class constructor
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   constructor (opts) {
-
-    super (opts)
+    super(opts)
 
     this.contextMenu = new ContextMenu(opts)
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   buildMenu (event, node) {
-
     var menu = []
 
     switch (node.type) {
-
       case 'hubs':
 
         menu.push({
@@ -81,7 +77,7 @@ export default class DataContextMenu extends
                 event, node, type: 'folders.content'
               })
             }
-          },{
+          }, {
             title: 'Top folder content',
             icon: 'fa fa-folder-open',
             target: () => {
@@ -92,7 +88,7 @@ export default class DataContextMenu extends
           }]
         })
 
-        //menu.push({
+        // menu.push({
         //  title: 'Create new folder',
         //  icon: 'fa fa-plus',
         //  target: () => {
@@ -100,7 +96,7 @@ export default class DataContextMenu extends
         //      event, node
         //    })
         //  }
-        //})
+        // })
 
         break
 
@@ -128,7 +124,7 @@ export default class DataContextMenu extends
           }]
         })
 
-        //menu.push({
+        // menu.push({
         //  title: 'Create new folder',
         //  icon: 'fa fa-plus',
         //  target: () => {
@@ -136,7 +132,7 @@ export default class DataContextMenu extends
         //      event, node
         //    })
         //  }
-        //})
+        // })
 
         break
 
@@ -163,7 +159,6 @@ export default class DataContextMenu extends
         })
 
         if (node.viewerUrn) {
-
           menu.push({
             title: 'Show manifest',
             icon: 'fa fa-cubes',
@@ -181,16 +176,14 @@ export default class DataContextMenu extends
     return menu
   }
 
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   //
   //
-  /////////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
   show (event, node) {
-
     var menu = this.buildMenu(event, node)
 
-    if (menu && 0 < menu.length) {
-
+    if (menu && menu.length > 0) {
       this.contextMenu.show(event, menu)
     }
   }
