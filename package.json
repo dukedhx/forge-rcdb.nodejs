@@ -13,8 +13,7 @@
     "dev": "cross-env NODE_ENV=development forever -c 'node -r @babel/register' --watchDirectory ./src/server  ./src/server/index.js ",
     "build": "npm run build-server && npm run build-client",
     "clean": "rimraf bin",
-    "serve": "webpack-dev-server",
-    "lint": "standard 'src/**/*.js' --fix"
+    "serve": "webpack-dev-server"
   },
   "author": "Philippe Leefsma",
   "license": "MIT",
