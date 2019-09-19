@@ -1,4 +1,3 @@
-
 {
     "_id" : ObjectId("5a113677647990151819a024"),
     "name" : "Model Derivatives",
@@ -776,7 +775,7 @@
         "rightFlex" : 0.3
     },
     "model" : {
-        "path" : "https://sbhehe.github.io/sb233/office/3D_View/_3D_ 713157/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/king/3D_View/0/0.svf”",
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9wbGFudC5ud2Q=",
         "name" : "Plant",
         "role" : "3d"
@@ -1113,7 +1112,7 @@
         "rightFlex" : 0.3
     },
     "model" : {
-        "path" : "https://sbhehe.github.io/sb233/office/3D_View/_3D_ 713157/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/king/3D_View/0/0.svf”",
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9vZmZpY2UucnZ0",
         "role" : "3d"
     },
@@ -1135,7 +1134,7 @@
     },
     "model" : {
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9mYWRlcjIucnZ0",
-        "path" : "https://sbhehe.github.io/sb233/tmp/fader/Resource/3D_View/_3D_ 196679/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/fader/3D_View/0/0.svf",
         "role" : "3d"
     },
     "dynamicExtensions" : [
@@ -1158,7 +1157,7 @@
         "rightFlex" : 0.45
     },
     "model" : {
-        "path" : "https://sbhehe.github.io/sb233/office/3D_View/_3D_ 713157/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/king/3D_View/0/0.svf”",
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9vZmZpY2UucnZ0",
         "name" : "Urban Office",
         "role" : "3d"
@@ -4440,6 +4439,7 @@
     "name" : "AR-VR Toolkit Controller",
     "displayName" : "3 Legged",
     "env" : "AutodeskProduction",
+    "private": true,
     "desc" : "Implements a control panel to interact with the Forge AR/VR Toolkit API",
     "git" : "https://github.com/Autodesk-Forge/forge-rcdb.nodejs/tree/master/src/client/components/Viewer/Extensions/Dynamic/Viewing.Extension.ARToolkitController",
     "layout" : {
@@ -4575,7 +4575,7 @@
         "rightFlex" : 0.35
     },
     "model" : {
-        "path" : "https://sbhehe.github.io/sb233/office/3D_View/_3D_ 713157/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/king/3D_View/0/0.svf”",
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9vZmZpY2UucnZ0",
         "name" : "Office",
         "role" : "3d"
@@ -4779,7 +4779,7 @@
         "rightFlex" : 0.35
     },
     "model" : {
-        "path" : "https://sbhehe.github.io/sb233/office/3D_View/_3D_ 713157/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/king/3D_View/0/0.svf”",
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9vZmZpY2UucnZ0",
         "name" : "Urban Office",
         "role" : "3d"
@@ -14087,7 +14087,7 @@
         "rightFlex" : 0.27
     },
     "model" : {
-        "path" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9vZmZpY2UucnZ0",
         "name" : "Office",
         "role" : "3d"
@@ -14132,7 +14132,7 @@
     },
     "model" : {
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9vZmZpY2UucnZ0",
-        "path" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
         "name" : "Office"
     },
     "dynamicExtensions" : [
@@ -14276,7 +14276,7 @@
     ],
     "states" : [
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -14393,7 +14393,7 @@
             "name" : "Sun Oct 15 2017 17:01:52 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -14510,7 +14510,7 @@
             "name" : "Sun Oct 15 2017 18:10:25 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -14627,7 +14627,7 @@
             "name" : "Sun Oct 15 2017 18:10:51 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -14744,7 +14744,7 @@
             "name" : "Sun Oct 15 2017 18:11:29 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -14861,7 +14861,7 @@
             "name" : "Sun Oct 15 2017 18:12:24 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -14978,7 +14978,7 @@
             "name" : "Sun Oct 15 2017 19:18:16 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -15095,7 +15095,7 @@
             "name" : "Sun Oct 15 2017 19:18:57 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -15212,7 +15212,7 @@
             "name" : "Sun Oct 15 2017 19:19:06 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -15329,7 +15329,7 @@
             "name" : "Sun Oct 15 2017 19:23:44 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -15446,7 +15446,7 @@
             "name" : "Sun Oct 15 2017 19:24:12 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -15563,7 +15563,7 @@
             "name" : "Sun Oct 15 2017 19:24:20 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -15680,7 +15680,7 @@
             "name" : "Sun Oct 15 2017 19:24:36 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -15797,7 +15797,7 @@
             "name" : "Sun Oct 15 2017 19:25:03 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -15914,7 +15914,7 @@
             "name" : "Sun Oct 15 2017 19:25:22 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -16031,7 +16031,7 @@
             "name" : "Sun Oct 15 2017 19:25:31 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -16148,7 +16148,7 @@
             "name" : "Sun Oct 15 2017 19:25:43 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -16265,7 +16265,7 @@
             "name" : "Sun Oct 15 2017 19:25:56 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -16382,7 +16382,7 @@
             "name" : "Sun Oct 15 2017 19:26:09 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -16499,7 +16499,7 @@
             "name" : "Sun Oct 15 2017 19:29:05 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -16616,7 +16616,7 @@
             "name" : "Sun Oct 15 2017 19:35:06 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -16733,7 +16733,7 @@
             "name" : "Sun Oct 15 2017 19:35:16 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -16850,7 +16850,7 @@
             "name" : "Sun Oct 15 2017 19:35:24 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -16967,7 +16967,7 @@
             "name" : "Sun Oct 15 2017 19:35:39 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -17084,7 +17084,7 @@
             "name" : "Sun Oct 15 2017 19:35:59 GMT+0200 (CEST)"
         },
         {
-            "seedURN" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+            "seedURN" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
             "objectSet" : [
                 {
                     "id" : [
@@ -20372,7 +20372,7 @@
         "rightFlex" : 0.3
     },
     "model" : {
-        "path" : "https://sbhehe.github.io/sb233/office/3D_View/_3D_ 713157/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/king/3D_View/0/0.svf”",
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9vZmZpY2UucnZ0",
         "name" : "Custom Extensions",
         "displayName" : "Office",
@@ -21769,7 +21769,7 @@
         "rightFlex" : 0.35
     },
     "model" : {
-        "path" : "https://sbhehe.github.io/sb233/dev/office/3D_View/_3D_ 713157/_3D_.svf",
+        "path" : "https://sbhehe.github.io/sb233/office/3D_View/0/0.svf",
         "urn" : "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bGVlZnNtcC1mb3JnZS9vZmZpY2UucnZ0",
         "name" : "Office",
         "role" : "3d"

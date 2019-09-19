@@ -43,6 +43,17 @@ To run these samples, you need your own Forge API credentials:
 
    Import the four data collections using the JSON files [here](./resources/db) to your database, we recommend to use [MongoDB Compass](https://www.mongodb.com/products/compass) or [Robo3T](https://robomongo.org/) as client tools for this task. See [here](https://docs.mongodb.com/compass/master/import-export/) and [here](https://stackoverflow.com/questions/23009146/import-a-data-base-file-json-into-robo3t-robomongo) for instructions to import data. *Note: if you use MongoDB Compass to import the data you will need to minify the JSON objects into one lines otherwise the tool wouldn't be able to parse the JSON objects correctly*
 
+   Make sure your database collections look like below:
+
+```
+   YourDatabase
+   |
+   |-------------rcdb.models
+   |-------------rcdb.materials
+   |-------------gallery.models
+   |-------------configurator.models  
+```
+
    Once you are done, be sure to specify the connection string or in the configuration JSON file or as environment variables - see instructions in the next section for details.
 
    If you would like run the sample w/o setting up MongoDB, see how to run the Extension Gallery as the backend in `tips and tricks` section later.
@@ -54,7 +65,7 @@ To run these samples, you need your own Forge API credentials:
    For the production mode you can set up the below environment variables and will pick up.
 
    - `RCDB_CONNECTION_STRING` // Specify the MongoDB connection string here
-   - `RCDB_DBHOST` //Specify the MongoDB host name, leave empty if using connection string
+   - `RCDB_DBHOST` //Specify the MongoDB host name
    - `RCDB_DBNAME` //Specify the MongoDB database name, leave empty if using connection string
    - `RCDB_USER`  //Specify the MongoDB user name, leave empty if using connection string
    - `RCDB_PASS`  //Specify the MongoDB password, leave empty if using connection string
@@ -66,7 +77,7 @@ To run these samples, you need your own Forge API credentials:
    [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware) and both the backend and client needs to run in parallel in separate sessions:
 
    - `npm install`    *(downloads project dependencies locally)*
-   - `npm run dev` or `node -r @babel/register ./src/server/index.js`     *(builds/runs server on the fly with or w/o monitoring code changes)*
+   - `npm run dev` or `node ./src/server/dev.js`   *(builds/runs server on the fly with or w/o monitoring code changes)*
    - Start a new CLI session and run `npm run serve`    *(builds/runs client on the fly and monitors code changes)*
    - navigate to [http://localhost:8080](http://localhost:8080)
 

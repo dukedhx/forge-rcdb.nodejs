@@ -2,7 +2,7 @@
 import GUIObjectAdapter from './utils/GUIObjectAdapter'
 import ToolPanelBase from './utils/ToolPanelBase'
 import './Viewing.Extension.Particle.css'
-import dat from 'dat-gui'
+import dat from 'dat.gui'
 
 export default class ParticlePanel extends ToolPanelBase {
   /// //////////////////////////////////////////////////////////

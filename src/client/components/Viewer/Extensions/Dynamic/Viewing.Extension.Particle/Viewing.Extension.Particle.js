@@ -12,7 +12,7 @@ import ExtensionBase from 'Viewer.ExtensionBase'
 import ParticleSystem from './ParticleSystem'
 import Toolkit from 'Viewer.Toolkit'
 import FPS from './utils/FPSMeter'
-import dat from 'dat-gui'
+import dat from 'dat.gui'
 
 class ParticleExtension extends MultiModelExtensionBase {
   /// //////////////////////////////////////////////////////////////
