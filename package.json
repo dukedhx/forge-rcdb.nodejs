@@ -13,7 +13,9 @@
     "dev": "cross-env NODE_ENV=development forever  --watchDirectory ./src/server  ./src/server/dev.js ",
     "build": "npm run build-server && npm run build-client",
     "clean": "rimraf bin",
-    "serve": "webpack-dev-server"
+    "serve": "webpack-dev-server",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "Philippe Leefsma",
   "license": "MIT",
@@ -64,7 +66,8 @@
     "socket.io": "^2.2.0",
     "superagent": "^5.1.0",
     "util": "^0.10.3",
-    "webpurify": "^2.1.0"
+    "webpurify": "^2.1.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -181,5 +184,6 @@
     "webpack-manifest-plugin": "^2.0.4",
     "webpack-md5-hash": "0.0.5",
     "worker-loader": "^2.0.0"
-  }
+  },
+  "snyk": true
 }
