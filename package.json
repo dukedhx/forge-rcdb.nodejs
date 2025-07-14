@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
-    "archiver": "2.0.0",
+    "archiver": "7.0.0",
     "async": "2.4.1",
     "autobind-decorator": "^2.4.0",
     "body-parser": "^1.18.2",
@@ -58,10 +58,10 @@
     "qrcode.react": "0.7.2",
     "react-json-view": "1.13.3",
     "react-tooltip": "3.4.0",
-    "rimraf": "^2.6.1",
+    "rimraf": "^4.3.1",
     "rmdir": "^1.2.0",
     "sanitize-html": "1.15.0",
-    "socket.io": "^2.2.0",
+    "socket.io": "^4.8.0",
     "superagent": "^5.1.0",
     "util": "^0.10.3",
     "webpurify": "^2.1.0"
